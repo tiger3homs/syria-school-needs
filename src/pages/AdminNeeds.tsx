@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -76,12 +77,27 @@ const AdminNeeds = () => {
           quantity,
           priority,
           status,
-          school:schools(name)
+          school:schools!inner(name)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setNeeds(data || []);
+      
+      // Transform the data to match our Need interface
+      const transformedData: Need[] = (data || []).map((item: any) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        category: item.category,
+        quantity: item.quantity,
+        priority: item.priority,
+        status: item.status,
+        school: {
+          name: Array.isArray(item.school) ? item.school[0]?.name || 'Unknown' : item.school?.name || 'Unknown'
+        }
+      }));
+      
+      setNeeds(transformedData);
     } catch (error: any) {
       toast({
         title: "Error fetching needs",
