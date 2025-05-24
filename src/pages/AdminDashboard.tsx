@@ -35,12 +35,12 @@ const AdminDashboard = () => {
     }
 
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('profiles' as any)
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (profile?.role !== 'admin') {
+    if (!profile || profile.role !== 'admin') {
       navigate('/admin/login');
     }
   };
@@ -49,24 +49,24 @@ const AdminDashboard = () => {
     try {
       // Fetch needs statistics
       const { data: needs, error: needsError } = await supabase
-        .from('needs')
+        .from('needs' as any)
         .select('category, status');
 
       if (needsError) throw needsError;
 
       // Fetch schools count
       const { count: schoolsCount, error: schoolsError } = await supabase
-        .from('schools')
+        .from('schools' as any)
         .select('*', { count: 'exact', head: true });
 
       if (schoolsError) throw schoolsError;
 
       // Calculate statistics
       const totalNeeds = needs?.length || 0;
-      const fulfilledNeeds = needs?.filter(n => n.status === 'fulfilled').length || 0;
+      const fulfilledNeeds = needs?.filter((n: any) => n.status === 'fulfilled').length || 0;
       const pendingNeeds = totalNeeds - fulfilledNeeds;
 
-      const needsByCategory = needs?.reduce((acc, need) => {
+      const needsByCategory = needs?.reduce((acc: any, need: any) => {
         acc[need.category] = (acc[need.category] || 0) + 1;
         return acc;
       }, {} as Record<string, number>) || {};

@@ -55,12 +55,12 @@ const AdminNeeds = () => {
     }
 
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('profiles' as any)
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (profile?.role !== 'admin') {
+    if (!profile || profile.role !== 'admin') {
       navigate('/admin/login');
     }
   };
@@ -68,7 +68,7 @@ const AdminNeeds = () => {
   const fetchNeeds = async () => {
     try {
       const { data, error } = await supabase
-        .from('needs')
+        .from('needs' as any)
         .select(`
           id,
           title,
@@ -143,8 +143,8 @@ const AdminNeeds = () => {
     
     try {
       const { error } = await supabase
-        .from('needs')
-        .update({ status: newStatus })
+        .from('needs' as any)
+        .update({ status: newStatus } as any)
         .eq('id', needId);
 
       if (error) throw error;

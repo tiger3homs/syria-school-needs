@@ -50,12 +50,12 @@ const AdminSchools = () => {
     }
 
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('profiles' as any)
       .select('role')
       .eq('id', user.id)
       .single();
 
-    if (profile?.role !== 'admin') {
+    if (!profile || profile.role !== 'admin') {
       navigate('/admin/login');
     }
   };
@@ -63,7 +63,7 @@ const AdminSchools = () => {
   const fetchSchools = async () => {
     try {
       const { data, error } = await supabase
-        .from('schools')
+        .from('schools' as any)
         .select(`
           id,
           name,
