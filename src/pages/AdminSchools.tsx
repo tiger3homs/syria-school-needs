@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Shield, Search, School, Users, Phone, Mail, LogOut, MapPin } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 interface School {
   id: string;
@@ -43,14 +42,14 @@ const AdminSchools = () => {
   }, [schools, searchTerm]);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabaseAdmin.auth.getUser();
     if (!user) {
       navigate('/admin/login');
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles' as any)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
@@ -62,8 +61,8 @@ const AdminSchools = () => {
 
   const fetchSchools = async () => {
     try {
-      const { data, error } = await supabase
-        .from('schools' as any)
+      const { data, error } = await supabaseAdmin
+        .from('schools')
         .select(`
           id,
           name,
@@ -103,7 +102,7 @@ const AdminSchools = () => {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseAdmin.auth.signOut();
     navigate('/admin/login');
   };
 

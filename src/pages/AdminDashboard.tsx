@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Shield, School, ClipboardList, CheckCircle, XCircle, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 interface DashboardStats {
   totalNeeds: number;
@@ -28,14 +27,14 @@ const AdminDashboard = () => {
   }, []);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabaseAdmin.auth.getUser();
     if (!user) {
       navigate('/admin/login');
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles' as any)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
@@ -48,25 +47,25 @@ const AdminDashboard = () => {
   const fetchStats = async () => {
     try {
       // Fetch needs statistics
-      const { data: needs, error: needsError } = await supabase
-        .from('needs' as any)
+      const { data: needs, error: needsError } = await supabaseAdmin
+        .from('needs')
         .select('category, status');
 
       if (needsError) throw needsError;
 
       // Fetch schools count
-      const { count: schoolsCount, error: schoolsError } = await supabase
-        .from('schools' as any)
+      const { count: schoolsCount, error: schoolsError } = await supabaseAdmin
+        .from('schools')
         .select('*', { count: 'exact', head: true });
 
       if (schoolsError) throw schoolsError;
 
       // Calculate statistics
       const totalNeeds = needs?.length || 0;
-      const fulfilledNeeds = needs?.filter((n: any) => n.status === 'fulfilled').length || 0;
+      const fulfilledNeeds = needs?.filter((n) => n.status === 'fulfilled').length || 0;
       const pendingNeeds = totalNeeds - fulfilledNeeds;
 
-      const needsByCategory = needs?.reduce((acc: any, need: any) => {
+      const needsByCategory = needs?.reduce((acc, need) => {
         acc[need.category] = (acc[need.category] || 0) + 1;
         return acc;
       }, {} as Record<string, number>) || {};
@@ -90,7 +89,7 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseAdmin.auth.signOut();
     navigate('/admin/login');
   };
 

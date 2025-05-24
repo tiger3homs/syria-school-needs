@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -22,7 +21,7 @@ const AdminLogin = () => {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabaseAdmin.auth.signInWithPassword({
         email,
         password,
       });
@@ -30,14 +29,14 @@ const AdminLogin = () => {
       if (error) throw error;
 
       // Check if user is admin
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles' as any)
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from('profiles')
         .select('role')
         .eq('id', data.user.id)
         .single();
 
       if (profileError || !profile || profile.role !== 'admin') {
-        await supabase.auth.signOut();
+        await supabaseAdmin.auth.signOut();
         throw new Error('Access denied. Admin privileges required.');
       }
 

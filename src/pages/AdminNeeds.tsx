@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Shield, Search, Filter, LogOut, ArrowUpDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 interface Need {
   id: string;
@@ -48,14 +47,14 @@ const AdminNeeds = () => {
   }, [needs, searchTerm, categoryFilter, statusFilter, priorityFilter, sortField, sortDirection]);
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await supabaseAdmin.auth.getUser();
     if (!user) {
       navigate('/admin/login');
       return;
     }
 
-    const { data: profile } = await supabase
-      .from('profiles' as any)
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
@@ -67,8 +66,8 @@ const AdminNeeds = () => {
 
   const fetchNeeds = async () => {
     try {
-      const { data, error } = await supabase
-        .from('needs' as any)
+      const { data, error } = await supabaseAdmin
+        .from('needs')
         .select(`
           id,
           title,
@@ -142,9 +141,9 @@ const AdminNeeds = () => {
     const newStatus = currentStatus === 'pending' ? 'fulfilled' : 'pending';
     
     try {
-      const { error } = await supabase
-        .from('needs' as any)
-        .update({ status: newStatus } as any)
+      const { error } = await supabaseAdmin
+        .from('needs')
+        .update({ status: newStatus })
         .eq('id', needId);
 
       if (error) throw error;
@@ -167,7 +166,7 @@ const AdminNeeds = () => {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await supabaseAdmin.auth.signOut();
     navigate('/admin/login');
   };
 
