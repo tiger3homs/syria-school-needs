@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Shield, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -14,6 +15,7 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,30 +23,8 @@ const AdminLogin = () => {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabaseAdmin.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      // Check if user is admin
-      const { data: profile, error: profileError } = await supabaseAdmin
-        .from('profiles')
-        .select('role')
-        .eq('id', data.user.id)
-        .single();
-
-      if (profileError || !profile || profile.role !== 'admin') {
-        await supabaseAdmin.auth.signOut();
-        throw new Error('Access denied. Admin privileges required.');
-      }
-
-      toast({
-        title: "Login successful",
-        description: "Welcome to the admin panel!",
-      });
-      
+      await signIn(email, password);
+      // The ProtectedRoute will handle checking if user is admin
       navigate('/admin/dashboard');
     } catch (error: any) {
       toast({
