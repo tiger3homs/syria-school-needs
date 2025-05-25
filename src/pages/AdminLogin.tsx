@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,28 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn } = useAuth();
+  const { signIn, user, profile, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Handle redirection when user and profile are available
+  useEffect(() => {
+    if (user && profile && !loading) {
+      console.log('Admin user authenticated with profile:', profile);
+      if (profile.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (profile.role === 'principal') {
+        navigate('/dashboard');
+      } else {
+        // If user is not admin, redirect to regular login
+        toast({
+          title: "Access denied",
+          description: "You don't have admin privileges",
+          variant: "destructive",
+        });
+        navigate('/login');
+      }
+    }
+  }, [user, profile, loading, navigate, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,8 +44,11 @@ const AdminLogin = () => {
     
     try {
       await signIn(email, password);
-      // The ProtectedRoute will handle checking if user is admin
-      navigate('/admin/dashboard');
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+      // Don't navigate here - let the useEffect handle it when profile is loaded
     } catch (error: any) {
       console.error('Admin login error:', error);
       toast({
@@ -33,10 +56,21 @@ const AdminLogin = () => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
+
+  // Show loading state while authenticating
+  if (loading || (user && !profile)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
