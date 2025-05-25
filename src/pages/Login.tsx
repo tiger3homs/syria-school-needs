@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +14,22 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn, profile } = useAuth();
+  const { signIn, user, profile, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Handle redirection when user and profile are available
+  useEffect(() => {
+    if (user && profile && !loading) {
+      console.log('User authenticated with profile:', profile);
+      if (profile.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else if (profile.role === 'principal') {
+        navigate('/dashboard');
+      } else {
+        navigate('/dashboard'); // Default fallback
+      }
+    }
+  }, [user, profile, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,15 +41,7 @@ const Login = () => {
         title: "Login successful",
         description: "Welcome back!",
       });
-      
-      // Wait a moment for profile to be fetched
-      setTimeout(() => {
-        if (profile?.role === 'admin') {
-          navigate('/admin/dashboard');
-        } else {
-          navigate('/dashboard');
-        }
-      }, 1000);
+      // Don't navigate here - let the useEffect handle it when profile is loaded
     } catch (error: any) {
       console.error('Login error:', error);
       toast({
@@ -44,7 +49,6 @@ const Login = () => {
         description: error.message,
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
