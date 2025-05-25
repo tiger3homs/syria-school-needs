@@ -71,7 +71,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Type assertion to ensure role is properly typed
+      const profileData: UserProfile = {
+        id: data.id,
+        email: data.email || '',
+        role: (data.role as 'admin' | 'principal') || 'principal'
+      };
+      
+      setProfile(profileData);
     } catch (error: any) {
       console.error('Error fetching profile:', error);
       toast({
