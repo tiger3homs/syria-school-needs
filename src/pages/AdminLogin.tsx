@@ -27,6 +27,7 @@ const AdminLogin = () => {
       // The ProtectedRoute will handle checking if user is admin
       navigate('/admin/dashboard');
     } catch (error: any) {
+      console.error('Admin login error:', error);
       toast({
         title: "Login failed",
         description: error.message,
