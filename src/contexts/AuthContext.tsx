@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -49,7 +50,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('Auth state changed:', event, session?.user?.email);
       setUser(session?.user ?? null);
       if (session?.user) {
         await fetchProfile(session.user.id);
@@ -64,31 +64,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
-      console.log('Fetching profile for user:', userId);
-      setLoading(true); // Ensure loading is true while fetching profile
-      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single();
 
-      if (error) {
-        console.error('Profile fetch error:', error);
-        throw error;
-      }
-      
-      console.log('Profile data:', data);
-      
-      // Type assertion to ensure role is properly typed
-      const profileData: UserProfile = {
-        id: data.id,
-        email: data.email || '',
-        role: (data.role as 'admin' | 'principal') || 'principal'
-      };
-      
-      setProfile(profileData);
-      console.log('Profile set:', profileData);
+      if (error) throw error;
+      setProfile(data);
     } catch (error: any) {
       console.error('Error fetching profile:', error);
       toast({
@@ -102,17 +85,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
-    console.log('Attempting sign in for:', email);
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-    if (error) {
-      console.error('Sign in error:', error);
-      throw error;
-    }
-    console.log('Sign in successful');
+    if (error) throw error;
   };
 
   const signUp = async (email: string, password: string, userData: any) => {

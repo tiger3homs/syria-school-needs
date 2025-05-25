@@ -15,7 +15,6 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminNeeds from "./pages/AdminNeeds";
 import AdminSchools from "./pages/AdminSchools";
-import SchoolNeeds from "./pages/SchoolNeeds";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,16 +28,15 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/needs" element={<SchoolNeeds />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/dashboard" element={
-              <ProtectedRoute requiredRole="principal">
+              <ProtectedRoute requireAuth>
                 <Dashboard />
               </ProtectedRoute>
             } />
             <Route path="/needs/new" element={
-              <ProtectedRoute requiredRole="principal">
+              <ProtectedRoute requireAuth>
                 <SubmitNeed />
               </ProtectedRoute>
             } />

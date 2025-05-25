@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,22 +15,8 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn, user, profile, loading } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
-
-  // Handle redirection when user and profile are available
-  useEffect(() => {
-    if (user && profile && !loading) {
-      console.log('User authenticated with profile:', profile);
-      if (profile.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (profile.role === 'principal') {
-        navigate('/dashboard');
-      } else {
-        navigate('/dashboard'); // Default fallback
-      }
-    }
-  }, [user, profile, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,29 +28,17 @@ const Login = () => {
         title: "Login successful",
         description: "Welcome back!",
       });
-      // Don't navigate here - let the useEffect handle it when profile is loaded
+      navigate('/dashboard');
     } catch (error: any) {
-      console.error('Login error:', error);
       toast({
         title: "Login failed",
         description: error.message,
         variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   };
-
-  // Show loading state while authenticating
-  if (loading || (user && !profile)) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Signing you in...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
