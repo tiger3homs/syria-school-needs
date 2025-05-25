@@ -11,21 +11,18 @@ export interface Database {
       profiles: {
         Row: {
           id: string;
-          email: string;
           role: string;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
           id: string;
-          email: string;
-          role?: string;
+          role: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
-          email?: string;
           role?: string;
           created_at?: string;
           updated_at?: string;
@@ -34,37 +31,31 @@ export interface Database {
       schools: {
         Row: {
           id: string;
-          principal_id: string;
           name: string;
           address: string;
           number_of_students: number;
           contact_phone?: string;
           contact_email?: string;
-          description?: string;
           created_at?: string;
           updated_at?: string;
         };
         Insert: {
           id?: string;
-          principal_id: string;
           name: string;
           address: string;
           number_of_students: number;
           contact_phone?: string;
           contact_email?: string;
-          description?: string;
           created_at?: string;
           updated_at?: string;
         };
         Update: {
           id?: string;
-          principal_id?: string;
           name?: string;
           address?: string;
           number_of_students?: number;
           contact_phone?: string;
           contact_email?: string;
-          description?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -89,7 +80,7 @@ export interface Database {
           description?: string;
           category: string;
           quantity: number;
-          priority?: string;
+          priority: string;
           status?: string;
           created_at?: string;
           updated_at?: string;

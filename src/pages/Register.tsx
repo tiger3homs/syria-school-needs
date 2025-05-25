@@ -6,9 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { School, Eye, EyeOff } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -26,8 +25,6 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signUp } = useAuth();
-  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -51,31 +48,14 @@ const Register = () => {
 
     setIsLoading(true);
     
-    try {
-      await signUp(formData.email, formData.password, {
-        principalName: formData.principalName,
-        schoolName: formData.schoolName,
-        address: formData.address,
-        phone: formData.phone,
-        numberOfStudents: formData.numberOfStudents,
-        description: formData.description
-      });
-
-      toast({
-        title: "Registration successful!",
-        description: "Please check your email for verification instructions.",
-      });
-      
-      navigate('/login');
-    } catch (error: any) {
-      toast({
-        title: "Registration failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
+    // Simulate registration process
+    setTimeout(() => {
       setIsLoading(false);
-    }
+      toast({
+        title: "Registration functionality coming soon!",
+        description: "Please connect to Supabase to enable user registration.",
+      });
+    }, 1000);
   };
 
   return (
