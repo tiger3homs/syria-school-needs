@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -38,24 +37,28 @@ export const useSchoolData = () => {
 
     try {
       setLoading(true);
+      setError(null);
       
-      // Fetch school data
+      // Fetch school data using maybeSingle() instead of single()
       const { data: schoolData, error: schoolError } = await supabase
         .from('schools')
         .select('*')
         .eq('principal_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (schoolError) {
         console.error('Error fetching school:', schoolError);
-        setError('Failed to fetch school data');
+        // Only set error for actual database errors, not missing records
+        if (schoolError.code !== 'PGRST116') {
+          setError('Failed to fetch school data');
+        }
         return;
       }
 
-      setSchool(schoolData);
-
-      // Fetch needs data if school exists
       if (schoolData) {
+        setSchool(schoolData);
+
+        // Fetch needs data if school exists
         const { data: needsData, error: needsError } = await supabase
           .from('needs')
           .select('*')
@@ -70,6 +73,7 @@ export const useSchoolData = () => {
 
         setNeeds(needsData || []);
       }
+      // If no school exists, we just continue without showing an error
     } catch (err) {
       console.error('Error:', err);
       setError('An unexpected error occurred');

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -52,10 +51,34 @@ const Dashboard = () => {
 
   if (!school) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="mt-4 text-gray-600">No school found for your account.</p>
-          <p className="text-sm text-gray-500">Please contact support to link your school.</p>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center">
+                <Link to="/" className="flex items-center">
+                  <School className="h-8 w-8 text-blue-600" />
+                  <span className="ml-2 text-xl font-bold text-gray-900">School Rebuild Syria</span>
+                </Link>
+              </div>
+              <div className="flex items-center space-x-4">
+                <span className="text-sm text-gray-600">Welcome, {user.email}</span>
+                <Button variant="outline" size="sm" onClick={() => signOut()}>
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <School className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">No School Found</h2>
+            <p className="text-gray-600 mb-4">Your account is not linked to any school yet.</p>
+            <p className="text-sm text-gray-500">Please contact an administrator to link your account to a school.</p>
+          </div>
         </div>
       </div>
     );

@@ -63,21 +63,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchProfile = async (userId: string) => {
     try {
+      // Use maybeSingle() instead of single() to handle case where no profile exists
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
-      if (error) throw error;
-      setProfile({...data, role: data.role as 'admin' | 'principal'});
+      if (error) {
+        console.error('Error fetching profile:', error);
+        // Only show toast for actual errors, not missing profiles
+        if (error.code !== 'PGRST116') {
+          toast({
+            title: "Error loading profile",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
+      } else if (data) {
+        setProfile({...data, role: data.role as 'admin' | 'principal'});
+      }
+      // If no profile exists, we just continue without showing an error
     } catch (error: any) {
       console.error('Error fetching profile:', error);
-      toast({
-        title: "Error loading profile",
-        description: error.message,
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
