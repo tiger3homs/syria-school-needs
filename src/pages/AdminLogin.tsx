@@ -15,7 +15,7 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn } = useAuth();
+  const { signIn, signOut } = useAuth(); // Destructure signOut
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,9 +23,22 @@ const AdminLogin = () => {
     setIsLoading(true);
     
     try {
-      await signIn(email, password);
-      // The ProtectedRoute will handle checking if user is admin
-      navigate('/admin/dashboard');
+      const userProfile = await signIn(email, password);
+      if (userProfile?.role === 'admin') {
+        toast({
+          title: "Login successful",
+          description: "Welcome, Admin!",
+        });
+        navigate('/admin/dashboard');
+      } else {
+        // If a non-admin tries to log in via the admin login page
+        await signOut(); // Clear the session
+        toast({
+          title: "Access Denied",
+          description: "Only administrators can access this page.",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Login failed",

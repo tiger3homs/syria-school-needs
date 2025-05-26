@@ -4,30 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { School, Heart, Users, Target } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  // The header is now handled by the global Header component in App.tsx
+  // const { user, signOut } = useAuth(); // No longer needed here
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <School className="h-8 w-8 text-blue-600" />
-              <span className="ml-2 text-xl font-bold text-gray-900">School Rebuild Syria</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link to="/login">
-                <Button variant="ghost">Login</Button>
-              </Link>
-              <Link to="/register">
-                <Button>Register School</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
       <section className="relative py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">

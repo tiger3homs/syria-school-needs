@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import AdminHeader from "@/components/AdminHeader";
 
 interface School {
   id: string;
@@ -66,17 +67,19 @@ const AdminSchoolsComponent = () => {
     }
   };
 
+  // Effect to fetch schools on component mount
   useEffect(() => {
     fetchSchools();
   }, []);
 
-  const filterSchools = () => {
+  // Effect to filter schools whenever schools data or search term changes
+  useEffect(() => {
     const filtered = schools.filter(school =>
       school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       school.address.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredSchools(filtered);
-  };
+  }, [schools, searchTerm]); // Depend on schools and searchTerm
 
   const getSchoolStats = (school: School) => {
     const totalNeeds = school.needs.length;
@@ -100,31 +103,7 @@ const AdminSchoolsComponent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="ml-2 text-xl font-bold text-gray-900">Admin Panel</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex space-x-6">
-                <Link to="/admin/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
-                <Link to="/admin/needs" className="text-gray-600 hover:text-gray-900">Needs</Link>
-                <Link to="/admin/schools" className="text-blue-600 font-medium">Schools</Link>
-              </nav>
-              <Button variant="outline" asChild>
-                <Link to="/admin/login">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <AdminHeader />
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

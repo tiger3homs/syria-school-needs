@@ -13,7 +13,7 @@ interface AuthContextType {
   user: User | null;
   profile: UserProfile | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<UserProfile | null>;
   signUp: (email: string, password: string, userData: any) => Promise<void>;
   signOut: () => Promise<void>;
   isAdmin: boolean;
@@ -91,13 +91,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+  const signIn = async (email: string, password: string): Promise<UserProfile | null> => {
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) throw error;
+
+    if (data.user) {
+      // Fetch profile immediately after successful sign-in
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Error fetching profile after sign-in:', profileError);
+        toast({
+          title: "Error loading profile",
+          description: profileError.message,
+          variant: "destructive",
+        });
+        return null;
+      }
+
+      if (profileData) {
+        const userProfile: UserProfile = { ...profileData, role: profileData.role as 'admin' | 'principal' };
+        setProfile(userProfile);
+        setUser(data.user); // Ensure user state is updated
+        setLoading(false); // Ensure loading is set to false
+        return userProfile;
+      }
+    }
+    return null;
   };
 
   const signUp = async (email: string, password: string, userData: any) => {

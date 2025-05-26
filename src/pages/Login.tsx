@@ -15,7 +15,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn } = useAuth();
+  const { signIn, signOut } = useAuth(); // Destructure signOut
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,12 +23,22 @@ const Login = () => {
     setIsLoading(true);
     
     try {
-      await signIn(email, password);
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-      navigate('/dashboard');
+      const userProfile = await signIn(email, password);
+      if (userProfile?.role === 'principal') {
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+        navigate('/dashboard');
+      } else {
+        // If an admin tries to log in via the principal login page
+        await signOut(); // Clear the session
+        toast({
+          title: "Access Denied",
+          description: "Only principals can access this page.",
+          variant: "destructive",
+        });
+      }
     } catch (error: any) {
       toast({
         title: "Login failed",

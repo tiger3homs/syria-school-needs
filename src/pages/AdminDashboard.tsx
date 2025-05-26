@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import AdminHeader from "@/components/AdminHeader";
 
 interface DashboardStats {
   totalNeeds: number;
@@ -71,31 +72,7 @@ const AdminDashboardComponent = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <Shield className="h-8 w-8 text-blue-600" />
-              <h1 className="ml-2 text-xl font-bold text-gray-900">Admin Panel</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <nav className="hidden md:flex space-x-6">
-                <Link to="/admin/dashboard" className="text-blue-600 font-medium">Dashboard</Link>
-                <Link to="/admin/needs" className="text-gray-600 hover:text-gray-900">Needs</Link>
-                <Link to="/admin/schools" className="text-gray-600 hover:text-gray-900">Schools</Link>
-              </nav>
-              <Button variant="outline">
-                <Link to="/admin/login">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
-
+      <AdminHeader />
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">

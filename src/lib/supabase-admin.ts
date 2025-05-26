@@ -121,4 +121,16 @@ export interface Database {
 }
 
 // Create typed client for admin operations
-export const supabaseAdmin = supabase as any;
+// For admin operations, ideally you would use the Supabase Service Role Key
+// on a secure backend (e.g., Supabase Edge Function, serverless function)
+// to bypass Row Level Security (RLS).
+//
+// In this client-side context, `supabaseAdmin` is currently just the
+// regular Supabase client initialized with the public publishable key.
+// If RLS is enabled on your tables, this client might not have the
+// necessary permissions to perform all admin-like operations.
+//
+// For development/testing, you might temporarily adjust RLS policies
+// in your Supabase project to allow read access for the 'anon' role
+// on tables like 'schools' and 'needs'.
+export const supabaseAdmin = supabase;
