@@ -15,6 +15,7 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: string
+          image_url: string | null
           priority: string
           quantity: number
           school_id: string | null
@@ -27,6 +28,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           priority?: string
           quantity?: number
           school_id?: string | null
@@ -39,6 +41,7 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          image_url?: string | null
           priority?: string
           quantity?: number
           school_id?: string | null
@@ -90,6 +93,7 @@ export type Database = {
           contact_phone: string | null
           created_at: string | null
           description: string | null
+          governorate: string | null
           id: string
           name: string
           number_of_students: number
@@ -102,6 +106,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          governorate?: string | null
           id?: string
           name: string
           number_of_students: number
@@ -114,6 +119,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          governorate?: string | null
           id?: string
           name?: string
           number_of_students?: number

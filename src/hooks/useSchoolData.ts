@@ -1,0 +1,151 @@
+
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+
+interface School {
+  id: string;
+  name: string;
+  address: string;
+  governorate: string | null;
+  number_of_students: number;
+  contact_phone: string | null;
+  contact_email: string | null;
+  description: string | null;
+}
+
+interface Need {
+  id: string;
+  title: string;
+  description: string | null;
+  category: string;
+  priority: string;
+  quantity: number;
+  status: string;
+  image_url: string | null;
+  created_at: string;
+}
+
+export const useSchoolData = () => {
+  const { user } = useAuth();
+  const [school, setSchool] = useState<School | null>(null);
+  const [needs, setNeeds] = useState<Need[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchSchoolData = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      
+      // Fetch school data
+      const { data: schoolData, error: schoolError } = await supabase
+        .from('schools')
+        .select('*')
+        .eq('principal_id', user.id)
+        .single();
+
+      if (schoolError) {
+        console.error('Error fetching school:', schoolError);
+        setError('Failed to fetch school data');
+        return;
+      }
+
+      setSchool(schoolData);
+
+      // Fetch needs data if school exists
+      if (schoolData) {
+        const { data: needsData, error: needsError } = await supabase
+          .from('needs')
+          .select('*')
+          .eq('school_id', schoolData.id)
+          .order('created_at', { ascending: false });
+
+        if (needsError) {
+          console.error('Error fetching needs:', needsError);
+          setError('Failed to fetch needs data');
+          return;
+        }
+
+        setNeeds(needsData || []);
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      setError('An unexpected error occurred');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateSchool = async (updates: Partial<School>) => {
+    if (!school || !user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('schools')
+        .update(updates)
+        .eq('id', school.id)
+        .eq('principal_id', user.id);
+
+      if (error) {
+        console.error('Error updating school:', error);
+        return false;
+      }
+
+      setSchool({ ...school, ...updates });
+      return true;
+    } catch (err) {
+      console.error('Error updating school:', err);
+      return false;
+    }
+  };
+
+  const createNeed = async (needData: {
+    title: string;
+    description: string;
+    category: string;
+    priority: string;
+    quantity: number;
+    image_url?: string;
+  }) => {
+    if (!school || !user) return false;
+
+    try {
+      const { data, error } = await supabase
+        .from('needs')
+        .insert({
+          ...needData,
+          school_id: school.id,
+          status: 'pending'
+        })
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Error creating need:', error);
+        return false;
+      }
+
+      setNeeds([data, ...needs]);
+      return true;
+    } catch (err) {
+      console.error('Error creating need:', err);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    fetchSchoolData();
+  }, [user]);
+
+  return {
+    school,
+    needs,
+    loading,
+    error,
+    updateSchool,
+    createNeed,
+    refetch: fetchSchoolData
+  };
+};
