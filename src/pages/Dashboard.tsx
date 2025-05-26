@@ -1,5 +1,5 @@
-
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +8,30 @@ import { School, Plus, Edit, Eye, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
+  const { user, profile, loading, signOut } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="mt-4 text-gray-600">You are not authenticated.</p>
+          <Link to="/login" className="text-blue-500">Login</Link>
+        </div>
+      </div>
+    );
+  }
+
   // Mock data - this would come from Supabase
   const schoolData = {
     name: "Damascus Elementary School",
@@ -83,8 +107,8 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">Welcome back, Principal</span>
-              <Button variant="outline" size="sm">
-                <Link to="/login">Logout</Link>
+              <Button variant="outline" size="sm" onClick={() => signOut()}>
+                Logout
               </Button>
             </div>
           </div>

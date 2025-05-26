@@ -3,10 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Search, School, Users, Phone, Mail, LogOut, MapPin } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Shield, Search, School, Users, Phone, Mail, MapPin, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 interface School {
   id: string;
@@ -24,40 +25,12 @@ interface School {
   }>;
 }
 
-const AdminSchools = () => {
+const AdminSchoolsComponent = () => {
   const [schools, setSchools] = useState<School[]>([]);
   const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    checkAuth();
-    fetchSchools();
-  }, []);
-
-  useEffect(() => {
-    filterSchools();
-  }, [schools, searchTerm]);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabaseAdmin.auth.getUser();
-    if (!user) {
-      navigate('/admin/login');
-      return;
-    }
-
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || profile.role !== 'admin') {
-      navigate('/admin/login');
-    }
-  };
 
   const fetchSchools = async () => {
     try {
@@ -93,17 +66,16 @@ const AdminSchools = () => {
     }
   };
 
+  useEffect(() => {
+    fetchSchools();
+  }, []);
+
   const filterSchools = () => {
     const filtered = schools.filter(school =>
       school.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       school.address.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredSchools(filtered);
-  };
-
-  const handleLogout = async () => {
-    await supabaseAdmin.auth.signOut();
-    navigate('/admin/login');
   };
 
   const getSchoolStats = (school: School) => {
@@ -142,9 +114,11 @@ const AdminSchools = () => {
                 <Link to="/admin/needs" className="text-gray-600 hover:text-gray-900">Needs</Link>
                 <Link to="/admin/schools" className="text-blue-600 font-medium">Schools</Link>
               </nav>
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+              <Button variant="outline" asChild>
+                <Link to="/admin/login">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Link>
               </Button>
             </div>
           </div>
@@ -291,5 +265,11 @@ const AdminSchools = () => {
     </div>
   );
 };
+
+const AdminSchools = () => (
+  <ProtectedRoute requiredRole="admin">
+    <AdminSchoolsComponent />
+  </ProtectedRoute>
+);
 
 export default AdminSchools;

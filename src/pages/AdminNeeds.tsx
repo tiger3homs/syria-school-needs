@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -8,9 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Shield, Search, Filter, LogOut, ArrowUpDown } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 interface Need {
   id: string;
@@ -25,7 +25,7 @@ interface Need {
   };
 }
 
-const AdminNeeds = () => {
+const AdminNeedsComponent = () => {
   const [needs, setNeeds] = useState<Need[]>([]);
   const [filteredNeeds, setFilteredNeeds] = useState<Need[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,34 +36,6 @@ const AdminNeeds = () => {
   const [sortField, setSortField] = useState<keyof Need | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    checkAuth();
-    fetchNeeds();
-  }, []);
-
-  useEffect(() => {
-    filterAndSortNeeds();
-  }, [needs, searchTerm, categoryFilter, statusFilter, priorityFilter, sortField, sortDirection]);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabaseAdmin.auth.getUser();
-    if (!user) {
-      navigate('/admin/login');
-      return;
-    }
-
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || profile.role !== 'admin') {
-      navigate('/admin/login');
-    }
-  };
 
   const fetchNeeds = async () => {
     try {
@@ -108,6 +80,10 @@ const AdminNeeds = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchNeeds();
+  }, []);
 
   const filterAndSortNeeds = () => {
     let filtered = needs.filter(need => {
@@ -181,11 +157,6 @@ const AdminNeeds = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabaseAdmin.auth.signOut();
-    navigate('/admin/login');
-  };
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
@@ -228,9 +199,11 @@ const AdminNeeds = () => {
                 <Link to="/admin/needs" className="text-blue-600 font-medium">Needs</Link>
                 <Link to="/admin/schools" className="text-gray-600 hover:text-gray-900">Schools</Link>
               </nav>
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+              <Button variant="outline">
+                <Link to="/admin/login">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Link>
               </Button>
             </div>
           </div>
@@ -399,5 +372,11 @@ const AdminNeeds = () => {
     </div>
   );
 };
+
+const AdminNeeds = () => (
+  <ProtectedRoute requiredRole="admin">
+    <AdminNeedsComponent />
+  </ProtectedRoute>
+);
 
 export default AdminNeeds;

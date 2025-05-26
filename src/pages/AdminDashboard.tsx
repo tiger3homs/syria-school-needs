@@ -3,9 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Shield, School, ClipboardList, CheckCircle, XCircle, LogOut } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 interface DashboardStats {
   totalNeeds: number;
@@ -15,34 +16,10 @@ interface DashboardStats {
   needsByCategory: Record<string, number>;
 }
 
-const AdminDashboard = () => {
+const AdminDashboardComponent = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    checkAuth();
-    fetchStats();
-  }, []);
-
-  const checkAuth = async () => {
-    const { data: { user } } = await supabaseAdmin.auth.getUser();
-    if (!user) {
-      navigate('/admin/login');
-      return;
-    }
-
-    const { data: profile } = await supabaseAdmin
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || profile.role !== 'admin') {
-      navigate('/admin/login');
-    }
-  };
 
   const fetchStats = async () => {
     try {
@@ -88,21 +65,9 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = async () => {
-    await supabaseAdmin.auth.signOut();
-    navigate('/admin/login');
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    fetchStats();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -120,9 +85,11 @@ const AdminDashboard = () => {
                 <Link to="/admin/needs" className="text-gray-600 hover:text-gray-900">Needs</Link>
                 <Link to="/admin/schools" className="text-gray-600 hover:text-gray-900">Schools</Link>
               </nav>
-              <Button variant="outline" onClick={handleLogout}>
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
+              <Button variant="outline">
+                <Link to="/admin/login">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Link>
               </Button>
             </div>
           </div>
@@ -223,5 +190,11 @@ const AdminDashboard = () => {
     </div>
   );
 };
+
+const AdminDashboard = () => (
+  <ProtectedRoute requiredRole="admin">
+    <AdminDashboardComponent />
+  </ProtectedRoute>
+);
 
 export default AdminDashboard;

@@ -1,8 +1,5 @@
 
-import { createClient } from '@supabase/supabase-js';
-
-const SUPABASE_URL = "https://fdusgurjkmdroacxtrtb.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZkdXNndXJqa21kcm9hY3h0cnRiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgxMTEwMDgsImV4cCI6MjA2MzY4NzAwOH0.Kpq_kpqiT74BmHZx9AlRGjTJSzZ3O4WfkkCRZ4wfuDk";
+import { supabase } from '@/integrations/supabase/client';
 
 // Define our database schema types
 export interface Database {
@@ -124,4 +121,4 @@ export interface Database {
 }
 
 // Create typed client for admin operations
-export const supabaseAdmin = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+export const supabaseAdmin = supabase as any;

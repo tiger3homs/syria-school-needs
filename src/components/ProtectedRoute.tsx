@@ -30,6 +30,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" replace />;
   }
 
+  if (!requireAuth && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   if (requiredRole && profile?.role !== requiredRole) {
     return <Navigate to="/dashboard" replace />;
   }
