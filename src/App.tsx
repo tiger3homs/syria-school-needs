@@ -16,6 +16,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminNeeds from "./pages/AdminNeeds";
 import AdminSchools from "./pages/AdminSchools";
 import NotFound from "./pages/NotFound";
+import NeedsPage from "./pages/NeedsPage";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,11 @@ const App = () => (
             <Route path="/needs/new" element={
               <ProtectedRoute requireAuth>
                 <SubmitNeed />
+              </ProtectedRoute>
+            } />
+             <Route path="/needs" element={
+              <ProtectedRoute requireAuth>
+                <NeedsPage />
               </ProtectedRoute>
             } />
             <Route path="/admin/login" element={<AdminLogin />} />
