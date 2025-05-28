@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -58,7 +57,7 @@ export const useSchoolData = () => {
       }
 
       if (schoolData) {
-        setSchool(schoolData);
+        setSchool(schoolData as School);
 
         // Fetch needs data if school exists
         const { data: needsData, error: needsError } = await supabase
