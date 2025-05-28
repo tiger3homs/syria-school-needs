@@ -86,9 +86,9 @@ const NeedsPage = () => {
 
   const filteredAndSortedNeeds = needs
     .filter((need) => {
-      if (governorateFilter && need.schools?.governorate !== governorateFilter) return false;
-      if (categoryFilter && need.category !== categoryFilter) return false;
-      if (statusFilter && need.status !== statusFilter) return false;
+      if (governorateFilter && governorateFilter !== "all" && need.schools?.governorate !== governorateFilter) return false;
+      if (categoryFilter && categoryFilter !== "all" && need.category !== categoryFilter) return false;
+      if (statusFilter && statusFilter !== "all" && need.status !== statusFilter) return false;
       if (searchQuery && !`${need.title} ${need.description}`.toLowerCase().includes(searchQuery.toLowerCase())) return false;
       return true;
     })
@@ -132,7 +132,7 @@ const NeedsPage = () => {
                   <SelectValue placeholder="All Governorates" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Governorates</SelectItem>
+                  <SelectItem value="all">All Governorates</SelectItem>
                   {governorateOptions.map((governorate) => (
                     <SelectItem key={governorate} value={governorate}>
                       {governorate}
@@ -146,7 +146,7 @@ const NeedsPage = () => {
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
+                  <SelectItem value="all">All Categories</SelectItem>
                   {categoryOptions.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
@@ -160,7 +160,7 @@ const NeedsPage = () => {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="pending">Pending</SelectItem>
                   <SelectItem value="fulfilled">Fulfilled</SelectItem>
                 </SelectContent>
@@ -189,9 +189,9 @@ const NeedsPage = () => {
               <Button
                 variant="outline"
                 onClick={() => {
-                  setGovernorateFilter("");
-                  setCategoryFilter("");
-                  setStatusFilter("");
+                  setGovernorateFilter("all");
+                  setCategoryFilter("all");
+                  setStatusFilter("all");
                   setSearchQuery("");
                   setSortBy("newest");
                 }}
