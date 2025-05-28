@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +12,7 @@ interface School {
   contact_phone: string | null;
   contact_email: string | null;
   description: string | null;
+  image_url: string | null;
 }
 
 interface Need {
@@ -139,6 +141,54 @@ export const useSchoolData = () => {
     }
   };
 
+  const updateNeed = async (needId: string, updates: Partial<Need>) => {
+    if (!school || !user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('needs')
+        .update(updates)
+        .eq('id', needId)
+        .eq('school_id', school.id);
+
+      if (error) {
+        console.error('Error updating need:', error);
+        return false;
+      }
+
+      setNeeds(needs.map(need => 
+        need.id === needId ? { ...need, ...updates } : need
+      ));
+      return true;
+    } catch (err) {
+      console.error('Error updating need:', err);
+      return false;
+    }
+  };
+
+  const deleteNeed = async (needId: string) => {
+    if (!school || !user) return false;
+
+    try {
+      const { error } = await supabase
+        .from('needs')
+        .delete()
+        .eq('id', needId)
+        .eq('school_id', school.id);
+
+      if (error) {
+        console.error('Error deleting need:', error);
+        return false;
+      }
+
+      setNeeds(needs.filter(need => need.id !== needId));
+      return true;
+    } catch (err) {
+      console.error('Error deleting need:', err);
+      return false;
+    }
+  };
+
   useEffect(() => {
     fetchSchoolData();
   }, [user]);
@@ -150,6 +200,8 @@ export const useSchoolData = () => {
     error,
     updateSchool,
     createNeed,
+    updateNeed,
+    deleteNeed,
     refetch: fetchSchoolData
   };
 };

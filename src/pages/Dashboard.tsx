@@ -1,20 +1,36 @@
+
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { School, Plus, Edit, Eye, Target, MapPin, Users, Phone, Mail } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { School, Plus, Edit, Eye, Target, MapPin, Users, Phone, Mail, Trash2, Search, Filter } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSchoolData } from "@/hooks/useSchoolData";
 import { EditSchoolProfile } from "@/components/EditSchoolProfile";
 import { SubmitNeedForm } from "@/components/SubmitNeedForm";
+import { EditNeedModal } from "@/components/EditNeedModal";
+import { DeleteNeedDialog } from "@/components/DeleteNeedDialog";
+import { DashboardStats } from "@/components/DashboardStats";
+import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
   const { user, signOut } = useAuth();
-  const { school, needs, loading, error, updateSchool, createNeed } = useSchoolData();
+  const { school, needs, loading, error, updateSchool, createNeed, updateNeed, deleteNeed } = useSchoolData();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSubmittingNeed, setIsSubmittingNeed] = useState(false);
+  const [editingNeed, setEditingNeed] = useState(null);
+  const [deletingNeed, setDeletingNeed] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("newest");
+  const { toast } = useToast();
 
   if (loading) {
     return (
@@ -52,7 +68,6 @@ const Dashboard = () => {
   if (!school) {
     return (
       <div className="min-h-screen bg-gray-50">
-
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <School className="h-16 w-16 mx-auto mb-4 text-gray-300" />
@@ -107,15 +122,60 @@ const Dashboard = () => {
     return success;
   };
 
-  // Calculate stats
-  const totalNeeds = needs.length;
-  const pendingNeeds = needs.filter(need => need.status === 'pending').length;
-  const fulfilledNeeds = needs.filter(need => need.status === 'fulfilled').length;
-  const highPriorityNeeds = needs.filter(need => need.priority === 'high').length;
+  const handleUpdateNeed = async (needId: string, updates: any) => {
+    const success = await updateNeed(needId, updates);
+    if (success) {
+      setEditingNeed(null);
+    }
+    return success;
+  };
+
+  const handleDeleteNeed = async () => {
+    if (!deletingNeed) return;
+    
+    const success = await deleteNeed(deletingNeed.id);
+    if (success) {
+      toast({
+        title: "Need deleted",
+        description: "The need has been successfully deleted.",
+      });
+      setDeletingNeed(null);
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to delete need. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Filter and sort needs
+  const categories = [...new Set(needs.map(need => need.category))];
+  
+  const filteredAndSortedNeeds = needs
+    .filter((need) => {
+      if (statusFilter !== "all" && need.status !== statusFilter) return false;
+      if (priorityFilter !== "all" && need.priority !== priorityFilter) return false;
+      if (categoryFilter !== "all" && need.category !== categoryFilter) return false;
+      if (searchQuery && !`${need.title} ${need.description}`.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      if (sortBy === "newest") {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }
+      if (sortBy === "oldest") {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+      if (sortBy === "priority") {
+        const priorityOrder = { high: 1, medium: 2, low: 3 };
+        return priorityOrder[a.priority] - priorityOrder[b.priority];
+      }
+      return 0;
+    });
 
   return (
     <div className="min-h-screen bg-gray-50">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -133,53 +193,7 @@ const Dashboard = () => {
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Needs</CardTitle>
-                  <Target className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{totalNeeds}</div>
-                  <p className="text-xs text-muted-foreground">
-                    {pendingNeeds} pending, {fulfilledNeeds} fulfilled
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">High Priority</CardTitle>
-                  <div className="h-2 w-2 bg-red-500 rounded-full" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{highPriorityNeeds}</div>
-                  <p className="text-xs text-muted-foreground">Urgent attention needed</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Students</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{school.number_of_students}</div>
-                  <p className="text-xs text-muted-foreground">Total enrollment</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Fulfilled</CardTitle>
-                  <div className="h-2 w-2 bg-green-500 rounded-full" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{fulfilledNeeds}</div>
-                  <p className="text-xs text-muted-foreground">Successfully completed</p>
-                </CardContent>
-              </Card>
-            </div>
+            <DashboardStats needs={needs} school={school} />
 
             {/* Recent Needs */}
             <Card>
@@ -224,8 +238,12 @@ const Dashboard = () => {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4" />
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setEditingNeed(need)}
+                        >
+                          <Edit className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>
@@ -264,45 +282,154 @@ const Dashboard = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {needs.map((need) => (
-                      <div key={need.id} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div className="flex items-center gap-4">
-                          {need.image_url && (
-                            <img
-                              src={need.image_url}
-                              alt={need.title}
-                              className="w-16 h-16 object-cover rounded"
-                            />
-                          )}
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <h4 className="font-medium">{need.title}</h4>
+                  {/* Filters */}
+                  <div className="mb-6 space-y-4">
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1">
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                          <Input
+                            placeholder="Search needs..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-10"
+                          />
+                        </div>
+                      </div>
+                      <Filter className="h-4 w-4 text-gray-400" />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <Select value={statusFilter} onValueChange={setStatusFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Statuses</SelectItem>
+                          <SelectItem value="pending">Pending</SelectItem>
+                          <SelectItem value="in_progress">In Progress</SelectItem>
+                          <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Priority" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Priorities</SelectItem>
+                          <SelectItem value="high">High</SelectItem>
+                          <SelectItem value="medium">Medium</SelectItem>
+                          <SelectItem value="low">Low</SelectItem>
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Categories</SelectItem>
+                          {categories.map((category) => (
+                            <SelectItem key={category} value={category}>
+                              {category}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      <Select value={sortBy} onValueChange={setSortBy}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sort by" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="newest">Newest First</SelectItem>
+                          <SelectItem value="oldest">Oldest First</SelectItem>
+                          <SelectItem value="priority">Priority</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Needs Table */}
+                  <div className="border rounded-lg">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Need</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Priority</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Quantity</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredAndSortedNeeds.map((need) => (
+                          <TableRow key={need.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                {need.image_url && (
+                                  <img
+                                    src={need.image_url}
+                                    alt={need.title}
+                                    className="w-10 h-10 object-cover rounded"
+                                  />
+                                )}
+                                <div>
+                                  <div className="font-medium">{need.title}</div>
+                                  {need.description && (
+                                    <div className="text-sm text-gray-500 truncate max-w-xs">
+                                      {need.description}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>{need.category}</TableCell>
+                            <TableCell>
                               <Badge className={getPriorityColor(need.priority)}>
                                 {formatPriority(need.priority)}
                               </Badge>
+                            </TableCell>
+                            <TableCell>
                               <Badge className={getStatusColor(need.status)}>
                                 {formatStatus(need.status)}
                               </Badge>
-                            </div>
-                            <p className="text-sm text-gray-600">{need.description}</p>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Quantity: {need.quantity} • Category: {need.category} • Created: {new Date(need.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                    {needs.length === 0 && (
+                            </TableCell>
+                            <TableCell>{need.quantity}</TableCell>
+                            <TableCell>
+                              {new Date(need.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setEditingNeed(need)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => setDeletingNeed(need)}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                    
+                    {filteredAndSortedNeeds.length === 0 && (
                       <div className="text-center py-8 text-gray-500">
                         <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p>No needs submitted yet</p>
-                        <p className="text-sm">Submit your first need to get started</p>
+                        <p>No needs found</p>
+                        <p className="text-sm">Try adjusting your filters or add a new need</p>
                       </div>
                     )}
                   </div>
@@ -334,6 +461,17 @@ const Dashboard = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* School Image */}
+                  {school.image_url && (
+                    <div className="flex justify-center">
+                      <img
+                        src={school.image_url}
+                        alt={school.name}
+                        className="w-32 h-32 object-cover rounded-lg border"
+                      />
+                    </div>
+                  )}
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="text-sm font-medium text-gray-500">School Name</label>
@@ -382,6 +520,28 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Modals */}
+      <EditNeedModal
+        need={editingNeed}
+        isOpen={!!editingNeed}
+        onClose={() => setEditingNeed(null)}
+        onUpdate={handleUpdateNeed}
+      />
+
+      <DeleteNeedDialog
+        isOpen={!!deletingNeed}
+        onClose={() => setDeletingNeed(null)}
+        onConfirm={handleDeleteNeed}
+        needTitle={deletingNeed?.title || ''}
+      />
+
+      {isSubmittingNeed && (
+        <SubmitNeedForm
+          onSubmit={handleCreateNeed}
+          onCancel={() => setIsSubmittingNeed(false)}
+        />
+      )}
     </div>
   );
 };

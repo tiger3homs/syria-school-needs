@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ImageUpload } from './ImageUpload';
 import { useToast } from '@/hooks/use-toast';
 
 interface School {
@@ -17,6 +18,7 @@ interface School {
   contact_phone: string | null;
   contact_email: string | null;
   description: string | null;
+  image_url: string | null;
 }
 
 interface EditSchoolProfileProps {
@@ -39,7 +41,8 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
     number_of_students: school.number_of_students,
     contact_phone: school.contact_phone || '',
     contact_email: school.contact_email || '',
-    description: school.description || ''
+    description: school.description || '',
+    image_url: school.image_url || ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -83,6 +86,12 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <ImageUpload
+            currentImageUrl={formData.image_url}
+            onImageUploaded={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+            bucket="school-images"
+          />
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">School Name *</Label>
