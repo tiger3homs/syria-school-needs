@@ -11,8 +11,7 @@ import { School, Plus, Edit, Eye, Target, MapPin, Users, Phone, Mail, Trash2, Se
 import { Link } from "react-router-dom";
 import { useSchoolData } from "@/hooks/useSchoolData";
 import { EditSchoolProfile } from "@/components/EditSchoolProfile";
-import { SubmitNeedForm } from "@/components/SubmitNeedForm";
-import { EditNeedModal } from "@/components/EditNeedModal";
+import { AddEditNeedModal } from "@/components/AddEditNeedModal";
 import { DeleteNeedDialog } from "@/components/DeleteNeedDialog";
 import { DashboardStats } from "@/components/DashboardStats";
 import { useToast } from "@/hooks/use-toast";
@@ -21,7 +20,7 @@ const Dashboard = () => {
   const { user, signOut } = useAuth();
   const { school, needs, loading, error, updateSchool, createNeed, updateNeed, deleteNeed } = useSchoolData();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
-  const [isSubmittingNeed, setIsSubmittingNeed] = useState(false);
+  const [needModalOpen, setNeedModalOpen] = useState(false);
   const [editingNeed, setEditingNeed] = useState(null);
   const [deletingNeed, setDeletingNeed] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -116,7 +115,7 @@ const Dashboard = () => {
   const handleCreateNeed = async (needData: any) => {
     const success = await createNeed(needData);
     if (success) {
-      setIsSubmittingNeed(false);
+      setNeedModalOpen(false);
     }
     return success;
   };
@@ -149,10 +148,23 @@ const Dashboard = () => {
   };
 
   const handleAddNeed = () => {
-    setIsSubmittingNeed(true);
+    setEditingNeed(null);
+    setNeedModalOpen(true);
   };
 
-  // Filter and sort needs
+  const handleEditNeed = (need: any) => {
+    setEditingNeed(need);
+    setNeedModalOpen(true);
+  };
+
+  const handleNeedModalSubmit = async (needData: any) => {
+    if (editingNeed) {
+      return await handleUpdateNeed(editingNeed.id, needData);
+    } else {
+      return await handleCreateNeed(needData);
+    }
+  };
+
   const categories = [...new Set(needs.map(need => need.category))];
   
   const filteredAndSortedNeeds = needs
@@ -244,7 +256,7 @@ const Dashboard = () => {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          onClick={() => setEditingNeed(need)}
+                          onClick={() => handleEditNeed(need)}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
@@ -265,180 +277,173 @@ const Dashboard = () => {
 
           {/* Needs Tab */}
           <TabsContent value="needs" className="space-y-6">
-            {isSubmittingNeed ? (
-              <SubmitNeedForm
-                onSubmit={handleCreateNeed}
-                onCancel={() => setIsSubmittingNeed(false)}
-              />
-            ) : (
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <CardTitle>All School Needs</CardTitle>
-                      <CardDescription>Manage and track all submitted needs</CardDescription>
-                    </div>
-                    <Button onClick={handleAddNeed}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add New Need
-                    </Button>
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>All School Needs</CardTitle>
+                    <CardDescription>Manage and track all submitted needs</CardDescription>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  {/* Filters */}
-                  <div className="mb-6 space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1">
-                        <div className="relative">
-                          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                          <Input
-                            placeholder="Search needs..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="pl-10"
-                          />
-                        </div>
+                  <Button onClick={handleAddNeed}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add New Need
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Filters */}
+                <div className="mb-6 space-y-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          placeholder="Search needs..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-10"
+                        />
                       </div>
-                      <Filter className="h-4 w-4 text-gray-400" />
                     </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Statuses</SelectItem>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="in_progress">In Progress</SelectItem>
-                          <SelectItem value="fulfilled">Fulfilled</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Priority" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Priorities</SelectItem>
-                          <SelectItem value="high">High</SelectItem>
-                          <SelectItem value="medium">Medium</SelectItem>
-                          <SelectItem value="low">Low</SelectItem>
-                        </SelectContent>
-                      </Select>
-
-                      <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Categories</SelectItem>
-                          {categories.map((category) => (
-                            <SelectItem key={category} value={category}>
-                              {category}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      <Select value={sortBy} onValueChange={setSortBy}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sort by" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="newest">Newest First</SelectItem>
-                          <SelectItem value="oldest">Oldest First</SelectItem>
-                          <SelectItem value="priority">Priority</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <Filter className="h-4 w-4 text-gray-400" />
                   </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="pending">Pending</SelectItem>
+                        <SelectItem value="in_progress">In Progress</SelectItem>
+                        <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                      </SelectContent>
+                    </Select>
 
-                  {/* Needs Table */}
-                  <div className="border rounded-lg">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead>Need</TableHead>
-                          <TableHead>Category</TableHead>
-                          <TableHead>Priority</TableHead>
-                          <TableHead>Status</TableHead>
-                          <TableHead>Quantity</TableHead>
-                          <TableHead>Created</TableHead>
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {filteredAndSortedNeeds.map((need) => (
-                          <TableRow key={need.id}>
-                            <TableCell>
-                              <div className="flex items-center gap-3">
-                                {need.image_url && (
-                                  <img
-                                    src={need.image_url}
-                                    alt={need.title}
-                                    className="w-10 h-10 object-cover rounded"
-                                  />
-                                )}
-                                <div>
-                                  <div className="font-medium">{need.title}</div>
-                                  {need.description && (
-                                    <div className="text-sm text-gray-500 truncate max-w-xs">
-                                      {need.description}
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </TableCell>
-                            <TableCell>{need.category}</TableCell>
-                            <TableCell>
-                              <Badge className={getPriorityColor(need.priority)}>
-                                {formatPriority(need.priority)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>
-                              <Badge className={getStatusColor(need.status)}>
-                                {formatStatus(need.status)}
-                              </Badge>
-                            </TableCell>
-                            <TableCell>{need.quantity}</TableCell>
-                            <TableCell>
-                              {new Date(need.created_at).toLocaleDateString()}
-                            </TableCell>
-                            <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setEditingNeed(need)}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => setDeletingNeed(need)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
+                    <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Priority" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Priorities</SelectItem>
+                        <SelectItem value="high">High</SelectItem>
+                        <SelectItem value="medium">Medium</SelectItem>
+                        <SelectItem value="low">Low</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Categories</SelectItem>
+                        {categories.map((category) => (
+                          <SelectItem key={category} value={category}>
+                            {category}
+                          </SelectItem>
                         ))}
-                      </TableBody>
-                    </Table>
-                    
-                    {filteredAndSortedNeeds.length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                        <p>No needs found</p>
-                        <p className="text-sm">Try adjusting your filters or add a new need</p>
-                      </div>
-                    )}
+                      </SelectContent>
+                    </Select>
+
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="newest">Newest First</SelectItem>
+                        <SelectItem value="oldest">Oldest First</SelectItem>
+                        <SelectItem value="priority">Priority</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </CardContent>
-              </Card>
-            )}
+                </div>
+
+                {/* Needs Table */}
+                <div className="border rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Need</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Priority</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Quantity</TableHead>
+                        <TableHead>Created</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredAndSortedNeeds.map((need) => (
+                        <TableRow key={need.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              {need.image_url && (
+                                <img
+                                  src={need.image_url}
+                                  alt={need.title}
+                                  className="w-10 h-10 object-cover rounded"
+                                />
+                              )}
+                              <div>
+                                <div className="font-medium">{need.title}</div>
+                                {need.description && (
+                                  <div className="text-sm text-gray-500 truncate max-w-xs">
+                                    {need.description}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{need.category}</TableCell>
+                          <TableCell>
+                            <Badge className={getPriorityColor(need.priority)}>
+                              {formatPriority(need.priority)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge className={getStatusColor(need.status)}>
+                              {formatStatus(need.status)}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{need.quantity}</TableCell>
+                          <TableCell>
+                            {new Date(need.created_at).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handleEditNeed(need)}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => setDeletingNeed(need)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  
+                  {filteredAndSortedNeeds.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No needs found</p>
+                      <p className="text-sm">Try adjusting your filters or add a new need</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Profile Tab */}
@@ -524,27 +529,24 @@ const Dashboard = () => {
         </Tabs>
       </div>
 
-      {/* Modals */}
-      <EditNeedModal
+      {/* Unified Add/Edit Need Modal */}
+      <AddEditNeedModal
         need={editingNeed}
-        isOpen={!!editingNeed}
-        onClose={() => setEditingNeed(null)}
-        onUpdate={handleUpdateNeed}
+        isOpen={needModalOpen}
+        onClose={() => {
+          setNeedModalOpen(false);
+          setEditingNeed(null);
+        }}
+        onSubmit={handleNeedModalSubmit}
       />
 
+      {/* Delete Need Dialog */}
       <DeleteNeedDialog
         isOpen={!!deletingNeed}
         onClose={() => setDeletingNeed(null)}
         onConfirm={handleDeleteNeed}
         needTitle={deletingNeed?.title || ''}
       />
-
-      {isSubmittingNeed && (
-        <SubmitNeedForm
-          onSubmit={handleCreateNeed}
-          onCancel={() => setIsSubmittingNeed(false)}
-        />
-      )}
     </div>
   );
 };

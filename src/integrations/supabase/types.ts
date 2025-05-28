@@ -95,6 +95,7 @@ export type Database = {
           description: string | null
           governorate: string | null
           id: string
+          image_url: string | null
           name: string
           number_of_students: number
           principal_id: string | null
@@ -108,6 +109,7 @@ export type Database = {
           description?: string | null
           governorate?: string | null
           id?: string
+          image_url?: string | null
           name: string
           number_of_students: number
           principal_id?: string | null
@@ -121,6 +123,7 @@ export type Database = {
           description?: string | null
           governorate?: string | null
           id?: string
+          image_url?: string | null
           name?: string
           number_of_students?: number
           principal_id?: string | null
