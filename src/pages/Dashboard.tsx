@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -149,6 +148,10 @@ const Dashboard = () => {
     }
   };
 
+  const handleAddNeed = () => {
+    setIsSubmittingNeed(true);
+  };
+
   // Filter and sort needs
   const categories = [...new Set(needs.map(need => need.category))];
   
@@ -203,7 +206,7 @@ const Dashboard = () => {
                     <CardTitle>Recent Needs</CardTitle>
                     <CardDescription>Your latest submitted needs and their status</CardDescription>
                   </div>
-                  <Button onClick={() => setIsSubmittingNeed(true)}>
+                  <Button onClick={handleAddNeed}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Need
                   </Button>
@@ -275,7 +278,7 @@ const Dashboard = () => {
                       <CardTitle>All School Needs</CardTitle>
                       <CardDescription>Manage and track all submitted needs</CardDescription>
                     </div>
-                    <Button onClick={() => setIsSubmittingNeed(true)}>
+                    <Button onClick={handleAddNeed}>
                       <Plus className="h-4 w-4 mr-2" />
                       Add New Need
                     </Button>

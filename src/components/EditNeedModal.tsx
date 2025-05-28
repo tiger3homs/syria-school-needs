@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -28,14 +29,13 @@ interface EditNeedModalProps {
 }
 
 const CATEGORIES = [
-  'Books & Educational Materials',
-  'Technology & Equipment',
-  'Furniture & Fixtures',
-  'Sports & Recreation',
-  'Art & Music Supplies',
-  'Laboratory Equipment',
-  'Maintenance & Repairs',
-  'Other'
+  'furniture',
+  'equipment',
+  'outdoor',
+  'supplies',
+  'maintenance',
+  'technology',
+  'other'
 ];
 
 const PRIORITIES = ['low', 'medium', 'high'];
@@ -106,6 +106,10 @@ export const EditNeedModal = ({ need, isOpen, onClose, onUpdate }: EditNeedModal
     return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const formatCategory = (category: string) => {
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -152,7 +156,7 @@ export const EditNeedModal = ({ need, isOpen, onClose, onUpdate }: EditNeedModal
                 <SelectContent>
                   {CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
-                      {category}
+                      {formatCategory(category)}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -57,7 +57,12 @@ export const useSchoolData = () => {
       }
 
       if (schoolData) {
-        setSchool(schoolData as School);
+        // Ensure image_url is included, defaulting to null if not present
+        const completeSchoolData: School = {
+          ...schoolData,
+          image_url: schoolData.image_url || null
+        };
+        setSchool(completeSchoolData);
 
         // Fetch needs data if school exists
         const { data: needsData, error: needsError } = await supabase
