@@ -57,10 +57,17 @@ export const useSchoolData = () => {
       }
 
       if (schoolData) {
-        // Ensure image_url is included, defaulting to null if not present
+        // Create a complete School object with image_url defaulting to null
         const completeSchoolData: School = {
-          ...schoolData,
-          image_url: schoolData.image_url || null
+          id: schoolData.id,
+          name: schoolData.name,
+          address: schoolData.address,
+          governorate: schoolData.governorate,
+          number_of_students: schoolData.number_of_students,
+          contact_phone: schoolData.contact_phone,
+          contact_email: schoolData.contact_email,
+          description: schoolData.description,
+          image_url: null // Default to null since it's not in the database yet
         };
         setSchool(completeSchoolData);
 
