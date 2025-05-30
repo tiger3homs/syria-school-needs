@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Check, X, Eye, School, Phone, Mail, MapPin, Users } from "lucide-react";
+import { Check, X, Eye, School, Phone, Mail, MapPin, Users, Clock } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -118,72 +118,100 @@ const SchoolModerationPanel = () => {
             <p>No schools pending approval</p>
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>School Name</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Students</TableHead>
-                <TableHead>Submitted</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {pendingSchools.map((school) => (
-                <TableRow key={school.id}>
-                  <TableCell>
-                    <div>
-                      <div className="font-medium">{school.name}</div>
-                      {school.contact_email && (
-                        <div className="text-sm text-gray-500 flex items-center mt-1">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {school.contact_email}
+          <div className="space-y-4">
+            {pendingSchools.map((school) => (
+              <Card key={school.id} className="border border-yellow-200 bg-yellow-50">
+                <CardContent className="pt-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-2">
+                        <School className="h-5 w-5 text-blue-600 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-900">{school.name}</h3>
+                        <Badge variant="outline" className="ml-2 bg-yellow-100 text-yellow-800">
+                          Pending Review
+                        </Badge>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center text-sm text-gray-600">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            {school.address}
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Users className="h-4 w-4 mr-2" />
+                            {school.number_of_students} students
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Clock className="h-4 w-4 mr-2" />
+                            Submitted {new Date(school.created_at).toLocaleDateString()}
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          {school.contact_email && (
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Mail className="h-4 w-4 mr-2" />
+                              {school.contact_email}
+                            </div>
+                          )}
+                          {school.contact_phone && (
+                            <div className="flex items-center text-sm text-gray-600">
+                              <Phone className="h-4 w-4 mr-2" />
+                              {school.contact_phone}
+                            </div>
+                          )}
+                          {school.governorate && (
+                            <div className="text-sm text-gray-600">
+                              <strong>Governorate:</strong> {school.governorate}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {school.description && (
+                        <div className="mb-4">
+                          <h4 className="text-sm font-medium text-gray-700 mb-1">Description:</h4>
+                          <p className="text-sm text-gray-600">{school.description}</p>
                         </div>
                       )}
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center text-sm">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {school.governorate || 'Unknown'}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center text-sm">
-                      <Users className="h-3 w-3 mr-1" />
-                      {school.number_of_students}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="text-sm text-gray-500">
-                      {new Date(school.created_at).toLocaleDateString()}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSelectedSchool(school)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-md">
-                          <DialogHeader>
-                            <DialogTitle>{school.name}</DialogTitle>
-                            <DialogDescription>School details and information</DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
+                  </div>
+                  
+                  <div className="flex justify-between items-center pt-4 border-t">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedSchool(school)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-2xl">
+                        <DialogHeader>
+                          <DialogTitle>{school.name}</DialogTitle>
+                          <DialogDescription>School registration details</DialogDescription>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-sm font-medium">School Name</label>
+                              <p className="text-sm text-gray-600">{school.name}</p>
+                            </div>
+                            <div>
+                              <label className="text-sm font-medium">Students</label>
+                              <p className="text-sm text-gray-600">{school.number_of_students}</p>
+                            </div>
                             <div>
                               <label className="text-sm font-medium">Address</label>
                               <p className="text-sm text-gray-600">{school.address}</p>
                             </div>
                             <div>
-                              <label className="text-sm font-medium">Number of Students</label>
-                              <p className="text-sm text-gray-600">{school.number_of_students}</p>
+                              <label className="text-sm font-medium">Governorate</label>
+                              <p className="text-sm text-gray-600">{school.governorate}</p>
                             </div>
                             {school.contact_phone && (
                               <div>
@@ -191,52 +219,63 @@ const SchoolModerationPanel = () => {
                                 <p className="text-sm text-gray-600">{school.contact_phone}</p>
                               </div>
                             )}
-                            {school.description && (
+                            {school.contact_email && (
                               <div>
-                                <label className="text-sm font-medium">Description</label>
-                                <p className="text-sm text-gray-600">{school.description}</p>
+                                <label className="text-sm font-medium">Contact Email</label>
+                                <p className="text-sm text-gray-600">{school.contact_email}</p>
                               </div>
                             )}
-                            <div className="flex space-x-2 pt-4">
-                              <Button
-                                onClick={() => updateSchoolStatus(school.id, 'approved')}
-                                className="flex-1"
-                              >
-                                <Check className="h-4 w-4 mr-2" />
-                                Approve
-                              </Button>
-                              <Button
-                                variant="destructive"
-                                onClick={() => updateSchoolStatus(school.id, 'rejected')}
-                                className="flex-1"
-                              >
-                                <X className="h-4 w-4 mr-2" />
-                                Reject
-                              </Button>
-                            </div>
                           </div>
-                        </DialogContent>
-                      </Dialog>
+                          
+                          {school.description && (
+                            <div>
+                              <label className="text-sm font-medium">Description</label>
+                              <p className="text-sm text-gray-600">{school.description}</p>
+                            </div>
+                          )}
+                          
+                          <div className="flex space-x-2 pt-4">
+                            <Button
+                              onClick={() => updateSchoolStatus(school.id, 'approved')}
+                              className="flex-1 bg-green-600 hover:bg-green-700"
+                            >
+                              <Check className="h-4 w-4 mr-2" />
+                              Approve School
+                            </Button>
+                            <Button
+                              variant="destructive"
+                              onClick={() => updateSchoolStatus(school.id, 'rejected')}
+                              className="flex-1"
+                            >
+                              <X className="h-4 w-4 mr-2" />
+                              Reject School
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                    
+                    <div className="flex space-x-2">
                       <Button
-                        variant="default"
-                        size="sm"
                         onClick={() => updateSchoolStatus(school.id, 'approved')}
+                        className="bg-green-600 hover:bg-green-700"
                       >
-                        <Check className="h-4 w-4" />
+                        <Check className="h-4 w-4 mr-2" />
+                        Approve
                       </Button>
                       <Button
                         variant="destructive"
-                        size="sm"
                         onClick={() => updateSchoolStatus(school.id, 'rejected')}
                       >
-                        <X className="h-4 w-4" />
+                        <X className="h-4 w-4 mr-2" />
+                        Reject
                       </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
       </CardContent>
     </Card>

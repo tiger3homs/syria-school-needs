@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Shield, Search, Filter, LogOut, ArrowUpDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Search, Filter, ArrowUpDown, CheckCircle, XCircle, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -21,21 +22,28 @@ interface Need {
   quantity: number;
   priority: string;
   status: string;
+  image_url?: string;
+  created_at: string;
   school: {
     name: string;
+    governorate: string;
   };
 }
 
 const AdminNeedsComponent = () => {
   const [needs, setNeeds] = useState<Need[]>([]);
   const [filteredNeeds, setFilteredNeeds] = useState<Need[]>([]);
+  const [selectedNeeds, setSelectedNeeds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
-  const [sortField, setSortField] = useState<keyof Need | null>(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [filters, setFilters] = useState({
+    category: "all",
+    status: "all",
+    priority: "all",
+    governorate: "all"
+  });
+  const [sortField, setSortField] = useState<keyof Need | 'school.name'>('created_at');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { toast } = useToast();
 
   const fetchNeeds = async () => {
@@ -50,13 +58,14 @@ const AdminNeedsComponent = () => {
           quantity,
           priority,
           status,
-          school:schools!inner(name)
+          image_url,
+          created_at,
+          school:schools!inner(name, governorate)
         `)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       
-      // Transform the data to match our Need interface
       const transformedData: Need[] = (data || []).map((item: any) => ({
         id: item.id,
         title: item.title,
@@ -65,8 +74,11 @@ const AdminNeedsComponent = () => {
         quantity: item.quantity,
         priority: item.priority,
         status: item.status,
+        image_url: item.image_url,
+        created_at: item.created_at,
         school: {
-          name: Array.isArray(item.school) ? item.school[0]?.name || 'Unknown' : item.school?.name || 'Unknown'
+          name: Array.isArray(item.school) ? item.school[0]?.name || 'Unknown' : item.school?.name || 'Unknown',
+          governorate: Array.isArray(item.school) ? item.school[0]?.governorate || 'Unknown' : item.school?.governorate || 'Unknown'
         }
       }));
       
@@ -82,31 +94,32 @@ const AdminNeedsComponent = () => {
     }
   };
 
-  // Effect to fetch needs on component mount
   useEffect(() => {
     fetchNeeds();
   }, []);
 
-  // Effect to filter and sort needs whenever needs data or filter/sort criteria change
   useEffect(() => {
     let filtered = needs.filter(need => {
       const matchesSearch = need.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            need.school.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = categoryFilter === "all" || need.category === categoryFilter;
-      const matchesStatus = statusFilter === "all" || need.status === statusFilter;
-      const matchesPriority = priorityFilter === "all" || need.priority === priorityFilter;
+      const matchesCategory = filters.category === "all" || need.category === filters.category;
+      const matchesStatus = filters.status === "all" || need.status === filters.status;
+      const matchesPriority = filters.priority === "all" || need.priority === filters.priority;
+      const matchesGovernorate = filters.governorate === "all" || need.school.governorate === filters.governorate;
       
-      return matchesSearch && matchesCategory && matchesStatus && matchesPriority;
+      return matchesSearch && matchesCategory && matchesStatus && matchesPriority && matchesGovernorate;
     });
 
     if (sortField) {
       filtered.sort((a, b) => {
-        let aValue: any = a[sortField];
-        let bValue: any = b[sortField];
+        let aValue: any, bValue: any;
         
-        if (sortField === 'school') {
+        if (sortField === 'school.name') {
           aValue = a.school.name;
           bValue = b.school.name;
+        } else {
+          aValue = a[sortField as keyof Need];
+          bValue = b[sortField as keyof Need];
         }
         
         if (typeof aValue === 'string' && typeof bValue === 'string') {
@@ -121,9 +134,9 @@ const AdminNeedsComponent = () => {
     }
 
     setFilteredNeeds(filtered);
-  }, [needs, searchTerm, categoryFilter, statusFilter, priorityFilter, sortField, sortDirection]); // Dependencies
+  }, [needs, searchTerm, filters, sortField, sortDirection]);
 
-  const handleSort = (field: keyof Need) => {
+  const handleSort = (field: keyof Need | 'school.name') => {
     if (sortField === field) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -160,6 +173,59 @@ const AdminNeedsComponent = () => {
     }
   };
 
+  const handleBulkAction = async (action: 'fulfill' | 'pending' | 'delete') => {
+    if (selectedNeeds.length === 0) {
+      toast({
+        title: "No items selected",
+        description: "Please select items to perform bulk action",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      if (action === 'delete') {
+        const { error } = await supabaseAdmin
+          .from('needs')
+          .delete()
+          .in('id', selectedNeeds);
+
+        if (error) throw error;
+        
+        setNeeds(needs.filter(need => !selectedNeeds.includes(need.id)));
+        toast({
+          title: "Items deleted",
+          description: `${selectedNeeds.length} items deleted successfully`,
+        });
+      } else {
+        const newStatus = action === 'fulfill' ? 'fulfilled' : 'pending';
+        const { error } = await supabaseAdmin
+          .from('needs')
+          .update({ status: newStatus })
+          .in('id', selectedNeeds);
+
+        if (error) throw error;
+
+        setNeeds(needs.map(need => 
+          selectedNeeds.includes(need.id) ? { ...need, status: newStatus } : need
+        ));
+
+        toast({
+          title: "Status updated",
+          description: `${selectedNeeds.length} items marked as ${newStatus}`,
+        });
+      }
+      
+      setSelectedNeeds([]);
+    } catch (error: any) {
+      toast({
+        title: "Error performing bulk action",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
@@ -175,6 +241,8 @@ const AdminNeedsComponent = () => {
       : 'bg-orange-100 text-orange-800';
   };
 
+  const uniqueGovernorates = [...new Set(needs.map(need => need.school.governorate))].filter(Boolean);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -189,14 +257,13 @@ const AdminNeedsComponent = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <AdminHeader />
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">Needs Management</h2>
-          <p className="text-gray-600">View and manage all school needs submitted by principals</p>
+          <h2 className="text-3xl font-bold text-gray-900">Needs Management</h2>
+          <p className="text-gray-600 mt-2">Review and manage school needs submitted by principals</p>
         </div>
 
-        {/* Filters */}
+        {/* Filters and Search */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -205,7 +272,7 @@ const AdminNeedsComponent = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
@@ -216,7 +283,7 @@ const AdminNeedsComponent = () => {
                 />
               </div>
               
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+              <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
@@ -229,7 +296,7 @@ const AdminNeedsComponent = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+              <Select value={filters.priority} onValueChange={(value) => setFilters(prev => ({ ...prev, priority: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Priorities" />
                 </SelectTrigger>
@@ -241,7 +308,7 @@ const AdminNeedsComponent = () => {
                 </SelectContent>
               </Select>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <Select value={filters.status} onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}>
                 <SelectTrigger>
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
@@ -252,12 +319,51 @@ const AdminNeedsComponent = () => {
                 </SelectContent>
               </Select>
 
+              <Select value={filters.governorate} onValueChange={(value) => setFilters(prev => ({ ...prev, governorate: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Governorates" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Governorates</SelectItem>
+                  {uniqueGovernorates.map(gov => (
+                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
               <div className="text-sm text-gray-600 flex items-center">
                 Showing {filteredNeeds.length} of {needs.length} needs
               </div>
             </div>
           </CardContent>
         </Card>
+
+        {/* Bulk Actions */}
+        {selectedNeeds.length > 0 && (
+          <Card className="mb-6 border-blue-200 bg-blue-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="text-sm font-medium text-blue-900">
+                  {selectedNeeds.length} item(s) selected
+                </div>
+                <div className="flex space-x-2">
+                  <Button size="sm" onClick={() => handleBulkAction('fulfill')}>
+                    <CheckCircle className="h-4 w-4 mr-1" />
+                    Mark as Fulfilled
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleBulkAction('pending')}>
+                    <XCircle className="h-4 w-4 mr-1" />
+                    Mark as Pending
+                  </Button>
+                  <Button size="sm" variant="destructive" onClick={() => handleBulkAction('delete')}>
+                    <Trash2 className="h-4 w-4 mr-1" />
+                    Delete
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Needs Table */}
         <Card>
@@ -266,9 +372,21 @@ const AdminNeedsComponent = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={selectedNeeds.length === filteredNeeds.length && filteredNeeds.length > 0}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedNeeds(filteredNeeds.map(need => need.id));
+                          } else {
+                            setSelectedNeeds([]);
+                          }
+                        }}
+                      />
+                    </TableHead>
                     <TableHead 
                       className="cursor-pointer hover:bg-gray-50"
-                      onClick={() => handleSort('school' as keyof Need)}
+                      onClick={() => handleSort('school.name')}
                     >
                       <div className="flex items-center">
                         School Name
@@ -285,6 +403,7 @@ const AdminNeedsComponent = () => {
                       </div>
                     </TableHead>
                     <TableHead>Category</TableHead>
+                    <TableHead>Governorate</TableHead>
                     <TableHead>Quantity</TableHead>
                     <TableHead 
                       className="cursor-pointer hover:bg-gray-50"
@@ -302,6 +421,18 @@ const AdminNeedsComponent = () => {
                 <TableBody>
                   {filteredNeeds.map((need) => (
                     <TableRow key={need.id}>
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedNeeds.includes(need.id)}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedNeeds([...selectedNeeds, need.id]);
+                            } else {
+                              setSelectedNeeds(selectedNeeds.filter(id => id !== need.id));
+                            }
+                          }}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{need.school.name}</TableCell>
                       <TableCell>
                         <div>
@@ -317,6 +448,9 @@ const AdminNeedsComponent = () => {
                         <Badge variant="outline" className="capitalize">
                           {need.category.replace('_', ' ')}
                         </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">{need.school.governorate}</div>
                       </TableCell>
                       <TableCell>{need.quantity}</TableCell>
                       <TableCell>

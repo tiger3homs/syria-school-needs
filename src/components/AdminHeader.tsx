@@ -1,14 +1,15 @@
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Shield, LogOut, Bell } from "lucide-react";
+import { Shield, LogOut, Bell, Home, Users, FileText, School } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const AdminHeader = () => {
   const { signOut, user } = useAuth();
+  const location = useLocation();
   const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const fetchUnreadCount = async () => {
@@ -52,21 +53,51 @@ const AdminHeader = () => {
     };
   }, [user]);
 
+  const navigationItems = [
+    { path: '/admin/dashboard', label: 'Dashboard', icon: Shield },
+    { path: '/admin/needs', label: 'Needs', icon: FileText },
+    { path: '/admin/schools', label: 'Schools', icon: School },
+    { path: '/', label: 'Home', icon: Home },
+  ];
+
+  const getLinkClass = (path: string) => {
+    const isActive = location.pathname === path;
+    return `flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+      isActive 
+        ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+    }`;
+  };
+
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-white shadow-sm border-b sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center">
-            <Shield className="h-8 w-8 text-blue-600" />
-            <h1 className="ml-2 text-xl font-bold text-gray-900">Admin Panel</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            <nav className="hidden md:flex space-x-6">
-              <Link to="/admin/dashboard" className="text-blue-600 font-medium">Dashboard</Link>
-              <Link to="/admin/needs" className="text-gray-600 hover:text-gray-900">Needs</Link>
-              <Link to="/admin/schools" className="text-gray-600 hover:text-gray-900">Schools</Link>
-              <Link to="/" className="text-gray-600 hover:text-gray-900">Home</Link>
+          <div className="flex items-center space-x-8">
+            <div className="flex items-center">
+              <Shield className="h-8 w-8 text-blue-600" />
+              <h1 className="ml-3 text-xl font-bold text-gray-900">Admin Panel</h1>
+            </div>
+            
+            {/* Navigation */}
+            <nav className="hidden md:flex space-x-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link key={item.path} to={item.path} className={getLinkClass(item.path)}>
+                    <Icon className="h-4 w-4 mr-2" />
+                    {item.label}
+                  </Link>
+                );
+              })}
             </nav>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            {/* User info */}
+            <div className="hidden sm:block text-sm text-gray-600">
+              Admin: {user?.email}
+            </div>
             
             {/* Notification Indicator */}
             <div className="relative">
@@ -86,6 +117,21 @@ const AdminHeader = () => {
               Logout
             </Button>
           </div>
+        </div>
+        
+        {/* Mobile Navigation */}
+        <div className="md:hidden pb-4">
+          <nav className="flex space-x-2 overflow-x-auto">
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link key={item.path} to={item.path} className={getLinkClass(item.path)}>
+                  <Icon className="h-4 w-4 mr-1" />
+                  <span className="text-xs">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </div>
     </header>
