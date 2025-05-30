@@ -28,58 +28,10 @@ const Index = () => {
               </Button>
             </Link>
             <Link to="/needs">
-              <Button size="lg" variant="outline" className="border-2 border-gold text-gold hover:bg-gold hover:text-primary rounded-full shadow-xl px-10 py-4 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">
+              <Button size="lg" variant="outline" className="border-2 border-gold text-primary hover:bg-gold hover:text-white rounded-full shadow-xl px-10 py-4 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105">
                 View School Needs
               </Button>
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Mission & Values Section - Structured and authoritative */}
-      <section className="py-20 bg-light">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-primary mb-12">Our Mission & Values</h2>
-          <p className="text-xl text-gray-800 max-w-4xl mx-auto mb-16">
-            The Ministry of Education is committed to fostering a resilient and educated generation. Our efforts are rooted in core values that guide every step of the rebuilding process.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-primary">
-              <ShieldCheck className="h-16 w-16 text-gold mb-6" />
-              <h3 className="text-2xl font-semibold text-primary mb-3">Transparency</h3>
-              <p className="text-gray-700 leading-relaxed">Ensuring every resource and donation is managed with utmost integrity and accountability.</p>
-            </div>
-            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-gold">
-              <GraduationCap className="h-16 w-16 text-primary mb-6" />
-              <h3 className="text-2xl font-semibold text-primary mb-3">Education for All</h3>
-              <p className="text-gray-700 leading-relaxed">Providing equitable access to quality education for every child, regardless of circumstance.</p>
-            </div>
-            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-primary">
-              <Building2 className="h-16 w-16 text-gold mb-6" />
-              <h3 className="text-2xl font-semibold text-primary mb-3">Sustainable Infrastructure</h3>
-              <p className="text-gray-700 leading-relaxed">Building durable and modern learning environments that stand the test of time.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Progress Overview Section - Clear and impactful statistics */}
-      <section className="py-20 bg-primary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-12">Our Progress at a Glance</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 bg-gold text-primary rounded-2xl shadow-xl">
-              <h3 className="text-5xl font-extrabold mb-2">500+</h3>
-              <p className="text-xl font-semibold">Schools Registered</p>
-            </div>
-            <div className="p-8 bg-light text-primary rounded-2xl shadow-xl">
-              <h3 className="text-5xl font-extrabold mb-2">150+</h3>
-              <p className="text-xl font-semibold">Schools Rebuilt</p>
-            </div>
-            <div className="p-8 bg-gold text-primary rounded-2xl shadow-xl">
-              <h3 className="text-5xl font-extrabold mb-2">1,200+</h3>
-              <p className="text-xl font-semibold">Needs Fulfilled</p>
-            </div>
           </div>
         </div>
       </section>
@@ -134,6 +86,54 @@ const Index = () => {
                 </CardDescription>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Progress Overview Section - Clear and impactful statistics */}
+      <section className="py-20 bg-primary text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold mb-12">Our Progress at a Glance</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 bg-primary text-white rounded-2xl shadow-xl">
+              <h3 className="text-5xl font-extrabold mb-2">500+</h3>
+              <p className="text-xl font-semibold">Schools Registered</p>
+            </div>
+            <div className="p-8 bg-light text-primary rounded-2xl shadow-xl">
+              <h3 className="text-5xl font-extrabold mb-2">150+</h3>
+              <p className="text-xl font-semibold">Schools Rebuilt</p>
+            </div>
+            <div className="p-8 bg-primary text-white rounded-2xl shadow-xl">
+              <h3 className="text-5xl font-extrabold mb-2">1,200+</h3>
+              <p className="text-xl font-semibold">Needs Fulfilled</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Mission & Values Section - Structured and authoritative */}
+      <section className="py-20 bg-light">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-4xl font-bold text-primary mb-12">Our Mission & Values</h2>
+          <p className="text-xl text-gray-800 max-w-4xl mx-auto mb-16">
+            The Ministry of Education is committed to fostering a resilient and educated generation. Our efforts are rooted in core values that guide every step of the rebuilding process.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-primary">
+              <ShieldCheck className="h-16 w-16 text-gold mb-6" />
+              <h3 className="text-2xl font-semibold text-primary mb-3">Transparency</h3>
+              <p className="text-gray-700 leading-relaxed">Ensuring every resource and donation is managed with utmost integrity and accountability.</p>
+            </div>
+            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-gold">
+              <GraduationCap className="h-16 w-16 text-primary mb-6" />
+              <h3 className="text-2xl font-semibold text-primary mb-3">Education for All</h3>
+              <p className="text-gray-700 leading-relaxed">Providing equitable access to quality education for every child, regardless of circumstance.</p>
+            </div>
+            <div className="p-8 bg-white rounded-2xl shadow-lg flex flex-col items-center text-center border-t-4 border-primary">
+              <Building2 className="h-16 w-16 text-gold mb-6" />
+              <h3 className="text-2xl font-semibold text-primary mb-3">Sustainable Infrastructure</h3>
+              <p className="text-gray-700 leading-relaxed">Building durable and modern learning environments that stand the test of time.</p>
+            </div>
           </div>
         </div>
       </section>
