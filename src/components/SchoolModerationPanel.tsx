@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Check, X, Eye, School, Phone, Mail, MapPin, Users, Clock } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { useToast } from "@/hooks/use-toast";
@@ -14,6 +13,7 @@ interface PendingSchool {
   name: string;
   address: string;
   governorate: string;
+  education_level?: string;
   number_of_students: number;
   contact_phone?: string;
   contact_email?: string;
@@ -27,6 +27,7 @@ const SchoolModerationPanel = () => {
   const [pendingSchools, setPendingSchools] = useState<PendingSchool[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSchool, setSelectedSchool] = useState<PendingSchool | null>(null);
+  const [updatingSchool, setUpdatingSchool] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchPendingSchools = async () => {
@@ -40,6 +41,7 @@ const SchoolModerationPanel = () => {
       if (error) throw error;
       setPendingSchools(data || []);
     } catch (error: any) {
+      console.error('Error fetching pending schools:', error);
       toast({
         title: "Error fetching pending schools",
         description: error.message,
@@ -51,14 +53,23 @@ const SchoolModerationPanel = () => {
   };
 
   const updateSchoolStatus = async (schoolId: string, status: 'approved' | 'rejected') => {
+    setUpdatingSchool(schoolId);
+    
     try {
       const { error } = await supabaseAdmin
         .from('schools')
-        .update({ status })
+        .update({ 
+          status,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', schoolId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase error:', error);
+        throw error;
+      }
 
+      // Optimistically update the UI
       setPendingSchools(prev => prev.filter(school => school.id !== schoolId));
       
       toast({
@@ -66,12 +77,26 @@ const SchoolModerationPanel = () => {
         description: `The school has been ${status} successfully.`,
         variant: status === 'approved' ? 'default' : 'destructive',
       });
+
+      console.log(`School ${schoolId} ${status} successfully`);
     } catch (error: any) {
+      console.error('Error updating school status:', error);
       toast({
         title: "Error updating school status",
-        description: error.message,
+        description: error.message || 'An unexpected error occurred',
         variant: "destructive",
       });
+    } finally {
+      setUpdatingSchool(null);
+    }
+  };
+
+  const getEducationLevelLabel = (level?: string) => {
+    switch (level) {
+      case 'primary': return 'Primary School';
+      case 'middle': return 'Middle School';
+      case 'high_school': return 'High School';
+      default: return 'Not specified';
     }
   };
 
@@ -166,6 +191,9 @@ const SchoolModerationPanel = () => {
                               <strong>Governorate:</strong> {school.governorate}
                             </div>
                           )}
+                          <div className="text-sm text-gray-600">
+                            <strong>Education Level:</strong> {getEducationLevelLabel(school.education_level)}
+                          </div>
                         </div>
                       </div>
 
@@ -202,16 +230,20 @@ const SchoolModerationPanel = () => {
                               <p className="text-sm text-gray-600">{school.name}</p>
                             </div>
                             <div>
+                              <label className="text-sm font-medium">Education Level</label>
+                              <p className="text-sm text-gray-600">{getEducationLevelLabel(school.education_level)}</p>
+                            </div>
+                            <div>
                               <label className="text-sm font-medium">Students</label>
                               <p className="text-sm text-gray-600">{school.number_of_students}</p>
                             </div>
                             <div>
-                              <label className="text-sm font-medium">Address</label>
-                              <p className="text-sm text-gray-600">{school.address}</p>
-                            </div>
-                            <div>
                               <label className="text-sm font-medium">Governorate</label>
                               <p className="text-sm text-gray-600">{school.governorate}</p>
+                            </div>
+                            <div className="col-span-2">
+                              <label className="text-sm font-medium">Address</label>
+                              <p className="text-sm text-gray-600">{school.address}</p>
                             </div>
                             {school.contact_phone && (
                               <div>
@@ -237,18 +269,20 @@ const SchoolModerationPanel = () => {
                           <div className="flex space-x-2 pt-4">
                             <Button
                               onClick={() => updateSchoolStatus(school.id, 'approved')}
+                              disabled={updatingSchool === school.id}
                               className="flex-1 bg-green-600 hover:bg-green-700"
                             >
                               <Check className="h-4 w-4 mr-2" />
-                              Approve School
+                              {updatingSchool === school.id ? 'Approving...' : 'Approve School'}
                             </Button>
                             <Button
                               variant="destructive"
                               onClick={() => updateSchoolStatus(school.id, 'rejected')}
+                              disabled={updatingSchool === school.id}
                               className="flex-1"
                             >
                               <X className="h-4 w-4 mr-2" />
-                              Reject School
+                              {updatingSchool === school.id ? 'Rejecting...' : 'Reject School'}
                             </Button>
                           </div>
                         </div>
@@ -258,17 +292,19 @@ const SchoolModerationPanel = () => {
                     <div className="flex space-x-2">
                       <Button
                         onClick={() => updateSchoolStatus(school.id, 'approved')}
+                        disabled={updatingSchool === school.id}
                         className="bg-green-600 hover:bg-green-700"
                       >
                         <Check className="h-4 w-4 mr-2" />
-                        Approve
+                        {updatingSchool === school.id ? 'Approving...' : 'Approve'}
                       </Button>
                       <Button
                         variant="destructive"
                         onClick={() => updateSchoolStatus(school.id, 'rejected')}
+                        disabled={updatingSchool === school.id}
                       >
                         <X className="h-4 w-4 mr-2" />
-                        Reject
+                        {updatingSchool === school.id ? 'Rejecting...' : 'Reject'}
                       </Button>
                     </div>
                   </div>

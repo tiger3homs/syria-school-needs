@@ -27,6 +27,12 @@ const SYRIAN_GOVERNORATES = [
   "Idlib"
 ];
 
+const EDUCATION_LEVELS = [
+  { value: "primary", label: "Primary School" },
+  { value: "middle", label: "Middle School" },
+  { value: "high_school", label: "High School" }
+];
+
 interface RegisterSchoolModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -42,6 +48,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
     
     // Step 2: Basic Info
     schoolName: "",
+    educationLevel: "",
     numberOfStudents: "",
     principalName: "",
     
@@ -71,7 +78,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
       case 1:
         return !!(formData.governorate && formData.city && formData.address);
       case 2:
-        return !!(formData.schoolName && formData.numberOfStudents && formData.principalName);
+        return !!(formData.schoolName && formData.educationLevel && formData.numberOfStudents && formData.principalName);
       case 3:
         return !!(formData.email && formData.phone && formData.password && formData.confirmPassword);
       default:
@@ -123,6 +130,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         address: `${formData.address}, ${formData.city}, ${formData.governorate}`,
         phone: formData.phone,
         numberOfStudents: formData.numberOfStudents,
+        educationLevel: formData.educationLevel,
         description: formData.description
       });
 
@@ -139,6 +147,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         city: "",
         address: "",
         schoolName: "",
+        educationLevel: "",
         numberOfStudents: "",
         principalName: "",
         email: "",
@@ -208,7 +217,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         return (
           <div className="space-y-4">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold">Basic Information</h3>
+              <h3 className="text-lg font-semibold">School Information</h3>
               <p className="text-sm text-gray-600">Tell us about your school</p>
             </div>
             
@@ -220,6 +229,20 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
                 value={formData.schoolName}
                 onChange={(e) => handleInputChange("schoolName", e.target.value)}
               />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="educationLevel">Education Level *</Label>
+              <Select value={formData.educationLevel} onValueChange={(value) => handleInputChange("educationLevel", value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select education level" />
+                </SelectTrigger>
+                <SelectContent>
+                  {EDUCATION_LEVELS.map((level) => (
+                    <SelectItem key={level.value} value={level.value}>{level.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="space-y-2">

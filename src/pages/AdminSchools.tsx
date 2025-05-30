@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, School, Users, Phone, Mail, MapPin, Eye, CheckCircle, XCircle, Filter } from "lucide-react";
+import { Search, School, Users, Phone, Mail, MapPin, Eye, CheckCircle, XCircle, Filter, GraduationCap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -16,6 +16,7 @@ interface School {
   name: string;
   address: string;
   governorate: string;
+  education_level?: string;
   number_of_students: number;
   contact_phone?: string;
   contact_email?: string;
@@ -37,7 +38,8 @@ const AdminSchoolsComponent = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filters, setFilters] = useState({
     status: "all",
-    governorate: "all"
+    governorate: "all",
+    education_level: "all"
   });
   const { toast } = useToast();
 
@@ -50,6 +52,7 @@ const AdminSchoolsComponent = () => {
           name,
           address,
           governorate,
+          education_level,
           number_of_students,
           contact_phone,
           contact_email,
@@ -89,8 +92,9 @@ const AdminSchoolsComponent = () => {
                            school.governorate.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesStatus = filters.status === "all" || school.status === filters.status;
       const matchesGovernorate = filters.governorate === "all" || school.governorate === filters.governorate;
+      const matchesEducationLevel = filters.education_level === "all" || school.education_level === filters.education_level;
       
-      return matchesSearch && matchesStatus && matchesGovernorate;
+      return matchesSearch && matchesStatus && matchesGovernorate && matchesEducationLevel;
     });
     setFilteredSchools(filtered);
   }, [schools, searchTerm, filters]);
@@ -144,6 +148,25 @@ const AdminSchoolsComponent = () => {
     }
   };
 
+  const getEducationLevelLabel = (level?: string) => {
+    switch (level) {
+      case 'primary': return 'Primary School';
+      case 'middle': return 'Middle School';
+      case 'high_school': return 'High School';
+      default: return 'Not specified';
+    }
+  };
+
+  const getEducationLevelBadge = (level?: string) => {
+    const label = getEducationLevelLabel(level);
+    const colorClass = level === 'primary' ? 'bg-blue-100 text-blue-800' :
+                      level === 'middle' ? 'bg-purple-100 text-purple-800' :
+                      level === 'high_school' ? 'bg-orange-100 text-orange-800' :
+                      'bg-gray-100 text-gray-800';
+    
+    return <Badge className={colorClass}>{label}</Badge>;
+  };
+
   const uniqueGovernorates = [...new Set(schools.map(school => school.governorate))].filter(Boolean);
 
   if (isLoading) {
@@ -175,7 +198,7 @@ const AdminSchoolsComponent = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <div className="relative md:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
@@ -207,6 +230,18 @@ const AdminSchoolsComponent = () => {
                   {uniqueGovernorates.map(gov => (
                     <SelectItem key={gov} value={gov}>{gov}</SelectItem>
                   ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.education_level} onValueChange={(value) => setFilters(prev => ({ ...prev, education_level: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="All Levels" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Education Levels</SelectItem>
+                  <SelectItem value="primary">Primary School</SelectItem>
+                  <SelectItem value="middle">Middle School</SelectItem>
+                  <SelectItem value="high_school">High School</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -245,9 +280,15 @@ const AdminSchoolsComponent = () => {
                 <CardContent className="space-y-4">
                   {/* School Info */}
                   <div className="space-y-2">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Users className="h-4 w-4 mr-2" />
-                      {school.number_of_students} students
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Users className="h-4 w-4 mr-2" />
+                        {school.number_of_students} students
+                      </div>
+                      <div className="flex items-center text-sm">
+                        <GraduationCap className="h-4 w-4 mr-1" />
+                        {getEducationLevelBadge(school.education_level)}
+                      </div>
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <MapPin className="h-4 w-4 mr-2" />

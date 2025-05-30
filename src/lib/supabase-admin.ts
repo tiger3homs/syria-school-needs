@@ -34,10 +34,13 @@ export interface Database {
           principal_id: string;
           name: string;
           address: string;
+          governorate: string;
+          education_level: string;
           number_of_students: number;
           contact_phone?: string;
           contact_email?: string;
           description?: string;
+          status: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -46,10 +49,13 @@ export interface Database {
           principal_id: string;
           name: string;
           address: string;
+          governorate: string;
+          education_level: string;
           number_of_students: number;
           contact_phone?: string;
           contact_email?: string;
           description?: string;
+          status?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -58,10 +64,13 @@ export interface Database {
           principal_id?: string;
           name?: string;
           address?: string;
+          governorate?: string;
+          education_level?: string;
           number_of_students?: number;
           contact_phone?: string;
           contact_email?: string;
           description?: string;
+          status?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -76,6 +85,7 @@ export interface Database {
           quantity: number;
           priority: string;
           status: string;
+          image_url?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -88,6 +98,7 @@ export interface Database {
           quantity: number;
           priority?: string;
           status?: string;
+          image_url?: string;
           created_at?: string;
           updated_at?: string;
         };
@@ -100,6 +111,7 @@ export interface Database {
           quantity?: number;
           priority?: string;
           status?: string;
+          image_url?: string;
           created_at?: string;
           updated_at?: string;
         };

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,6 +8,7 @@ interface School {
   name: string;
   address: string;
   governorate: string | null;
+  education_level: string | null;
   number_of_students: number;
   contact_phone: string | null;
   contact_email: string | null;
@@ -61,12 +63,13 @@ export const useSchoolData = () => {
       }
 
       if (schoolData) {
-        // Create a complete School object with image_url defaulting to null
+        // Create a complete School object with all fields including education_level
         const completeSchoolData: School = {
           id: schoolData.id,
           name: schoolData.name,
           address: schoolData.address,
           governorate: schoolData.governorate,
+          education_level: schoolData.education_level,
           number_of_students: schoolData.number_of_students,
           contact_phone: schoolData.contact_phone,
           contact_email: schoolData.contact_email,

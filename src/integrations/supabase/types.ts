@@ -171,6 +171,7 @@ export type Database = {
           contact_phone: string | null
           created_at: string | null
           description: string | null
+          education_level: string | null
           governorate: string | null
           id: string
           image_url: string | null
@@ -186,6 +187,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          education_level?: string | null
           governorate?: string | null
           id?: string
           image_url?: string | null
@@ -201,6 +203,7 @@ export type Database = {
           contact_phone?: string | null
           created_at?: string | null
           description?: string | null
+          education_level?: string | null
           governorate?: string | null
           id?: string
           image_url?: string | null

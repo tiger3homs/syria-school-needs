@@ -8,11 +8,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, Filter, ArrowUpDown, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { Search, Filter, ArrowUpDown, CheckCircle, XCircle, Trash2, Download, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import AdminHeader from "@/components/AdminHeader";
+import { exportToCSV, exportToExcel, ExportNeed } from "@/utils/exportUtils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 interface Need {
   id: string;
@@ -226,6 +228,57 @@ const AdminNeedsComponent = () => {
     }
   };
 
+  const handleExport = (format: 'csv' | 'excel', dataToExport: 'all' | 'filtered' | 'selected') => {
+    let exportData: Need[] = [];
+    
+    switch (dataToExport) {
+      case 'all':
+        exportData = needs;
+        break;
+      case 'filtered':
+        exportData = filteredNeeds;
+        break;
+      case 'selected':
+        exportData = needs.filter(need => selectedNeeds.includes(need.id));
+        break;
+    }
+
+    if (exportData.length === 0) {
+      toast({
+        title: "No data to export",
+        description: "Please select some items or adjust your filters.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const transformedData: ExportNeed[] = exportData.map(need => ({
+      school_name: need.school.name,
+      need_title: need.title,
+      description: need.description || '',
+      category: need.category,
+      priority: need.priority,
+      status: need.status,
+      quantity: need.quantity,
+      governorate: need.school.governorate,
+      created_at: need.created_at
+    }));
+
+    const timestamp = new Date().toISOString().split('T')[0];
+    const filename = `needs-${dataToExport}-${timestamp}`;
+
+    if (format === 'csv') {
+      exportToCSV(transformedData, `${filename}.csv`);
+    } else {
+      exportToExcel(transformedData, `${filename}.xlsx`);
+    }
+
+    toast({
+      title: "Export successful",
+      description: `${exportData.length} needs exported as ${format.toUpperCase()}`,
+    });
+  };
+
   const getPriorityColor = (priority: string) => {
     switch (priority) {
       case 'high': return 'bg-red-100 text-red-800';
@@ -259,8 +312,52 @@ const AdminNeedsComponent = () => {
       <AdminHeader />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Needs Management</h2>
-          <p className="text-gray-600 mt-2">Review and manage school needs submitted by principals</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">Needs Management</h2>
+              <p className="text-gray-600 mt-2">Review and manage school needs submitted by principals</p>
+            </div>
+            
+            {/* Export Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Download className="h-4 w-4" />
+                  Export Data
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem onClick={() => handleExport('csv', 'all')}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export All (CSV)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('excel', 'all')}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export All (Excel)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('csv', 'filtered')}>
+                  <Filter className="h-4 w-4 mr-2" />
+                  Export Filtered (CSV)
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleExport('excel', 'filtered')}>
+                  <Filter className="h-4 w-4 mr-2" />
+                  Export Filtered (Excel)
+                </DropdownMenuItem>
+                {selectedNeeds.length > 0 && (
+                  <>
+                    <DropdownMenuItem onClick={() => handleExport('csv', 'selected')}>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Export Selected (CSV)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleExport('excel', 'selected')}>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Export Selected (Excel)
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         {/* Filters and Search */}
