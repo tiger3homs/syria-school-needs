@@ -26,39 +26,51 @@ const AuditLog = () => {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({
-    action: '',
-    entity_type: '',
+    action: 'all',
+    entity_type: 'all',
     search: ''
   });
   const { toast } = useToast();
 
   const fetchAuditLogs = async () => {
     try {
+      // First fetch audit logs
       let query = supabaseAdmin
         .from('audit_logs')
-        .select(`
-          *,
-          profiles!inner(email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(50);
 
       // Apply filters
-      if (filter.action) {
+      if (filter.action !== 'all') {
         query = query.eq('action', filter.action);
       }
-      if (filter.entity_type) {
+      if (filter.entity_type !== 'all') {
         query = query.eq('entity_type', filter.entity_type);
       }
 
-      const { data, error } = await query;
+      const { data: auditData, error: auditError } = await query;
 
-      if (error) throw error;
+      if (auditError) throw auditError;
+
+      // Get unique user IDs
+      const userIds = [...new Set(auditData?.map(log => log.user_id).filter(Boolean) || [])];
+
+      // Fetch user profiles for these IDs
+      const { data: profilesData, error: profilesError } = await supabaseAdmin
+        .from('profiles')
+        .select('id, email')
+        .in('id', userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Create a map of user ID to email
+      const userEmailMap = new Map(profilesData?.map(profile => [profile.id, profile.email]) || []);
 
       // Transform the data to include user email
-      const transformedData = data?.map(log => ({
+      const transformedData = auditData?.map(log => ({
         ...log,
-        user_email: log.profiles?.email || 'Unknown'
+        user_email: log.user_id ? userEmailMap.get(log.user_id) || 'Unknown' : 'System'
       })) || [];
 
       setLogs(transformedData);
@@ -162,7 +174,7 @@ const AuditLog = () => {
               <SelectValue placeholder="All Actions" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Actions</SelectItem>
+              <SelectItem value="all">All Actions</SelectItem>
               <SelectItem value="created">Created</SelectItem>
               <SelectItem value="updated">Updated</SelectItem>
               <SelectItem value="approved">Approved</SelectItem>
@@ -175,7 +187,7 @@ const AuditLog = () => {
               <SelectValue placeholder="All Entities" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Entities</SelectItem>
+              <SelectItem value="all">All Entities</SelectItem>
               <SelectItem value="school">Schools</SelectItem>
               <SelectItem value="need">Needs</SelectItem>
             </SelectContent>
