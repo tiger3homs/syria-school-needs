@@ -76,20 +76,24 @@ const SubmitNeed = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-light font-inter text-primary">
       {/* Header */}
-      <header className="bg-white shadow-sm">
+      <header className="bg-primary bg-opacity-80 backdrop-blur-md shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <School className="h-8 w-8 text-blue-600" />
-                <span className="ml-2 text-xl font-bold text-gray-900">School Rebuild Syria</span>
+                <School className="h-8 w-8 text-white-bg" />
+                <span className="ml-2 text-xl font-extrabold text-white-bg">School Rebuild Syria</span>
               </Link>
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/dashboard">
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="border-gold text-gold hover:bg-gold hover:text-primary"
+                >
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Dashboard
                 </Button>
@@ -101,14 +105,14 @@ const SubmitNeed = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Submit a New Need</h1>
-          <p className="text-gray-600">Tell us what your school needs to improve the learning environment</p>
+          <h1 className="text-3xl font-bold text-primary mb-2">Submit a New Need</h1>
+          <p className="text-gray-700">Tell us what your school needs to improve the learning environment</p>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg rounded-2xl border-t-4 border-primary">
           <CardHeader>
-            <CardTitle>Need Details</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-semibold text-primary">Need Details</CardTitle>
+            <CardDescription className="text-gray-700">
               Please provide detailed information about what your school needs
             </CardDescription>
           </CardHeader>
@@ -116,11 +120,11 @@ const SubmitNeed = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Information */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Basic Information</h3>
+                <h3 className="text-lg font-semibold text-primary">Basic Information</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="title">Need Title *</Label>
+                    <Label htmlFor="title" className="text-primary">Need Title *</Label>
                     <Input
                       id="title"
                       name="title"
@@ -128,13 +132,14 @@ const SubmitNeed = () => {
                       value={formData.title}
                       onChange={handleInputChange}
                       required
+                      className="border-gray-300 focus:border-gold focus:ring-gold"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="category">Category *</Label>
+                    <Label htmlFor="category" className="text-primary">Category *</Label>
                     <Select onValueChange={(value) => handleSelectChange("category", value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -149,7 +154,7 @@ const SubmitNeed = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Description *</Label>
+                  <Label htmlFor="description" className="text-primary">Description *</Label>
                   <Textarea
                     id="description"
                     name="description"
@@ -158,17 +163,18 @@ const SubmitNeed = () => {
                     onChange={handleInputChange}
                     rows={4}
                     required
+                    className="border-gray-300 focus:border-gold focus:ring-gold"
                   />
                 </div>
               </div>
 
               {/* Specifications */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Specifications</h3>
+                <h3 className="text-lg font-semibold text-primary">Specifications</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="quantity">Quantity Needed *</Label>
+                    <Label htmlFor="quantity" className="text-primary">Quantity Needed *</Label>
                     <Input
                       id="quantity"
                       name="quantity"
@@ -177,13 +183,14 @@ const SubmitNeed = () => {
                       value={formData.quantity}
                       onChange={handleInputChange}
                       required
+                      className="border-gray-300 focus:border-gold focus:ring-gold"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="priority">Priority Level *</Label>
+                    <Label htmlFor="priority" className="text-primary">Priority Level *</Label>
                     <Select onValueChange={(value) => handleSelectChange("priority", value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                         <SelectValue placeholder="Select priority" />
                       </SelectTrigger>
                       <SelectContent>
@@ -197,13 +204,14 @@ const SubmitNeed = () => {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="estimatedCost">Estimated Cost (Optional)</Label>
+                    <Label htmlFor="estimatedCost" className="text-primary">Estimated Cost (Optional)</Label>
                     <Input
                       id="estimatedCost"
                       name="estimatedCost"
                       placeholder="e.g., $500"
                       value={formData.estimatedCost}
                       onChange={handleInputChange}
+                      className="border-gray-300 focus:border-gold focus:ring-gold"
                     />
                   </div>
                 </div>
@@ -211,10 +219,10 @@ const SubmitNeed = () => {
 
               {/* Urgency */}
               <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900">Additional Information</h3>
+                <h3 className="text-lg font-semibold text-primary">Additional Information</h3>
                 
                 <div className="space-y-2">
-                  <Label htmlFor="urgencyReason">Why is this urgent? (For high priority items)</Label>
+                  <Label htmlFor="urgencyReason" className="text-primary">Why is this urgent? (For high priority items)</Label>
                   <Textarea
                     id="urgencyReason"
                     name="urgencyReason"
@@ -222,14 +230,15 @@ const SubmitNeed = () => {
                     value={formData.urgencyReason}
                     onChange={handleInputChange}
                     rows={3}
+                    className="border-gray-300 focus:border-gold focus:ring-gold"
                   />
                 </div>
               </div>
 
               {/* Categories Info */}
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-900 mb-2">Category Guidelines:</h4>
-                <div className="text-sm text-blue-800 space-y-1">
+              <div className="bg-primary/10 p-4 rounded-lg">
+                <h4 className="font-medium text-primary mb-2">Category Guidelines:</h4>
+                <div className="text-sm text-gray-700 space-y-1">
                   <p><strong>Furniture:</strong> Desks, chairs, storage, classroom furniture</p>
                   <p><strong>Equipment:</strong> Whiteboards, projectors, computers, teaching tools</p>
                   <p><strong>Outdoor Facilities:</strong> Playground equipment, sports facilities, outdoor learning spaces</p>
@@ -238,11 +247,19 @@ const SubmitNeed = () => {
               </div>
 
               <div className="flex gap-4">
-                <Button type="submit" disabled={isLoading} className="flex-1">
+                <Button 
+                  type="submit" 
+                  disabled={isLoading} 
+                  className="flex-1 bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105"
+                >
                   {isLoading ? "Submitting..." : "Submit Need"}
                 </Button>
                 <Link to="/dashboard">
-                  <Button type="button" variant="outline">
+                  <Button 
+                    type="button" 
+                    variant="outline"
+                    className="border-gold text-gold hover:bg-gold hover:text-primary"
+                  >
                     Cancel
                   </Button>
                 </Link>

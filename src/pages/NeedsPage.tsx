@@ -108,27 +108,27 @@ const NeedsPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-xl text-gray-600">Loading needs...</div>
+      <div className="min-h-screen bg-light font-inter text-primary flex items-center justify-center">
+        <div className="text-xl text-primary">Loading needs...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-light font-inter text-primary">
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">School Needs</h1>
-          <p className="text-lg text-gray-600">Help schools across Syria by fulfilling their educational needs</p>
+          <h1 className="text-4xl font-bold text-primary mb-2">School Needs</h1>
+          <p className="text-lg text-gray-700">Help schools across Syria by fulfilling their educational needs</p>
         </div>
 
         {/* Filters Section */}
-        <Card className="mb-8">
+        <Card className="mb-8 shadow-lg rounded-2xl border-t-4 border-primary">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <Select value={governorateFilter} onValueChange={setGovernorateFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                   <SelectValue placeholder="All Governorates" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,7 +142,7 @@ const NeedsPage = () => {
               </Select>
 
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                   <SelectValue placeholder="All Categories" />
                 </SelectTrigger>
                 <SelectContent>
@@ -156,7 +156,7 @@ const NeedsPage = () => {
               </Select>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
@@ -167,7 +167,7 @@ const NeedsPage = () => {
               </Select>
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger>
+                <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent>
@@ -184,7 +184,7 @@ const NeedsPage = () => {
                 placeholder="Search by title or description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1"
+                className="flex-1 border-gray-300 focus:border-gold focus:ring-gold"
               />
               <Button
                 variant="outline"
@@ -195,6 +195,7 @@ const NeedsPage = () => {
                   setSearchQuery("");
                   setSortBy("newest");
                 }}
+                className="border-gold text-gold hover:bg-gold hover:text-primary"
               >
                 Reset Filters
               </Button>
@@ -204,7 +205,7 @@ const NeedsPage = () => {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
+          <p className="text-gray-700">
             Showing {filteredAndSortedNeeds.length} of {needs.length} needs
           </p>
         </div>
@@ -212,10 +213,10 @@ const NeedsPage = () => {
         {/* Needs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedNeeds.map((need) => (
-            <Card key={need.id} className="h-full flex flex-col hover:shadow-lg transition-shadow duration-200">
+            <Card key={need.id} className="h-full flex flex-col shadow-lg rounded-2xl border-t-4 border-primary hover:shadow-xl transition-shadow duration-200">
               {/* Image Header */}
               {need.image_url ? (
-                <div className="relative h-48 overflow-hidden rounded-t-lg">
+                <div className="relative h-48 overflow-hidden rounded-t-2xl">
                   <img
                     src={`https://fdusgurjkmdroacxtrtb.supabase.co/storage/v1/object/public/need-images/${need.image_url}`}
                     alt={need.title}
@@ -223,14 +224,14 @@ const NeedsPage = () => {
                   />
                 </div>
               ) : (
-                <div className="h-48 bg-gradient-to-br from-blue-100 to-teal-100 flex items-center justify-center rounded-t-lg">
-                  <Package className="h-16 w-16 text-blue-500" />
+                <div className="h-48 bg-primary/10 flex items-center justify-center rounded-t-2xl">
+                  <Package className="h-16 w-16 text-primary" />
                 </div>
               )}
 
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-xl font-semibold text-gray-900 line-clamp-2">
+                  <CardTitle className="text-xl font-semibold text-primary line-clamp-2">
                     {need.title}
                   </CardTitle>
                   <div className="flex flex-col gap-1">
@@ -242,51 +243,51 @@ const NeedsPage = () => {
                     </Badge>
                   </div>
                 </div>
-                <CardDescription className="text-gray-600 line-clamp-3">
+                <CardDescription className="text-gray-700 line-clamp-3">
                   {need.description}
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="flex-1 pt-0">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Package className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <Package className="h-4 w-4 text-gray-500" />
                     <span>Quantity: {need.quantity}</span>
                   </div>
                   
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <AlertCircle className="h-4 w-4" />
+                  <div className="flex items-center gap-2 text-sm text-gray-700">
+                    <AlertCircle className="h-4 w-4 text-gray-500" />
                     <span>Category: {need.category}</span>
                   </div>
 
                   {need.created_at && (
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Calendar className="h-4 w-4" />
+                    <div className="flex items-center gap-2 text-sm text-gray-700">
+                      <Calendar className="h-4 w-4 text-gray-500" />
                       <span>Posted: {new Date(need.created_at).toLocaleDateString()}</span>
                     </div>
                   )}
 
                   {need.schools && (
-                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2">{need.schools.name}</h4>
+                    <div className="mt-4 p-3 bg-primary/10 rounded-lg">
+                      <h4 className="font-semibold text-primary mb-2">{need.schools.name}</h4>
                       
                       {need.schools.governorate && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
-                          <MapPin className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
+                          <MapPin className="h-4 w-4 text-gray-500" />
                           <span>{need.schools.governorate}</span>
                         </div>
                       )}
                       
                       {need.schools.contact_email && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600 mb-1">
-                          <Mail className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
+                          <Mail className="h-4 w-4 text-gray-500" />
                           <span className="truncate">{need.schools.contact_email}</span>
                         </div>
                       )}
                       
                       {need.schools.contact_phone && (
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Phone className="h-4 w-4" />
+                        <div className="flex items-center gap-2 text-sm text-gray-700">
+                          <Phone className="h-4 w-4 text-gray-500" />
                           <span>{need.schools.contact_phone}</span>
                         </div>
                       )}
@@ -297,7 +298,7 @@ const NeedsPage = () => {
 
               <CardFooter className="pt-4">
                 <Button 
-                  className="w-full"
+                  className="w-full bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105"
                   onClick={() => {
                     if (need.schools?.contact_email) {
                       window.location.href = `mailto:${need.schools.contact_email}?subject=Interest in: ${need.title}`;
@@ -312,10 +313,10 @@ const NeedsPage = () => {
         </div>
 
         {filteredAndSortedNeeds.length === 0 && (
-          <div className="text-center py-12">
+          <div className="text-center py-12 text-gray-600">
             <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No needs found</h3>
-            <p className="text-gray-600">Try adjusting your filters to see more results.</p>
+            <h3 className="text-xl font-semibold text-primary mb-2">No needs found</h3>
+            <p className="text-gray-700">Try adjusting your filters to see more results.</p>
           </div>
         )}
       </div>

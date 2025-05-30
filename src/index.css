@@ -1,59 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --forest-green: 150 25% 23%; /* #2E4A3F */
+    --gold: 42 76% 52%; /* #D4AF37 */
+    --white-bg: 210 17% 98%; /* #F8F9FA */
+    --light-gray-bg: 0 0% 93%; /* #EDEDED */
+    --syrian-red: 3 65% 58%; /* #D9534F */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --background: var(--white-bg);
+    --foreground: 222.2 84% 4.9%; /* Keeping a dark foreground for readability on light backgrounds */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --card: var(--white-bg);
+    --card-foreground: var(--foreground);
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --popover: var(--white-bg);
+    --popover-foreground: var(--foreground);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --primary: var(--forest-green);
+    --primary-foreground: var(--white-bg);
 
-    --muted: 210 40% 96.1%;
+    --secondary: var(--light-gray-bg);
+    --secondary-foreground: var(--forest-green);
+
+    --muted: var(--light-gray-bg);
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: var(--gold);
+    --accent-foreground: var(--forest-green);
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: var(--syrian-red);
+    --destructive-foreground: var(--white-bg);
 
-    --border: 214.3 31.8% 91.4%;
+    --border: 214.3 31.8% 91.4%; /* Keeping a neutral border for now */
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: var(--gold);
 
-    --radius: 0.5rem;
+    --radius: 0.5rem; /* Will be updated in tailwind.config.ts to 2xl */
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: var(--forest-green);
+    --sidebar-foreground: var(--white-bg);
+    --sidebar-primary: var(--gold);
+    --sidebar-primary-foreground: var(--forest-green);
+    --sidebar-accent: var(--light-gray-bg);
+    --sidebar-accent-foreground: var(--forest-green);
+    --sidebar-border: var(--gold);
+    --sidebar-ring: var(--gold);
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 222.2 84% 4.9%; /* Dark background */
+    --foreground: 210 40% 98%; /* Light foreground */
 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
@@ -96,6 +97,6 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter; /* Apply Inter font */
   }
 }

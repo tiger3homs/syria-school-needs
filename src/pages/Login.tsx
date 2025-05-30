@@ -51,27 +51,27 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-light font-inter text-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center">
-            <School className="h-8 w-8 text-blue-600" />
-            <span className="ml-2 text-xl font-bold text-gray-900">School Rebuild Syria</span>
+            <School className="h-8 w-8 text-primary" />
+            <span className="ml-2 text-xl font-extrabold text-primary">School Rebuild Syria</span>
           </Link>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className="shadow-lg rounded-2xl border-t-4 border-primary">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome Back</CardTitle>
-            <CardDescription>
+            <CardTitle className="text-2xl font-bold text-primary">Welcome Back</CardTitle>
+            <CardDescription className="text-gray-700">
               Sign in to your school account to manage needs and connect with supporters
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-primary">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -79,11 +79,12 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  className="border-gray-300 focus:border-gold focus:ring-gold"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-primary">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -92,6 +93,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    className="border-gray-300 focus:border-gold focus:ring-gold"
                   />
                   <Button
                     type="button"
@@ -101,29 +103,33 @@ const Login = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
+                      <EyeOff className="h-4 w-4 text-gray-500" />
                     ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
+                      <Eye className="h-4 w-4 text-gray-500" />
                     )}
                   </Button>
                 </div>
               </div>
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button 
+                type="submit" 
+                className="w-full bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105" 
+                disabled={isLoading}
+              >
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
             <div className="mt-6">
-              <div className="text-center text-sm text-gray-600">
+              <div className="text-center text-sm text-gray-700">
                 Don't have an account?{" "}
-                <Link to="/register" className="text-blue-600 hover:underline font-medium">
+                <Link to="/register" className="text-primary hover:underline font-semibold">
                   Register your school
                 </Link>
               </div>
               
               <div className="text-center mt-4">
-                <Link to="/admin/login" className="text-sm text-orange-600 hover:underline">
+                <Link to="/admin/login" className="text-gold hover:underline font-semibold">
                   Admin Login
                 </Link>
               </div>
@@ -132,7 +138,7 @@ const Login = () => {
         </Card>
 
         <div className="text-center mt-6">
-          <Link to="/" className="text-sm text-gray-600 hover:text-gray-900">
+          <Link to="/" className="text-primary hover:text-gold font-medium">
             ← Back to home
           </Link>
         </div>
