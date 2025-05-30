@@ -9,17 +9,53 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       needs: {
         Row: {
           category: string
           created_at: string | null
           description: string | null
+          fulfilled_at: string | null
+          fulfilled_by: string | null
           id: string
           image_url: string | null
           priority: string
           quantity: number
           school_id: string | null
           status: string
+          submitted_by: string | null
           title: string
           updated_at: string | null
         }
@@ -27,12 +63,15 @@ export type Database = {
           category: string
           created_at?: string | null
           description?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
           id?: string
           image_url?: string | null
           priority?: string
           quantity?: number
           school_id?: string | null
           status?: string
+          submitted_by?: string | null
           title: string
           updated_at?: string | null
         }
@@ -40,12 +79,15 @@ export type Database = {
           category?: string
           created_at?: string | null
           description?: string | null
+          fulfilled_at?: string | null
+          fulfilled_by?: string | null
           id?: string
           image_url?: string | null
           priority?: string
           quantity?: number
           school_id?: string | null
           status?: string
+          submitted_by?: string | null
           title?: string
           updated_at?: string | null
         }
@@ -58,6 +100,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          message: string
+          read: boolean | null
+          recipient_id: string | null
+          title: string
+          type: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message: string
+          read?: boolean | null
+          recipient_id?: string | null
+          title: string
+          type: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          message?: string
+          read?: boolean | null
+          recipient_id?: string | null
+          title?: string
+          type?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -99,6 +177,7 @@ export type Database = {
           name: string
           number_of_students: number
           principal_id: string | null
+          status: string | null
           updated_at: string | null
         }
         Insert: {
@@ -113,6 +192,7 @@ export type Database = {
           name: string
           number_of_students: number
           principal_id?: string | null
+          status?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -127,6 +207,7 @@ export type Database = {
           name?: string
           number_of_students?: number
           principal_id?: string | null
+          status?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -144,7 +225,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_audit_log: {
+        Args: {
+          p_user_id: string
+          p_action: string
+          p_entity_type: string
+          p_entity_id: string
+          p_old_values?: Json
+          p_new_values?: Json
+        }
+        Returns: undefined
+      }
+      create_notification: {
+        Args: {
+          p_recipient_id: string
+          p_title: string
+          p_message: string
+          p_type: string
+          p_entity_type?: string
+          p_entity_id?: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

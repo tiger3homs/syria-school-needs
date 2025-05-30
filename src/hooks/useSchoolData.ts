@@ -12,6 +12,7 @@ interface School {
   contact_email: string | null;
   description: string | null;
   image_url: string | null;
+  status: string | null;
 }
 
 interface Need {
@@ -24,6 +25,9 @@ interface Need {
   status: string;
   image_url: string | null;
   created_at: string;
+  submitted_by: string | null;
+  fulfilled_by: string | null;
+  fulfilled_at: string | null;
 }
 
 export const useSchoolData = () => {
@@ -67,7 +71,8 @@ export const useSchoolData = () => {
           contact_phone: schoolData.contact_phone,
           contact_email: schoolData.contact_email,
           description: schoolData.description,
-          image_url: null // Default to null since it's not in the database yet
+          image_url: schoolData.image_url || null,
+          status: schoolData.status || null
         };
         setSchool(completeSchoolData);
 
@@ -84,7 +89,23 @@ export const useSchoolData = () => {
           return;
         }
 
-        setNeeds(needsData || []);
+        // Transform needs data to include new audit fields
+        const transformedNeeds: Need[] = (needsData || []).map(need => ({
+          id: need.id,
+          title: need.title,
+          description: need.description,
+          category: need.category,
+          priority: need.priority,
+          quantity: need.quantity,
+          status: need.status,
+          image_url: need.image_url,
+          created_at: need.created_at,
+          submitted_by: need.submitted_by,
+          fulfilled_by: need.fulfilled_by,
+          fulfilled_at: need.fulfilled_at
+        }));
+
+        setNeeds(transformedNeeds);
       }
       // If no school exists, we just continue without showing an error
     } catch (err) {
@@ -134,7 +155,8 @@ export const useSchoolData = () => {
         .insert({
           ...needData,
           school_id: school.id,
-          status: 'pending'
+          status: 'pending',
+          submitted_by: user.id
         })
         .select()
         .single();
@@ -144,7 +166,23 @@ export const useSchoolData = () => {
         return false;
       }
 
-      setNeeds([data, ...needs]);
+      // Transform the response to match our Need interface
+      const transformedNeed: Need = {
+        id: data.id,
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        priority: data.priority,
+        quantity: data.quantity,
+        status: data.status,
+        image_url: data.image_url,
+        created_at: data.created_at,
+        submitted_by: data.submitted_by,
+        fulfilled_by: data.fulfilled_by,
+        fulfilled_at: data.fulfilled_at
+      };
+
+      setNeeds([transformedNeed, ...needs]);
       return true;
     } catch (err) {
       console.error('Error creating need:', err);
