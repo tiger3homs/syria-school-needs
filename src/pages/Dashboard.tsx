@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from 'react-i18next';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,8 @@ import { DashboardStats } from "@/components/DashboardStats";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.language === 'ar';
   const { user, signOut } = useAuth();
   const { school, needs, loading, error, updateSchool, createNeed, updateNeed, deleteNeed } = useSchoolData();
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -35,7 +38,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -45,8 +48,8 @@ const Dashboard = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <p className="mt-4 text-gray-600">You are not authenticated.</p>
-          <Link to="/login" className="text-blue-500">Login</Link>
+          <p className="mt-4 text-gray-600">{t('errors.loginRequired')}</p>
+          <Link to="/login" className="text-blue-500">{t('nav.login')}</Link>
         </div>
       </div>
     );
@@ -57,7 +60,7 @@ const Dashboard = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="mt-4 text-red-600">{error}</p>
-          <p className="text-gray-600">Please contact support if this issue persists.</p>
+          <p className="text-gray-600">{t('common.tryAgain')}</p>
         </div>
       </div>
     );
@@ -69,9 +72,9 @@ const Dashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
             <School className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No School Found</h2>
-            <p className="text-gray-600 mb-4">Your account is not linked to any school yet.</p>
-            <p className="text-sm text-gray-500">Please contact an administrator to link your account to a school.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('errors.pageNotFound')}</h2>
+            <p className="text-gray-600 mb-4">{t('dashboard.mySchool')}</p>
+            <p className="text-sm text-gray-500">{t('errors.accessDenied')}</p>
           </div>
         </div>
       </div>
@@ -134,14 +137,14 @@ const Dashboard = () => {
     const success = await deleteNeed(deletingNeed.id);
     if (success) {
       toast({
-        title: "Need deleted",
-        description: "The need has been successfully deleted.",
+        title: t('needs.deleteNeed'),
+        description: t('common.success'),
       });
       setDeletingNeed(null);
     } else {
       toast({
-        title: "Error",
-        description: "Failed to delete need. Please try again.",
+        title: t('common.error'),
+        description: t('common.tryAgain'),
         variant: "destructive",
       });
     }
@@ -194,15 +197,15 @@ const Dashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">School Dashboard</h1>
-          <p className="text-gray-600">Manage your school profile and submit needs for support</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('dashboard.welcome')}</h1>
+          <p className="text-gray-600">{t('dashboard.mySchool')}</p>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="needs">Manage Needs</TabsTrigger>
-            <TabsTrigger value="profile">School Profile</TabsTrigger>
+            <TabsTrigger value="overview">{t('dashboard.overview')}</TabsTrigger>
+            <TabsTrigger value="needs">{t('dashboard.manageNeeds')}</TabsTrigger>
+            <TabsTrigger value="profile">{t('dashboard.profile')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -215,12 +218,12 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>Recent Needs</CardTitle>
-                    <CardDescription>Your latest submitted needs and their status</CardDescription>
+                    <CardTitle>{t('dashboard.recentNeeds')}</CardTitle>
+                    <CardDescription>{t('dashboard.stats')}</CardDescription>
                   </div>
                   <Button onClick={handleAddNeed}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add Need
+                    {t('needs.addNeed')}
                   </Button>
                 </div>
               </CardHeader>
@@ -240,15 +243,15 @@ const Dashboard = () => {
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-medium">{need.title}</h4>
                             <Badge className={getPriorityColor(need.priority)}>
-                              {formatPriority(need.priority)}
+                              {t(`priority.${need.priority}`)}
                             </Badge>
                             <Badge className={getStatusColor(need.status)}>
-                              {formatStatus(need.status)}
+                              {t(`status.${need.status}`)}
                             </Badge>
                           </div>
                           <p className="text-sm text-gray-600">{need.description}</p>
                           <p className="text-xs text-gray-500 mt-1">
-                            Quantity: {need.quantity} • Category: {need.category}
+                            {t('needs.quantity')}: {need.quantity} • {t('needs.category')}: {t(`categories.${need.category}`)}
                           </p>
                         </div>
                       </div>
@@ -266,8 +269,8 @@ const Dashboard = () => {
                   {needs.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p>No needs submitted yet</p>
-                      <p className="text-sm">Submit your first need to get started</p>
+                      <p>{t('needs.noNeeds')}</p>
+                      <p className="text-sm">{t('needs.noNeedsDescription')}</p>
                     </div>
                   )}
                 </div>
@@ -281,12 +284,12 @@ const Dashboard = () => {
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <div>
-                    <CardTitle>All School Needs</CardTitle>
-                    <CardDescription>Manage and track all submitted needs</CardDescription>
+                    <CardTitle>{t('needs.allNeeds')}</CardTitle>
+                    <CardDescription>{t('dashboard.manageNeeds')}</CardDescription>
                   </div>
                   <Button onClick={handleAddNeed}>
                     <Plus className="h-4 w-4 mr-2" />
-                    Add New Need
+                    {t('needs.addNeed')}
                   </Button>
                 </div>
               </CardHeader>
@@ -298,10 +301,11 @@ const Dashboard = () => {
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                         <Input
-                          placeholder="Search needs..."
+                          placeholder={t('needs.searchPlaceholder')}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           className="pl-10"
+                          dir={isRTL ? 'rtl' : 'ltr'}
                         />
                       </div>
                     </div>
@@ -311,37 +315,37 @@ const Dashboard = () => {
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Status" />
+                        <SelectValue placeholder={t('needs.filters.allStatuses')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="pending">Pending</SelectItem>
-                        <SelectItem value="in_progress">In Progress</SelectItem>
-                        <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                        <SelectItem value="all">{t('needs.filters.allStatuses')}</SelectItem>
+                        <SelectItem value="pending">{t('status.pending')}</SelectItem>
+                        <SelectItem value="in_progress">{t('status.in_progress')}</SelectItem>
+                        <SelectItem value="fulfilled">{t('status.fulfilled')}</SelectItem>
                       </SelectContent>
                     </Select>
 
                     <Select value={priorityFilter} onValueChange={setPriorityFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Priority" />
+                        <SelectValue placeholder={t('needs.filters.allPriorities')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Priorities</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="low">Low</SelectItem>
+                        <SelectItem value="all">{t('needs.filters.allPriorities')}</SelectItem>
+                        <SelectItem value="high">{t('priority.high')}</SelectItem>
+                        <SelectItem value="medium">{t('priority.medium')}</SelectItem>
+                        <SelectItem value="low">{t('priority.low')}</SelectItem>
                       </SelectContent>
                     </Select>
 
                     <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Category" />
+                        <SelectValue placeholder={t('needs.filters.allCategories')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
+                        <SelectItem value="all">{t('needs.filters.allCategories')}</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
-                            {category}
+                            {t(`categories.${category}`)}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -349,12 +353,12 @@ const Dashboard = () => {
 
                     <Select value={sortBy} onValueChange={setSortBy}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Sort by" />
+                        <SelectValue placeholder={t('needs.filters.sortBy')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="newest">Newest First</SelectItem>
-                        <SelectItem value="oldest">Oldest First</SelectItem>
-                        <SelectItem value="priority">Priority</SelectItem>
+                        <SelectItem value="newest">{t('needs.filters.newest')}</SelectItem>
+                        <SelectItem value="oldest">{t('needs.filters.oldest')}</SelectItem>
+                        <SelectItem value="priority">{t('needs.filters.priority')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -365,13 +369,13 @@ const Dashboard = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>Need</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Priority</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Quantity</TableHead>
-                        <TableHead>Created</TableHead>
-                        <TableHead className="text-right">Actions</TableHead>
+                        <TableHead>{t('needs.title')}</TableHead>
+                        <TableHead>{t('needs.category')}</TableHead>
+                        <TableHead>{t('needs.priority')}</TableHead>
+                        <TableHead>{t('needs.status')}</TableHead>
+                        <TableHead>{t('needs.quantity')}</TableHead>
+                        <TableHead>{t('needs.posted')}</TableHead>
+                        <TableHead className="text-right">{t('common.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -399,12 +403,12 @@ const Dashboard = () => {
                           <TableCell>{need.category}</TableCell>
                           <TableCell>
                             <Badge className={getPriorityColor(need.priority)}>
-                              {formatPriority(need.priority)}
+                              {t(`priority.${need.priority}`)}
                             </Badge>
                           </TableCell>
                           <TableCell>
                             <Badge className={getStatusColor(need.status)}>
-                              {formatStatus(need.status)}
+                              {t(`status.${need.status}`)}
                             </Badge>
                           </TableCell>
                           <TableCell>{need.quantity}</TableCell>
@@ -437,8 +441,8 @@ const Dashboard = () => {
                   {filteredAndSortedNeeds.length === 0 && (
                     <div className="text-center py-8 text-gray-500">
                       <Target className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p>No needs found</p>
-                      <p className="text-sm">Try adjusting your filters or add a new need</p>
+                      <p>{t('needs.noNeeds')}</p>
+                      <p className="text-sm">{t('needs.noNeedsDescription')}</p>
                     </div>
                   )}
                 </div>
@@ -459,12 +463,12 @@ const Dashboard = () => {
                 <CardHeader>
                   <div className="flex justify-between items-center">
                     <div>
-                      <CardTitle>School Profile</CardTitle>
-                      <CardDescription>View and edit your school information</CardDescription>
+                      <CardTitle>{t('dashboard.profile')}</CardTitle>
+                      <CardDescription>{t('dashboard.schoolInfo')}</CardDescription>
                     </div>
                     <Button variant="outline" onClick={() => setIsEditingProfile(true)}>
                       <Edit className="h-4 w-4 mr-2" />
-                      Edit Profile
+                      {t('dashboard.editProfile')}
                     </Button>
                   </div>
                 </CardHeader>
