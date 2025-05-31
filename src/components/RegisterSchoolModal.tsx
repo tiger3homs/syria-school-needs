@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Eye, EyeOff, ArrowLeft, ArrowRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 
 const SYRIAN_GOVERNORATES = [
   "Damascus",
@@ -30,7 +31,7 @@ const SYRIAN_GOVERNORATES = [
 const EDUCATION_LEVELS = [
   { value: "primary", label: "Primary School" },
   { value: "middle", label: "Middle School" },
-  { value: "high_school", label: "High School" }
+  { value: "highSchool", label: "High School" }
 ];
 
 interface RegisterSchoolModalProps {
@@ -39,6 +40,7 @@ interface RegisterSchoolModalProps {
 }
 
 const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     // Step 1: Location
@@ -67,9 +69,17 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
   const { signUp } = useAuth();
 
   const handleInputChange = (field: string, value: string) => {
+    let processedValue = value;
+    if (field === "phone") {
+      if (value && !value.startsWith("+963")) {
+        processedValue = "+963" + value;
+      } else if (!value) {
+        processedValue = ""; // Allow clearing the input
+      }
+    }
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: processedValue
     }));
   };
 
@@ -91,8 +101,8 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
       setCurrentStep(prev => Math.min(prev + 1, 3));
     } else {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields before proceeding.",
+        title: t("toast.missingInfoTitle"),
+        description: t("toast.fillAllFieldsProceed"),
         variant: "destructive"
       });
     }
@@ -105,8 +115,8 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
   const handleSubmit = async () => {
     if (!validateStep(3)) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: t("toast.missingInfoTitle"),
+        description: t("toast.fillAllFields"),
         variant: "destructive"
       });
       return;
@@ -114,8 +124,8 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
 
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: "Passwords don't match",
-        description: "Please make sure both passwords are the same.",
+        title: t("toast.passwordsDontMatchTitle"),
+        description: t("toast.passwordsDontMatchDescription"),
         variant: "destructive"
       });
       return;
@@ -135,8 +145,8 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
       });
 
       toast({
-        title: "Registration successful!",
-        description: "Please check your email for verification instructions.",
+        title: t("toast.registrationSuccessTitle"),
+        description: t("toast.registrationSuccessDescription"),
       });
       
       onOpenChange(false);
@@ -158,7 +168,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
       });
     } catch (error: any) {
       toast({
-        title: "Registration failed",
+        title: t("toast.registrationFailedTitle"),
         description: error.message,
         variant: "destructive",
       });
@@ -173,15 +183,15 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         return (
           <div className="space-y-4">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold">School Location</h3>
-              <p className="text-sm text-gray-600">Tell us where your school is located</p>
+              <h3 className="text-lg font-semibold">{t("registerSchoolModal.step1Title")}</h3>
+              <p className="text-sm text-gray-600">{t("registerSchoolModal.step1Description")}</p>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="governorate">Governorate *</Label>
+              <Label htmlFor="governorate">{t("registerSchoolModal.governorateLabel")}</Label>
               <Select value={formData.governorate} onValueChange={(value) => handleInputChange("governorate", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select governorate" />
+                  <SelectValue placeholder={t("registerSchoolModal.selectGovernoratePlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {SYRIAN_GOVERNORATES.map((gov) => (
@@ -192,20 +202,20 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="city">City *</Label>
+              <Label htmlFor="city">{t("registerSchoolModal.cityLabel")}</Label>
               <Input
                 id="city"
-                placeholder="Enter city name"
+                placeholder={t("registerSchoolModal.cityPlaceholder")}
                 value={formData.city}
                 onChange={(e) => handleInputChange("city", e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="address">Street Address *</Label>
+              <Label htmlFor="address">{t("registerSchoolModal.addressLabel")}</Label>
               <Textarea
                 id="address"
-                placeholder="Enter detailed street address"
+                placeholder={t("registerSchoolModal.addressPlaceholder")}
                 value={formData.address}
                 onChange={(e) => handleInputChange("address", e.target.value)}
               />
@@ -217,60 +227,60 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         return (
           <div className="space-y-4">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold">School Information</h3>
-              <p className="text-sm text-gray-600">Tell us about your school</p>
+              <h3 className="text-lg font-semibold">{t("registerSchoolModal.step2Title")}</h3>
+              <p className="text-sm text-gray-600">{t("registerSchoolModal.step2Description")}</p>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="schoolName">School Name *</Label>
+              <Label htmlFor="schoolName">{t("registerSchoolModal.schoolNameLabel")}</Label>
               <Input
                 id="schoolName"
-                placeholder="Damascus Elementary School"
+                placeholder={t("registerSchoolModal.schoolNamePlaceholder")}
                 value={formData.schoolName}
                 onChange={(e) => handleInputChange("schoolName", e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="educationLevel">Education Level *</Label>
+              <Label htmlFor="educationLevel">{t("registerSchoolModal.educationLevelLabel")}</Label>
               <Select value={formData.educationLevel} onValueChange={(value) => handleInputChange("educationLevel", value)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select education level" />
+                  <SelectValue placeholder={t("registerSchoolModal.selectEducationLevelPlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
                   {EDUCATION_LEVELS.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>{level.label}</SelectItem>
+                    <SelectItem key={level.value} value={level.value}>{t(`educationLevels.${level.value}`)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="numberOfStudents">Number of Students *</Label>
+              <Label htmlFor="numberOfStudents">{t("registerSchoolModal.numberOfStudentsLabel")}</Label>
               <Input
                 id="numberOfStudents"
                 type="number"
-                placeholder="250"
+                placeholder={t("registerSchoolModal.numberOfStudentsPlaceholder")}
                 value={formData.numberOfStudents}
                 onChange={(e) => handleInputChange("numberOfStudents", e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="principalName">Principal Name *</Label>
+              <Label htmlFor="principalName">{t("registerSchoolModal.principalNameLabel")}</Label>
               <Input
                 id="principalName"
-                placeholder="Dr. Ahmad Al-Hassan"
+                placeholder={t("registerSchoolModal.principalNamePlaceholder")}
                 value={formData.principalName}
                 onChange={(e) => handleInputChange("principalName", e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="description">School Description (Optional)</Label>
+              <Label htmlFor="description">{t("registerSchoolModal.descriptionLabel")}</Label>
               <Textarea
                 id="description"
-                placeholder="Brief description of your school"
+                placeholder={t("registerSchoolModal.descriptionPlaceholder")}
                 value={formData.description}
                 onChange={(e) => handleInputChange("description", e.target.value)}
               />
@@ -282,27 +292,27 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
         return (
           <div className="space-y-4">
             <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold">Contact & Security</h3>
-              <p className="text-sm text-gray-600">Set up your account credentials</p>
+              <h3 className="text-lg font-semibold">{t("registerSchoolModal.step3Title")}</h3>
+              <p className="text-sm text-gray-600">{t("registerSchoolModal.step3Description")}</p>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="email">Email Address *</Label>
+              <Label htmlFor="email">{t("registerSchoolModal.emailLabel")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="principal@school.edu"
+                placeholder={t("registerSchoolModal.emailPlaceholder")}
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
               />
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number *</Label>
+              <Label htmlFor="phone">{t("registerSchoolModal.phoneLabel")}</Label>
               <Input
                 id="phone"
                 type="tel"
-                placeholder="+963 xxx xxx xxx"
+                placeholder={t("registerSchoolModal.phonePlaceholder")}
                 value={formData.phone}
                 onChange={(e) => handleInputChange("phone", e.target.value)}
               />
@@ -310,12 +320,12 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="password">Password *</Label>
+                <Label htmlFor="password">{t("registerSchoolModal.passwordLabel")}</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="••••••••"
+                    placeholder={t("registerSchoolModal.passwordPlaceholder")}
                     value={formData.password}
                     onChange={(e) => handleInputChange("password", e.target.value)}
                   />
@@ -336,12 +346,12 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password *</Label>
+                <Label htmlFor="confirmPassword">{t("registerSchoolModal.confirmPasswordLabel")}</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
-                    placeholder="••••••••"
+                    placeholder={t("registerSchoolModal.passwordPlaceholder")}
                     value={formData.confirmPassword}
                     onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                   />
@@ -373,7 +383,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-center">Register Your School</DialogTitle>
+          <DialogTitle className="text-center">{t("registerSchoolModal.title")}</DialogTitle>
         </DialogHeader>
         
         {/* Progress Steps */}
@@ -414,7 +424,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Previous
+            {t("registerSchoolModal.previousButton")}
           </Button>
           
           {currentStep < 3 ? (
@@ -422,7 +432,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
               onClick={nextStep}
               className="flex items-center gap-2"
             >
-              Next
+              {t("registerSchoolModal.nextButton")}
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
@@ -431,7 +441,7 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
               disabled={isLoading}
               className="flex items-center gap-2"
             >
-              {isLoading ? "Creating Account..." : "Create Account"}
+              {isLoading ? t("registerSchoolModal.creatingAccountButton") : t("registerSchoolModal.createAccountButton")}
             </Button>
           )}
         </div>

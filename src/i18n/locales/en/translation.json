@@ -138,7 +138,16 @@
     "required": "This field is required",
     "invalidEmail": "Please enter a valid email address",
     "passwordMismatch": "Passwords do not match",
-    "minLength": "Minimum {{count}} characters required"
+    "minLength": "Minimum {{count}} characters required",
+    "titleLabel": "Title *",
+    "titlePlaceholder": "e.g., Student Desks for Grade 3",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "Detailed description of the need",
+    "categoryLabel": "Category *",
+    "selectCategoryPlaceholder": "Select category",
+    "quantityLabel": "Quantity *",
+    "priorityLabel": "Priority *",
+    "selectPriorityPlaceholder": "Select priority"
   },
   "governorates": {
     "damascus": "Damascus",
@@ -168,11 +177,14 @@
     "supplies": "Supplies",
     "technology": "Technology",
     "books": "Books & Materials",
-    "utilities": "Utilities",
+    "equipment": "Equipment",
+    "laboratory": "Laboratory Equipment",
+    "maintenance": "Maintenance",
+    "other": "Other",
+    "outdoor": "Outdoor",
     "safety": "Safety & Security",
     "sports": "Sports Equipment",
-    "laboratory": "Laboratory Equipment",
-    "maintenance": "Maintenance"
+    "utilities": "Utilities"
   },
   "priority": {
     "high": "High",
@@ -184,7 +196,8 @@
     "approved": "Approved",
     "rejected": "Rejected",
     "fulfilled": "Fulfilled",
-    "in_progress": "In Progress"
+    "in_progress": "In Progress",
+    "selectStatusPlaceholder": "Select status"
   },
   "needs": {
     "title": "School Needs",
@@ -208,6 +221,7 @@
     "searchPlaceholder": "Search by title or description...",
     "showingResults": "Showing {{count}} of {{total}} needs",
     "contactSchool": "Contact School",
+    "contactWhatsapp": "Contact via WhatsApp",
     "quantity": "Quantity",
     "category": "Category",
     "priority": "Priority",
@@ -220,7 +234,11 @@
     "editNeed": "Edit Need",
     "deleteNeed": "Delete Need",
     "confirmDelete": "Are you sure you want to delete this need?",
-    "needDetails": "Need Details"
+    "needDetails": "Need Details",
+    "editNeedTitle": "Edit Need",
+    "submitNewNeedTitle": "Submit New Need",
+    "updateNeedDescription": "Update the details of this need",
+    "submitNeedDescription": "Tell us what your school needs"
   },
   "dashboard": {
     "welcome": "Welcome to your dashboard",
@@ -239,7 +257,14 @@
     "totalNeeds": "Total Needs",
     "pendingNeeds": "Pending Needs",
     "fulfilledNeeds": "Fulfilled Needs",
-    "activeNeeds": "Active Needs"
+    "activeNeeds": "Active Needs",
+    "schoolName": "School Name",
+    "numberOfStudents": "Number of Students",
+    "governorate": "Governorate",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "description": "Description"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -277,6 +302,10 @@
     "needRejected": "Need rejected",
     "schoolApproved": "School approved",
     "profileUpdated": "Profile updated"
+  },
+  "needsPage": {
+    "title": "School Needs",
+    "description": "Help schools across Syria by fulfilling their educational needs"
   },
   "settings": {
     "title": "Settings",
@@ -363,7 +392,13 @@
     "all": "All",
     "none": "None",
     "optional": "Optional",
-    "required": "Required"
+    "required": "Required",
+    "loadingNeeds": "Loading needs...",
+    "notSpecified": "Not specified",
+    "notProvided": "Not provided",
+    "noDescriptionProvided": "No description provided",
+    "updating": "Updating...",
+    "submitting": "Submitting..."
   },
   "errors": {
     "pageNotFound": "Page not found",
@@ -385,5 +420,57 @@
     "minLength": "Minimum {{count}} characters required",
     "maxLength": "Maximum {{count}} characters allowed",
     "passwordStrength": "Password must contain at least 8 characters, including uppercase, lowercase, and numbers"
+  },
+  "registerSchoolModal": {
+    "title": "Register Your School",
+    "step1Title": "School Location",
+    "step1Description": "Tell us where your school is located",
+    "governorateLabel": "Governorate *",
+    "selectGovernoratePlaceholder": "Select governorate",
+    "cityLabel": "City *",
+    "cityPlaceholder": "Enter city name",
+    "addressLabel": "Street Address *",
+    "addressPlaceholder": "Enter detailed street address",
+    "step2Title": "School Information",
+    "step2Description": "Tell us about your school",
+    "schoolNameLabel": "School Name *",
+    "schoolNamePlaceholder": "Damascus Elementary School",
+    "educationLevelLabel": "Education Level *",
+    "selectEducationLevelPlaceholder": "Select education level",
+    "numberOfStudentsLabel": "Number of Students *",
+    "numberOfStudentsPlaceholder": "250",
+    "principalNameLabel": "Principal Name *",
+    "principalNamePlaceholder": "Dr. Ahmad Al-Hassan",
+    "descriptionLabel": "School Description (Optional)",
+    "descriptionPlaceholder": "Brief description of your school",
+    "step3Title": "Contact & Security",
+    "step3Description": "Set up your account credentials",
+    "emailLabel": "Email Address *",
+    "emailPlaceholder": "principal@school.edu",
+    "phoneLabel": "Phone Number *",
+    "phonePlaceholder": "+963 xxx xxx xxx",
+    "passwordLabel": "Password *",
+    "passwordPlaceholder": "••••••••",
+    "confirmPasswordLabel": "Confirm Password *",
+    "previousButton": "Previous",
+    "nextButton": "Next",
+    "createAccountButton": "Create Account",
+    "creatingAccountButton": "Creating Account..."
+  },
+  "toast": {
+    "missingInfoTitle": "Missing Information",
+    "fillAllFieldsProceed": "Please fill in all required fields before proceeding.",
+    "fillAllFields": "Please fill in all required fields.",
+    "passwordsDontMatchTitle": "Passwords don't match",
+    "passwordsDontMatchDescription": "Please make sure both passwords are the same.",
+    "registrationSuccessTitle": "Registration successful!",
+    "registrationSuccessDescription": "Please check your email for verification instructions.",
+    "registrationFailedTitle": "Registration failed",
+    "needUpdated": "Need updated",
+    "needCreated": "Need created",
+    "needUpdatedDescription": "The need has been successfully updated.",
+    "needCreatedDescription": "Your need has been recorded and will be reviewed.",
+    "failedToUpdateNeed": "Failed to update need. Please try again.",
+    "failedToCreateNeed": "Failed to create need. Please try again."
   }
 }

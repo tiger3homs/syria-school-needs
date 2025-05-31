@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ImageUpload } from './ImageUpload';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 interface Need {
   id: string;
@@ -19,6 +20,11 @@ interface Need {
   status: string;
   image_url: string | null;
   created_at: string;
+  fulfilled_at: string | null;
+  fulfilled_by: string | null;
+  school_id: string | null;
+  submitted_by: string | null;
+  updated_at: string | null;
 }
 
 interface AddEditNeedModalProps {
@@ -53,6 +59,7 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const isEditMode = !!need;
 
@@ -90,18 +97,18 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
     
     if (success) {
       toast({
-        title: isEditMode ? "Need updated" : "Need created",
+        title: isEditMode ? t('toast.needUpdated') : t('toast.needCreated'),
         description: isEditMode 
-          ? "The need has been successfully updated." 
-          : "Your need has been recorded and will be reviewed.",
+          ? t('toast.needUpdatedDescription') 
+          : t('toast.needCreatedDescription'),
       });
       onClose();
     } else {
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: isEditMode 
-          ? "Failed to update need. Please try again."
-          : "Failed to create need. Please try again.",
+          ? t('toast.failedToUpdateNeed')
+          : t('toast.failedToCreateNeed'),
         variant: "destructive",
       });
     }
@@ -117,31 +124,23 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
     }));
   };
 
-  const formatStatus = (status: string) => {
-    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
-  };
-
-  const formatCategory = (category: string) => {
-    return category.charAt(0).toUpperCase() + category.slice(1);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEditMode ? 'Edit Need' : 'Submit New Need'}</DialogTitle>
+          <DialogTitle>{isEditMode ? t('needs.editNeedTitle') : t('needs.submitNewNeedTitle')}</DialogTitle>
           <DialogDescription>
-            {isEditMode ? 'Update the details of this need' : 'Tell us what your school needs'}
+            {isEditMode ? t('needs.updateNeedDescription') : t('needs.submitNeedDescription')}
           </DialogDescription>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="title">Title *</Label>
+            <Label htmlFor="title">{t('form.titleLabel')}</Label>
             <Input
               id="title"
               name="title"
-              placeholder="e.g., Student Desks for Grade 3"
+              placeholder={t('form.titlePlaceholder')}
               value={formData.title}
               onChange={handleInputChange}
               required
@@ -149,11 +148,11 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t('form.descriptionLabel')}</Label>
             <Textarea
               id="description"
               name="description"
-              placeholder="Detailed description of the need"
+              placeholder={t('form.descriptionPlaceholder')}
               value={formData.description}
               onChange={handleInputChange}
               rows={3}
@@ -162,18 +161,18 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="category">Category *</Label>
+              <Label htmlFor="category">{t('form.categoryLabel')}</Label>
               <Select 
                 value={formData.category} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select category" />
+                  <SelectValue placeholder={t('form.selectCategoryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
-                      {formatCategory(category)}
+                      {t(`categories.${category}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -181,7 +180,7 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity *</Label>
+              <Label htmlFor="quantity">{t('form.quantityLabel')}</Label>
               <Input
                 id="quantity"
                 name="quantity"
@@ -196,18 +195,18 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="priority">Priority *</Label>
+              <Label htmlFor="priority">{t('form.priorityLabel')}</Label>
               <Select 
                 value={formData.priority} 
                 onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select priority" />
+                  <SelectValue placeholder={t('form.selectPriorityPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {PRIORITIES.map((priority) => (
                     <SelectItem key={priority} value={priority}>
-                      {priority.charAt(0).toUpperCase() + priority.slice(1)}
+                      {t(`priority.${priority}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -216,18 +215,18 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
 
             {isEditMode && (
               <div className="space-y-2">
-                <Label htmlFor="status">Status *</Label>
+                <Label htmlFor="status">{t('status.status')}</Label>
                 <Select 
                   value={formData.status} 
                   onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
+                    <SelectValue placeholder={t('status.selectStatusPlaceholder')} />
                   </SelectTrigger>
                   <SelectContent>
                     {STATUSES.map((status) => (
                       <SelectItem key={status} value={status}>
-                        {formatStatus(status)}
+                        {t(`status.${status}`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -244,12 +243,12 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('form.cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
               {isLoading 
-                ? (isEditMode ? "Updating..." : "Submitting...") 
-                : (isEditMode ? "Update Need" : "Submit Need")
+                ? (isEditMode ? t('common.updating') : t('common.submitting')) 
+                : (isEditMode ? t('needs.editNeed') : t('needs.submitNeed'))
               }
             </Button>
           </DialogFooter>

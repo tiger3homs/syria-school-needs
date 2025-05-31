@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { MapPin, Mail, Phone, Calendar, Package, AlertCircle } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 
 interface Need {
   id: string;
@@ -27,6 +29,7 @@ interface Need {
 }
 
 const NeedsPage = () => {
+  const { t } = useTranslation();
   const [needs, setNeeds] = useState<Need[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [governorateFilter, setGovernorateFilter] = useState<string>("");
@@ -109,7 +112,7 @@ const NeedsPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-light font-inter text-primary flex items-center justify-center">
-        <div className="text-xl text-primary">Loading needs...</div>
+        <div className="text-xl text-primary">{t('common.loadingNeeds')}</div>
       </div>
     );
   }
@@ -119,8 +122,8 @@ const NeedsPage = () => {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">School Needs</h1>
-          <p className="text-lg text-gray-700">Help schools across Syria by fulfilling their educational needs</p>
+          <h1 className="text-4xl font-bold text-primary mb-2">{t('needsPage.title')}</h1>
+          <p className="text-lg text-gray-700">{t('needsPage.description')}</p>
         </div>
 
         {/* Filters Section */}
@@ -129,10 +132,10 @@ const NeedsPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <Select value={governorateFilter} onValueChange={setGovernorateFilter}>
                 <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
-                  <SelectValue placeholder="All Governorates" />
+                  <SelectValue placeholder={t('needs.filters.allGovernorates')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Governorates</SelectItem>
+                  <SelectItem value="all">{t('needs.filters.allGovernorates')}</SelectItem>
                   {governorateOptions.map((governorate) => (
                     <SelectItem key={governorate} value={governorate}>
                       {governorate}
@@ -143,10 +146,10 @@ const NeedsPage = () => {
 
               <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                 <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
-                  <SelectValue placeholder="All Categories" />
+                  <SelectValue placeholder={t('needs.filters.allCategories')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
+                  <SelectItem value="all">{t('needs.filters.allCategories')}</SelectItem>
                   {categoryOptions.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
@@ -157,23 +160,23 @@ const NeedsPage = () => {
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
-                  <SelectValue placeholder="All Statuses" />
+                  <SelectValue placeholder={t('needs.filters.allStatuses')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                  <SelectItem value="all">{t('needs.filters.allStatuses')}</SelectItem>
+                  <SelectItem value="pending">{t('status.pending')}</SelectItem>
+                  <SelectItem value="fulfilled">{t('status.fulfilled')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="border-gray-300 focus:border-gold focus:ring-gold">
-                  <SelectValue placeholder="Sort by" />
+                  <SelectValue placeholder={t('needs.filters.sortBy')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="oldest">Oldest First</SelectItem>
-                  <SelectItem value="priority">Priority</SelectItem>
+                  <SelectItem value="newest">{t('needs.filters.newest')}</SelectItem>
+                  <SelectItem value="oldest">{t('needs.filters.oldest')}</SelectItem>
+                  <SelectItem value="priority">{t('needs.filters.priority')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -181,7 +184,7 @@ const NeedsPage = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               <Input
                 type="text"
-                placeholder="Search by title or description..."
+                placeholder={t('needs.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="flex-1 border-gray-300 focus:border-gold focus:ring-gold"
@@ -197,7 +200,7 @@ const NeedsPage = () => {
                 }}
                 className="border-gold text-gold hover:bg-gold hover:text-primary"
               >
-                Reset Filters
+                {t('needs.filters.resetFilters')}
               </Button>
             </div>
           </CardContent>
@@ -206,7 +209,7 @@ const NeedsPage = () => {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-gray-700">
-            Showing {filteredAndSortedNeeds.length} of {needs.length} needs
+            {t('needs.showingResults', { count: filteredAndSortedNeeds.length, total: needs.length })}
           </p>
         </div>
 
@@ -252,18 +255,18 @@ const NeedsPage = () => {
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-sm text-gray-700">
                     <Package className="h-4 w-4 text-gray-500" />
-                    <span>Quantity: {need.quantity}</span>
+                    <span>{t('needs.quantity')}: {need.quantity}</span>
                   </div>
                   
                   <div className="flex items-center gap-2 text-sm text-gray-700">
                     <AlertCircle className="h-4 w-4 text-gray-500" />
-                    <span>Category: {need.category}</span>
+                    <span>{t('needs.category')}: {need.category}</span>
                   </div>
 
                   {need.created_at && (
                     <div className="flex items-center gap-2 text-sm text-gray-700">
                       <Calendar className="h-4 w-4 text-gray-500" />
-                      <span>Posted: {new Date(need.created_at).toLocaleDateString()}</span>
+                      <span>{t('needs.posted')}: {new Date(need.created_at).toLocaleDateString()}</span>
                     </div>
                   )}
 
@@ -300,12 +303,15 @@ const NeedsPage = () => {
                 <Button 
                   className="w-full bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105"
                   onClick={() => {
-                    if (need.schools?.contact_email) {
+                    if (need.schools?.contact_phone) {
+                      window.open(`https://wa.me/${need.schools.contact_phone}`, '_blank');
+                    } else if (need.schools?.contact_email) {
                       window.location.href = `mailto:${need.schools.contact_email}?subject=Interest in: ${need.title}`;
                     }
                   }}
                 >
-                  Contact School
+                  <FaWhatsapp className="inline-block mr-2" />
+                  {t('needs.contactWhatsapp')}
                 </Button>
               </CardFooter>
             </Card>
@@ -315,8 +321,8 @@ const NeedsPage = () => {
         {filteredAndSortedNeeds.length === 0 && (
           <div className="text-center py-12 text-gray-600">
             <Package className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-primary mb-2">No needs found</h3>
-            <p className="text-gray-700">Try adjusting your filters to see more results.</p>
+            <h3 className="text-xl font-semibold text-primary mb-2">{t('needs.noNeeds')}</h3>
+            <p className="text-gray-700">{t('needs.noNeedsDescription')}</p>
           </div>
         )}
       </div>

@@ -72,9 +72,19 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    let processedValue = value;
+
+    if (name === "contact_phone") {
+      if (value && !value.startsWith("+963")) {
+        processedValue = "+963" + value;
+      } else if (!value) {
+        processedValue = ""; // Allow clearing the input
+      }
+    }
+
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'number_of_students' ? parseInt(value) || 0 : value
+      [name]: name === 'number_of_students' ? parseInt(processedValue) || 0 : processedValue
     }));
   };
 
