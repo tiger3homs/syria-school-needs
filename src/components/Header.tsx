@@ -1,15 +1,19 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { MenuIcon, X, ArrowRight } from 'lucide-react';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Header = () => {
   const { user, profile, isAdmin, isPrincipal, signOut } = useAuth();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
+  const isRTL = i18n.language === 'ar';
 
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [visible, setVisible] = useState(true);
@@ -46,70 +50,68 @@ const Header = () => {
   return (
     <nav className={`bg-primary/95 backdrop-blur-md shadow-lg font-inter fixed w-full z-50 top-0 transition-transform duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 sm:h-18 items-center">
-          {/* Logo and Brand - Mobile Optimized */}
-          <div className="flex items-center flex-shrink-0">
-            <Link to="/" className="flex items-center group" onClick={closeMobileMenu}>
+        <div className={`flex justify-between h-16 sm:h-18 items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+          {/* Logo and Brand */}
+          <div className={`flex items-center flex-shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <Link to="/" className={`flex items-center group ${isRTL ? 'flex-row-reverse' : ''}`} onClick={closeMobileMenu}>
               <img 
                 src="/logo.jpg" 
                 alt="Syrian Ministry Logo" 
-                className="h-10 sm:h-12 w-auto mr-2 sm:mr-3 rounded shadow-sm group-hover:shadow-md transition-shadow" 
+                className={`h-10 sm:h-12 w-auto rounded shadow-sm group-hover:shadow-md transition-shadow ${isRTL ? 'ml-2 sm:ml-3' : 'mr-2 sm:mr-3'}`} 
               />
               <div className="hidden sm:block">
-                <span className="text-lg sm:text-xl font-bold text-white leading-tight">
-                  إعادة بناء المدارس
-                  <span className="block text-sm font-normal opacity-90">School Rebuild Syria</span>
+                <span className={`text-lg sm:text-xl font-bold text-white leading-tight ${isRTL ? 'text-right' : 'text-left'}`}>
+                  {t('site.title')}
+                  <span className="block text-sm font-normal opacity-90">{t('site.description')}</span>
                 </span>
               </div>
               <div className="block sm:hidden">
                 <span className="text-base font-bold text-white">
-                  المدارس السورية
+                  {isRTL ? 'المدارس السورية' : 'Syrian Schools'}
                 </span>
               </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}>
             <Link to="/" className={getLinkClass('/')}>
               <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                الرئيسية
-                <span className="block text-xs opacity-75">Home</span>
+                {t('nav.home')}
               </Button>
             </Link>
             <Link to="/needs" className={getLinkClass('/needs')}>
               <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                الاحتياجات
-                <span className="block text-xs opacity-75">Needs</span>
+                {t('nav.needs')}
               </Button>
             </Link>
             <Link to="/schools" className={getLinkClass('/schools')}>
               <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                المدارس
-                <span className="block text-xs opacity-75">Schools</span>
+                {t('nav.schools')}
               </Button>
             </Link>
 
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
             {/* User Authentication - Desktop */}
             {!user && (
-              <div className="flex items-center space-x-2 ml-4">
+              <div className={`flex items-center ml-4 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
                 <Link to="/login" className={getLinkClass('/login')}>
                   <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                    تسجيل الدخول
-                    <span className="block text-xs opacity-75">Login</span>
+                    {t('nav.login')}
                   </Button>
                 </Link>
                 <Link to="/register">
-                  <Button className="bg-gold text-primary hover:bg-gold/90 rounded-lg px-4 py-2 text-sm font-semibold shadow-md hover:shadow-lg transition-all">
-                    تسجيل مدرسة
-                    <span className="block text-xs font-normal">Register School</span>
+                  <Button className="bg-gold text-primary hover:bg-gold/90 rounded-xl px-4 py-2 text-sm font-semibold shadow-md hover:shadow-lg transition-all">
+                    {t('nav.register')}
                   </Button>
                 </Link>
               </div>
             )}
 
             {user && (
-              <div className="flex items-center space-x-2 ml-4">
+              <div className={`flex items-center ml-4 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
                 {profile?.email && (
                   <span className="text-white/90 text-sm hidden xl:block max-w-32 truncate">
                     {profile.email}
@@ -118,16 +120,14 @@ const Header = () => {
                 {isPrincipal && (
                   <Link to="/dashboard" className={getLinkClass('/dashboard')}>
                     <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                      لوحة التحكم
-                      <span className="block text-xs opacity-75">Dashboard</span>
+                      {t('nav.dashboard')}
                     </Button>
                   </Link>
                 )}
                 {isAdmin && (
                   <Link to="/admin/dashboard" className={getLinkClass('/admin/dashboard')}>
                     <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
-                      إدارة النظام
-                      <span className="block text-xs opacity-75">Admin</span>
+                      {t('nav.admin')}
                     </Button>
                   </Link>
                 )}
@@ -136,8 +136,7 @@ const Header = () => {
                   variant="ghost" 
                   className="text-white hover:bg-white/10 hover:text-red-300 px-3 py-2 text-sm font-medium"
                 >
-                  خروج
-                  <span className="block text-xs opacity-75">Sign Out</span>
+                  {t('nav.logout')}
                 </Button>
               </div>
             )}
@@ -157,15 +156,15 @@ const Header = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent 
-                side="right" 
+                side={isRTL ? "left" : "right"}
                 className="w-full sm:w-80 bg-primary text-white border-l-gold/20 p-0"
               >
                 {/* Mobile Menu Header */}
-                <div className="flex items-center justify-between p-4 border-b border-white/10">
-                  <div className="flex items-center">
-                    <img src="/logo.jpg" alt="Logo" className="h-8 w-auto mr-2 rounded" />
+                <div className={`flex items-center justify-between p-4 border-b border-white/10 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <img src="/logo.jpg" alt="Logo" className={`h-8 w-auto rounded ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     <span className="font-bold text-lg">
-                      المدارس السورية
+                      {t('site.title')}
                     </span>
                   </div>
                   <Button
@@ -181,35 +180,37 @@ const Header = () => {
 
                 {/* Mobile Menu Content */}
                 <nav className="flex flex-col p-4 space-y-2">
+                  {/* Language Switcher for Mobile */}
+                  <div className="mb-4 pb-4 border-b border-white/10">
+                    <LanguageSwitcher />
+                  </div>
+
                   {/* Main Navigation */}
                   <div className="space-y-1">
                     <Link to="/" onClick={closeMobileMenu} className="block">
                       <Button 
                         variant="ghost" 
-                        className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                       >
-                        الرئيسية
-                        <span className="text-sm opacity-75 ml-auto">Home</span>
+                        {t('nav.home')}
                       </Button>
                     </Link>
                     
                     <Link to="/needs" onClick={closeMobileMenu} className="block">
                       <Button 
                         variant="ghost" 
-                        className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                       >
-                        الاحتياجات
-                        <span className="text-sm opacity-75 ml-auto">Needs</span>
+                        {t('nav.needs')}
                       </Button>
                     </Link>
                     
                     <Link to="/schools" onClick={closeMobileMenu} className="block">
                       <Button 
                         variant="ghost" 
-                        className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                       >
-                        المدارس
-                        <span className="text-sm opacity-75 ml-auto">Schools</span>
+                        {t('nav.schools')}
                       </Button>
                     </Link>
                   </div>
@@ -221,17 +222,15 @@ const Header = () => {
                         <Link to="/login" onClick={closeMobileMenu} className="block">
                           <Button 
                             variant="ghost" 
-                            className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                            className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                           >
-                            تسجيل الدخول
-                            <span className="text-sm opacity-75 ml-auto">Login</span>
+                            {t('nav.login')}
                           </Button>
                         </Link>
                         <Link to="/register" onClick={closeMobileMenu} className="block">
-                          <Button className="w-full bg-gold text-primary hover:bg-gold/90 rounded-lg py-3 px-4 text-base font-semibold shadow-md">
-                            تسجيل مدرسة جديدة
-                            <span className="block text-sm font-normal">Register New School</span>
-                            <ArrowRight className="ml-2 h-4 w-4" />
+                          <Button className="w-full bg-gold text-primary hover:bg-gold/90 rounded-xl py-3 px-4 text-base font-semibold shadow-md">
+                            {t('nav.register')}
+                            <ArrowRight className={`h-4 w-4 ${isRTL ? 'mr-2' : 'ml-2'}`} />
                           </Button>
                         </Link>
                       </div>
@@ -251,10 +250,9 @@ const Header = () => {
                           <Link to="/dashboard" onClick={closeMobileMenu} className="block">
                             <Button 
                               variant="ghost" 
-                              className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                              className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                             >
-                              لوحة التحكم
-                              <span className="text-sm opacity-75 ml-auto">Dashboard</span>
+                              {t('nav.dashboard')}
                             </Button>
                           </Link>
                         )}
@@ -263,10 +261,9 @@ const Header = () => {
                           <Link to="/admin/dashboard" onClick={closeMobileMenu} className="block">
                             <Button 
                               variant="ghost" 
-                              className="w-full justify-start text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium"
+                              className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                             >
-                              إدارة النظام
-                              <span className="text-sm opacity-75 ml-auto">Admin Dashboard</span>
+                              {t('nav.admin')}
                             </Button>
                           </Link>
                         )}
@@ -274,10 +271,9 @@ const Header = () => {
                         <Button 
                           onClick={handleSignOut} 
                           variant="ghost" 
-                          className="w-full justify-start text-white hover:bg-red-500/20 hover:text-red-300 py-3 px-4 text-base font-medium"
+                          className={`w-full text-white hover:bg-red-500/20 hover:text-red-300 py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
                         >
-                          تسجيل الخروج
-                          <span className="text-sm opacity-75 ml-auto">Sign Out</span>
+                          {t('nav.logout')}
                         </Button>
                       </div>
                     )}

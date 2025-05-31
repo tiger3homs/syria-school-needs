@@ -1,0 +1,187 @@
+
+{
+  "site": {
+    "title": "School Rebuild Syria",
+    "description": "Ministry of Education - Syrian Arab Republic"
+  },
+  "nav": {
+    "home": "Home",
+    "needs": "Needs",
+    "schools": "Schools",
+    "login": "Login",
+    "register": "Register School",
+    "dashboard": "Dashboard",
+    "admin": "Admin Panel",
+    "logout": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "title": "Rebuilding Hope",
+      "subtitle": "One School at a Time",
+      "description": "Ministry of Education - Syrian Arab Republic",
+      "mission": "Join our national mission to rebuild educational infrastructure in Syria"
+    },
+    "cta": {
+      "registerSchool": "Register Your School",
+      "viewNeeds": "View School Needs",
+      "getStarted": "Get Started"
+    },
+    "stats": {
+      "schoolsRegistered": "Schools Registered",
+      "schoolsRebuilt": "Schools Rebuilt", 
+      "needsFulfilled": "Needs Fulfilled"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "description": "Simple steps to connect schools with needed support",
+      "step1": {
+        "title": "Register School",
+        "description": "School principals create a secure profile with essential details"
+      },
+      "step2": {
+        "title": "Submit Needs",
+        "description": "List specific needs with detailed descriptions and priorities"
+      },
+      "step3": {
+        "title": "Get Support",
+        "description": "Donors and organizations review needs and provide essential support"
+      }
+    },
+    "mission": {
+      "title": "Our Mission & Values",
+      "description": "The Ministry of Education is committed to fostering a resilient and educated generation",
+      "transparency": {
+        "title": "Transparency",
+        "description": "Ensuring every resource is managed with utmost integrity"
+      },
+      "education": {
+        "title": "Education for All",
+        "description": "Providing equitable access to quality education for every child"
+      },
+      "infrastructure": {
+        "title": "Sustainable Infrastructure",
+        "description": "Building durable learning environments that stand the test of time"
+      }
+    },
+    "cta2": {
+      "title": "Ready to Make a Difference?",
+      "description": "Join our national mission to rebuild educational infrastructure in Syria",
+      "button": "Register Your School Today"
+    }
+  },
+  "footer": {
+    "quickLinks": "Quick Links",
+    "officialInfo": "Official Information",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "accessibility": "Accessibility",
+    "contact": "Contact Us",
+    "copyright": "All rights reserved.",
+    "initiative": "A national initiative by the Ministry of Education, Syrian Arab Republic"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "description": "Sign in to your school account to manage needs and connect with supporters",
+      "email": "Email",
+      "password": "Password",
+      "signIn": "Sign In",
+      "signingIn": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "registerHere": "Register your school",
+      "adminLogin": "Admin Login",
+      "backToHome": "Back to home"
+    },
+    "register": {
+      "title": "Register Your School",
+      "description": "Join our platform to connect with supporters and get the resources your school needs",
+      "getStarted": "Get Started",
+      "registerDescription": "Register your school in just a few simple steps and start receiving support from our community.",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInHere": "Sign in here"
+    }
+  },
+  "form": {
+    "schoolName": "School Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "governorate": "Governorate",
+    "educationLevel": "Education Level",
+    "contactPerson": "Contact Person",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address"
+  },
+  "educationLevels": {
+    "primary": "Primary School",
+    "middle": "Middle School", 
+    "highSchool": "High School"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "fulfilled": "Fulfilled"
+  },
+  "needs": {
+    "title": "School Needs",
+    "description": "Help schools across Syria by fulfilling their educational needs",
+    "filters": {
+      "allGovernorates": "All Governorates",
+      "allCategories": "All Categories",
+      "allStatuses": "All Statuses",
+      "allEducationLevels": "All Education Levels",
+      "sortBy": "Sort by",
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "priority": "Priority",
+      "resetFilters": "Reset Filters"
+    },
+    "searchPlaceholder": "Search by title or description...",
+    "showingResults": "Showing {{count}} of {{total}} needs",
+    "contactSchool": "Contact School",
+    "quantity": "Quantity",
+    "category": "Category",
+    "posted": "Posted",
+    "noNeeds": "No needs found",
+    "noNeedsDescription": "Try adjusting your filters to see more results."
+  },
+  "dashboard": {
+    "welcome": "Welcome to your dashboard",
+    "mySchool": "My School",
+    "submitNeed": "Submit New Need",
+    "viewNeeds": "View My Needs",
+    "editProfile": "Edit School Profile",
+    "stats": "Statistics"
+  },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "schools": "Manage Schools",
+    "needs": "Manage Needs", 
+    "moderation": "School Moderation",
+    "analytics": "Analytics",
+    "notifications": "Notifications",
+    "auditLog": "Audit Log",
+    "export": "Export Data"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "actions": "Actions",
+    "view": "View",
+    "approve": "Approve",
+    "reject": "Reject"
+  }
+}
