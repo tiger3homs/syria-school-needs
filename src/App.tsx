@@ -16,6 +16,7 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminNeeds from "./pages/AdminNeeds";
 import AdminSchools from "./pages/AdminSchools";
+import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 import NotFound from "./pages/NotFound";
 import NeedsPage from "./pages/NeedsPage";
 import SchoolsPage from "./pages/SchoolsPage";
@@ -84,6 +85,11 @@ const AppContent = () => {
         <Route path="/admin/schools" element={
           <ProtectedRoute requiredRole="admin">
             <AdminSchools />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/notifications" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminNotificationsPage />
           </ProtectedRoute>
         } />
         <Route path="*" element={<NotFound />} />

@@ -19,22 +19,18 @@ const Index = () => {
         {/* Enhanced overlay */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/95 via-primary/90 to-primary/85 backdrop-blur-[1px]"></div> 
         <div className="relative z-10 max-w-5xl mx-auto text-center">
-          {/* Logo */}
-          <div className="mb-8 sm:mb-10">
-            <img src="/logo.jpg" alt="Syrian Ministry Logo" className="h-16 sm:h-20 md:h-24 w-auto mx-auto mb-6 rounded-xl shadow-2xl" />
-          </div>
-          
+
           {/* Hero Content */}
-          <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 leading-tight text-shadow-sm ${isRTL ? 'text-right' : 'text-left'} text-center`}>
+          <h1 className={`text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 sm:mb-8 leading-tight text-shadow-sm  text-center`}>
             {t('home.hero.title')}
             <span className="block text-gold mt-2">{t('home.hero.subtitle')}</span>
           </h1>
           
-          <p className={`text-xl sm:text-2xl md:text-3xl mb-10 sm:mb-12 max-w-4xl mx-auto font-light opacity-95 leading-relaxed ${isRTL ? 'text-right' : 'text-left'} text-center`}>
+          <p className={`text-xl sm:text-2xl md:text-3xl mb-10 sm:mb-12 max-w-4xl mx-auto font-light opacity-95 leading-relaxed text-center`}>
             {t('home.hero.description')}
           </p>
           
-          <p className={`text-lg sm:text-xl mb-12 sm:mb-16 max-w-3xl mx-auto leading-relaxed ${isRTL ? 'text-right' : 'text-left'} text-center`}>
+          <p className={`text-lg sm:text-xl mb-12 sm:mb-16 max-w-3xl mx-auto leading-relaxed text-center`}>
             {t('home.hero.mission')}
           </p>
           
@@ -78,7 +74,7 @@ const Index = () => {
       {/* Enhanced How It Works Section */}
       <section className="py-16 sm:py-20 md:py-24 bg-light">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`text-center mb-12 sm:mb-16 ${isRTL ? 'text-right' : 'text-left'} text-center`}>
+          <div className={`text-center mb-12 sm:mb-16  text-center`}>
             <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
               {t('home.howItWorks.title')}
             </h2>
@@ -145,7 +141,7 @@ const Index = () => {
       {/* Enhanced Mission & Values Section */}
       <section className="py-16 sm:py-20 md:py-24 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className={`text-center mb-12 sm:mb-16 ${isRTL ? 'text-right' : 'text-left'} text-center`}>
+          <div className={`text-center mb-12 sm:mb-16  text-center`}>
             <h2 className="text-4xl sm:text-5xl font-bold text-primary mb-6">
               {t('home.mission.title')}
             </h2>
@@ -155,7 +151,7 @@ const Index = () => {
           </div>
           
           <div className="space-y-8 md:grid md:grid-cols-3 md:gap-10 md:space-y-0">
-            <div className="mobile-card border-t-4 border-primary text-center hover:shadow-xl transition-all duration-300">
+            <div className="mobile-card border-t-4 border-syrian-red hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <ShieldCheck className="h-16 w-16 sm:h-20 sm:w-20 text-gold mx-auto mb-6" />
               <h3 className="text-2xl sm:text-3xl font-semibold text-primary mb-4">
                 {t('home.mission.transparency.title')}
@@ -165,7 +161,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="mobile-card border-t-4 border-gold text-center hover:shadow-xl transition-all duration-300">
+            <div className="mobile-card border-t-4 border-syrian-red hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <GraduationCap className="h-16 w-16 sm:h-20 sm:w-20 text-primary mx-auto mb-6" />
               <h3 className="text-2xl sm:text-3xl font-semibold text-primary mb-4">
                 {t('home.mission.education.title')}
@@ -175,7 +171,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="mobile-card border-t-4 border-primary text-center hover:shadow-xl transition-all duration-300">
+            <div className="mobile-card border-t-4 border-syrian-red hover:shadow-xl transition-all duration-300 transform hover:scale-105">
               <Building2 className="h-16 w-16 sm:h-20 sm:w-20 text-gold mx-auto mb-6" />
               <h3 className="text-2xl sm:text-3xl font-semibold text-primary mb-4">
                 {t('home.mission.infrastructure.title')}
@@ -197,12 +193,14 @@ const Index = () => {
           <p className="text-xl sm:text-2xl md:text-3xl mb-12 sm:mb-16 leading-relaxed opacity-95 max-w-4xl mx-auto">
             {t('home.cta2.description')}
           </p>
-          <Link to="/register">
-            <Button className={`mobile-button-primary bg-gold text-primary hover:bg-gold/90 text-xl px-10 py-5 transform hover:scale-105 transition-all duration-300 ${isRTL ? 'flex-row-reverse' : ''}`}>
-              {t('home.cta2.button')}
-              <ArrowRight className={`h-6 w-6 ${isRTL ? 'mr-3 rotate-180' : 'ml-3'}`} />
-            </Button>
-          </Link>
+          <div className="flex justify-center">
+            <Link to="/register">
+              <Button className={`mobile-button-primary bg-gold text-primary hover:bg-gold/90 text-xl px-10 py-5 transform hover:scale-105 transition-all duration-300`}>
+                {t('home.cta2.button')}
+                <ArrowRight className={`h-6 w-6 ${isRTL ? 'mr-3 rotate-180' : 'ml-3'}`} />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 

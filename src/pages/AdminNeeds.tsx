@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -33,6 +34,7 @@ interface Need {
 }
 
 const AdminNeedsComponent = () => {
+  const { t } = useTranslation();
   const [needs, setNeeds] = useState<Need[]>([]);
   const [filteredNeeds, setFilteredNeeds] = useState<Need[]>([]);
   const [selectedNeeds, setSelectedNeeds] = useState<string[]>([]);
@@ -87,7 +89,7 @@ const AdminNeedsComponent = () => {
       setNeeds(transformedData);
     } catch (error: any) {
       toast({
-        title: "Error fetching needs",
+        title: t('toast.errorFetchingNeeds'),
         description: error.message,
         variant: "destructive",
       });
@@ -163,12 +165,12 @@ const AdminNeedsComponent = () => {
       ));
 
       toast({
-        title: "Status updated",
-        description: `Need marked as ${newStatus}`,
+        title: t('toast.statusUpdated'),
+        description: t('toast.needMarkedAs', { status: t(`status.${newStatus}`) }),
       });
     } catch (error: any) {
       toast({
-        title: "Error updating status",
+        title: t('toast.errorUpdatingStatus'),
         description: error.message,
         variant: "destructive",
       });
@@ -178,8 +180,8 @@ const AdminNeedsComponent = () => {
   const handleBulkAction = async (action: 'fulfill' | 'pending' | 'delete') => {
     if (selectedNeeds.length === 0) {
       toast({
-        title: "No items selected",
-        description: "Please select items to perform bulk action",
+        title: t('toast.noItemsSelected'),
+        description: t('toast.selectItemsBulkAction'),
         variant: "destructive",
       });
       return;
@@ -196,8 +198,8 @@ const AdminNeedsComponent = () => {
         
         setNeeds(needs.filter(need => !selectedNeeds.includes(need.id)));
         toast({
-          title: "Items deleted",
-          description: `${selectedNeeds.length} items deleted successfully`,
+          title: t('toast.itemsDeleted'),
+          description: t('toast.itemsDeletedSuccessfully', { count: selectedNeeds.length }),
         });
       } else {
         const newStatus = action === 'fulfill' ? 'fulfilled' : 'pending';
@@ -213,15 +215,15 @@ const AdminNeedsComponent = () => {
         ));
 
         toast({
-          title: "Status updated",
-          description: `${selectedNeeds.length} items marked as ${newStatus}`,
+          title: t('toast.statusUpdated'),
+          description: t('toast.itemsMarkedAs', { count: selectedNeeds.length, status: t(`status.${newStatus}`) }),
         });
       }
       
       setSelectedNeeds([]);
     } catch (error: any) {
       toast({
-        title: "Error performing bulk action",
+        title: t('toast.errorPerformingBulkAction'),
         description: error.message,
         variant: "destructive",
       });
@@ -245,8 +247,8 @@ const AdminNeedsComponent = () => {
 
     if (exportData.length === 0) {
       toast({
-        title: "No data to export",
-        description: "Please select some items or adjust your filters.",
+        title: t('toast.noDataToExport'),
+        description: t('toast.selectItemsAdjustFilters'),
         variant: "destructive",
       });
       return;
@@ -274,84 +276,84 @@ const AdminNeedsComponent = () => {
     }
 
     toast({
-      title: "Export successful",
-      description: `${exportData.length} needs exported as ${format.toUpperCase()}`,
+      title: t('toast.exportSuccessful'),
+      description: t('toast.needsExported', { count: exportData.length, format: format.toUpperCase() }),
     });
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800';
-      case 'medium': return 'bg-yellow-100 text-yellow-800';
-      case 'low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'high': return 'bg-destructive/10 text-destructive border-destructive';
+      case 'medium': return 'bg-accent/10 text-accent border-accent';
+      case 'low': return 'bg-primary/10 text-primary border-primary';
+      default: return 'bg-muted/10 text-muted-foreground border-border';
     }
   };
 
   const getStatusColor = (status: string) => {
     return status === 'fulfilled' 
-      ? 'bg-green-100 text-green-800' 
-      : 'bg-orange-100 text-orange-800';
+      ? 'bg-primary/10 text-primary border-primary' 
+      : 'bg-accent/10 text-accent border-accent';
   };
 
   const uniqueGovernorates = [...new Set(needs.map(need => need.school.governorate))].filter(Boolean);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading needs...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">{t('common.loadingNeeds')}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <AdminHeader />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">Needs Management</h2>
-              <p className="text-gray-600 mt-2">Review and manage school needs submitted by principals</p>
+              <h2 className="text-3xl font-bold text-foreground">{t('admin.needs.managementTitle')}</h2>
+              <p className="text-muted-foreground mt-2">{t('admin.needs.managementDescription')}</p>
             </div>
             
             {/* Export Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="flex items-center gap-2">
+                <Button variant="outline" className="flex items-center gap-2 mobile-button-secondary">
                   <Download className="h-4 w-4" />
-                  Export Data
+                  {t('admin.needs.exportData')}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem onClick={() => handleExport('csv', 'all')}>
                   <FileText className="h-4 w-4 mr-2" />
-                  Export All (CSV)
+                  {t('admin.needs.exportAllCSV')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport('excel', 'all')}>
                   <FileText className="h-4 w-4 mr-2" />
-                  Export All (Excel)
+                  {t('admin.needs.exportAllExcel')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport('csv', 'filtered')}>
                   <Filter className="h-4 w-4 mr-2" />
-                  Export Filtered (CSV)
+                  {t('admin.needs.exportFilteredCSV')}
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => handleExport('excel', 'filtered')}>
                   <Filter className="h-4 w-4 mr-2" />
-                  Export Filtered (Excel)
+                  {t('admin.needs.exportFilteredExcel')}
                 </DropdownMenuItem>
                 {selectedNeeds.length > 0 && (
                   <>
                     <DropdownMenuItem onClick={() => handleExport('csv', 'selected')}>
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Export Selected (CSV)
+                      {t('admin.needs.exportSelectedCSV')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => handleExport('excel', 'selected')}>
                       <CheckCircle className="h-4 w-4 mr-2" />
-                      Export Selected (Excel)
+                      {t('admin.needs.exportSelectedExcel')}
                     </DropdownMenuItem>
                   </>
                 )}
@@ -363,73 +365,73 @@ const AdminNeedsComponent = () => {
         {/* Filters and Search */}
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle className="flex items-center">
-              <Filter className="h-5 w-5 mr-2" />
-              Filters & Search
+            <CardTitle className="flex items-center text-foreground">
+              <Filter className="h-5 w-5 mr-2 text-primary" />
+              {t('admin.needs.filtersSearch')}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search needs or schools..."
+                  placeholder={t('admin.needs.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9"
+                  className="pl-9 bg-card text-foreground border-border"
                 />
               </div>
               
               <Select value={filters.category} onValueChange={(value) => setFilters(prev => ({ ...prev, category: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Categories" />
+                <SelectTrigger className="bg-card text-foreground border-border">
+                  <SelectValue placeholder={t('admin.needs.allCategories')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  <SelectItem value="furniture">Furniture</SelectItem>
-                  <SelectItem value="outdoor_facilities">Outdoor Facilities</SelectItem>
-                  <SelectItem value="equipment">Equipment</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                <SelectContent className="bg-card text-foreground border-border">
+                  <SelectItem value="all">{t('admin.needs.allCategories')}</SelectItem>
+                  <SelectItem value="furniture">{t('categories.furniture')}</SelectItem>
+                  <SelectItem value="outdoor_facilities">{t('categories.outdoor_facilities')}</SelectItem>
+                  <SelectItem value="equipment">{t('categories.equipment')}</SelectItem>
+                  <SelectItem value="other">{t('categories.other')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={filters.priority} onValueChange={(value) => setFilters(prev => ({ ...prev, priority: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Priorities" />
+                <SelectTrigger className="bg-card text-foreground border-border">
+                  <SelectValue placeholder={t('admin.needs.allPriorities')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Priorities</SelectItem>
-                  <SelectItem value="high">High</SelectItem>
-                  <SelectItem value="medium">Medium</SelectItem>
-                  <SelectItem value="low">Low</SelectItem>
+                <SelectContent className="bg-card text-foreground border-border">
+                  <SelectItem value="all">{t('admin.needs.allPriorities')}</SelectItem>
+                  <SelectItem value="high">{t('priority.high')}</SelectItem>
+                  <SelectItem value="medium">{t('priority.medium')}</SelectItem>
+                  <SelectItem value="low">{t('priority.low')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={filters.status} onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Status" />
+                <SelectTrigger className="bg-card text-foreground border-border">
+                  <SelectValue placeholder={t('admin.needs.allStatus')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="fulfilled">Fulfilled</SelectItem>
+                <SelectContent className="bg-card text-foreground border-border">
+                  <SelectItem value="all">{t('admin.needs.allStatus')}</SelectItem>
+                  <SelectItem value="pending">{t('status.pending')}</SelectItem>
+                  <SelectItem value="fulfilled">{t('status.fulfilled')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={filters.governorate} onValueChange={(value) => setFilters(prev => ({ ...prev, governorate: value }))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="All Governorates" />
+                <SelectTrigger className="bg-card text-foreground border-border">
+                  <SelectValue placeholder={t('admin.needs.allGovernorates')} />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Governorates</SelectItem>
+                <SelectContent className="bg-card text-foreground border-border">
+                  <SelectItem value="all">{t('admin.needs.allGovernorates')}</SelectItem>
                   {uniqueGovernorates.map(gov => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                    <SelectItem key={gov} value={gov}>{t(`governorates.${gov}`)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
-              <div className="text-sm text-gray-600 flex items-center">
-                Showing {filteredNeeds.length} of {needs.length} needs
+              <div className="text-sm text-muted-foreground flex items-center">
+                {t('admin.needs.showingResults', { count: filteredNeeds.length, total: needs.length })}
               </div>
             </div>
           </CardContent>
@@ -437,24 +439,24 @@ const AdminNeedsComponent = () => {
 
         {/* Bulk Actions */}
         {selectedNeeds.length > 0 && (
-          <Card className="mb-6 border-blue-200 bg-blue-50">
+          <Card className="mb-6 border-accent bg-accent/10">
             <CardContent className="pt-6">
               <div className="flex items-center justify-between">
-                <div className="text-sm font-medium text-blue-900">
-                  {selectedNeeds.length} item(s) selected
+                <div className="text-sm font-medium text-primary">
+                  {t('admin.needs.itemsSelected', { count: selectedNeeds.length })}
                 </div>
                 <div className="flex space-x-2">
-                  <Button size="sm" onClick={() => handleBulkAction('fulfill')}>
+                  <Button size="sm" onClick={() => handleBulkAction('fulfill')} className="mobile-button-primary">
                     <CheckCircle className="h-4 w-4 mr-1" />
-                    Mark as Fulfilled
+                    {t('admin.needs.markAsFulfilledButton')}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleBulkAction('pending')}>
+                  <Button size="sm" variant="outline" onClick={() => handleBulkAction('pending')} className="mobile-button-secondary">
                     <XCircle className="h-4 w-4 mr-1" />
-                    Mark as Pending
+                    {t('admin.needs.markAsPendingButton')}
                   </Button>
                   <Button size="sm" variant="destructive" onClick={() => handleBulkAction('delete')}>
                     <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
+                    {t('admin.needs.deleteButton')}
                   </Button>
                 </div>
               </div>
@@ -468,7 +470,7 @@ const AdminNeedsComponent = () => {
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
+                  <TableRow className="bg-secondary">
                     <TableHead className="w-12">
                       <Checkbox
                         checked={selectedNeeds.length === filteredNeeds.length && filteredNeeds.length > 0}
@@ -482,42 +484,42 @@ const AdminNeedsComponent = () => {
                       />
                     </TableHead>
                     <TableHead 
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-secondary/80 text-foreground"
                       onClick={() => handleSort('school.name')}
                     >
                       <div className="flex items-center">
-                        School Name
+                        {t('admin.needs.tableHeaderSchoolName')}
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </div>
                     </TableHead>
                     <TableHead 
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-secondary/80 text-foreground"
                       onClick={() => handleSort('title')}
                     >
                       <div className="flex items-center">
-                        Need Title
+                        {t('admin.needs.tableHeaderNeedTitle')}
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </div>
                     </TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Governorate</TableHead>
-                    <TableHead>Quantity</TableHead>
+                    <TableHead className="text-foreground">{t('admin.needs.tableHeaderCategory')}</TableHead>
+                    <TableHead className="text-foreground">{t('admin.needs.tableHeaderGovernorate')}</TableHead>
+                    <TableHead className="text-foreground">{t('admin.needs.tableHeaderQuantity')}</TableHead>
                     <TableHead 
-                      className="cursor-pointer hover:bg-gray-50"
+                      className="cursor-pointer hover:bg-secondary/80 text-foreground"
                       onClick={() => handleSort('priority')}
                     >
                       <div className="flex items-center">
-                        Priority
+                        {t('admin.needs.tableHeaderPriority')}
                         <ArrowUpDown className="ml-2 h-4 w-4" />
                       </div>
                     </TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="text-foreground">{t('admin.needs.tableHeaderStatus')}</TableHead>
+                    <TableHead className="text-foreground">{t('admin.needs.tableHeaderActions')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredNeeds.map((need) => (
-                    <TableRow key={need.id}>
+                    <TableRow key={need.id} className="bg-card hover:bg-secondary/50">
                       <TableCell>
                         <Checkbox
                           checked={selectedNeeds.includes(need.id)}
@@ -530,26 +532,26 @@ const AdminNeedsComponent = () => {
                           }}
                         />
                       </TableCell>
-                      <TableCell className="font-medium">{need.school.name}</TableCell>
+                      <TableCell className="font-medium text-foreground">{need.school.name}</TableCell>
                       <TableCell>
                         <div>
-                          <div className="font-medium">{need.title}</div>
+                          <div className="font-medium text-foreground">{need.title}</div>
                           {need.description && (
-                            <div className="text-sm text-gray-500 truncate max-w-xs">
+                            <div className="text-sm text-muted-foreground truncate max-w-xs">
                               {need.description}
                             </div>
                           )}
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="capitalize">
+                        <Badge variant="outline" className="capitalize border-border text-foreground">
                           {need.category.replace('_', ' ')}
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <div className="text-sm">{need.school.governorate}</div>
+                        <div className="text-sm text-foreground">{need.school.governorate}</div>
                       </TableCell>
-                      <TableCell>{need.quantity}</TableCell>
+                      <TableCell className="text-foreground">{need.quantity}</TableCell>
                       <TableCell>
                         <Badge className={getPriorityColor(need.priority)}>
                           {need.priority}
@@ -566,8 +568,8 @@ const AdminNeedsComponent = () => {
                             checked={need.status === 'fulfilled'}
                             onCheckedChange={() => toggleNeedStatus(need.id, need.status)}
                           />
-                          <span className="text-sm text-gray-500">
-                            {need.status === 'fulfilled' ? 'Fulfilled' : 'Mark as fulfilled'}
+                          <span className="text-sm text-muted-foreground">
+                            {need.status === 'fulfilled' ? t('admin.needs.statusFulfilled') : t('admin.needs.markAsFulfilledSwitch')}
                           </span>
                         </div>
                       </TableCell>

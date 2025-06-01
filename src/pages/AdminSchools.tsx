@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ interface School {
 }
 
 const AdminSchoolsComponent = () => {
+  const { t } = useTranslation();
   const [schools, setSchools] = useState<School[]>([]);
   const [filteredSchools, setFilteredSchools] = useState<School[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,7 +81,7 @@ const AdminSchoolsComponent = () => {
     } catch (error: any) {
       console.error('Failed to fetch schools:', error);
       toast({
-        title: "Error fetching schools",
+        title: t('toast.errorFetchingSchools'),
         description: error.message,
         variant: "destructive",
       });
@@ -111,8 +113,28 @@ const AdminSchoolsComponent = () => {
     
     try {
       console.log(`Updating school ${schoolId} to status: ${newStatus}`);
+
+      // Step 1: Fetch the current status of the school from the database
+      const { data: currentSchoolData, error: fetchError } = await supabaseAdmin
+        .from('schools')
+        .select('status')
+        .eq('id', schoolId)
+        .single();
+
+      if (fetchError) {
+        console.error('Supabase fetch error:', fetchError);
+        throw new Error(fetchError.message || 'Failed to fetch current school status.');
+      }
+
+      if (!currentSchoolData) {
+        throw new Error('School not found.');
+      }
+
+      if (currentSchoolData.status !== 'pending') {
+        throw new Error(`School is not in 'pending' status. Current status: ${currentSchoolData.status}.`);
+      }
       
-      // Use a more direct approach with proper error handling
+      // Step 2: Proceed with the update only if status is pending
       const { data, error } = await supabaseAdmin
         .from('schools')
         .update({ 
@@ -120,25 +142,33 @@ const AdminSchoolsComponent = () => {
           updated_at: new Date().toISOString()
         })
         .eq('id', schoolId)
-        .select('id, status, name')
-        .single();
+        .eq('status', 'pending') // This condition is still good for double-checking at DB level
+        .select('id, status, name');
 
       if (error) {
         console.error('Supabase update error:', error);
-        
-        // Check if it's a constraint violation
         if (error.message?.includes('check constraint')) {
           throw new Error(`Invalid status value. The database only accepts specific status values.`);
         }
-        
         throw new Error(error.message || 'Failed to update school status');
       }
 
-      if (!data) {
-        throw new Error('No data returned from update operation');
+      if (!data || data.length === 0) {
+        // This means the update didn't affect any rows, likely because the status changed
+        // between the pre-check and the update, or the school was deleted.
+        // Instead of throwing a generic error, provide specific feedback.
+        toast({
+          title: "Action Failed",
+          description: "The school's status might have changed or it was already processed. Please refresh the list.",
+          variant: "destructive",
+        });
+        // No need to throw an error here, just return to avoid further processing
+        // and let the finally block handle the UI state reset.
+        return; 
       }
 
-      console.log('School status updated successfully:', data);
+      const updatedSchool = data[0];
+      console.log('School status updated successfully:', updatedSchool);
 
       // Update the local state immediately
       setSchools(prevSchools => 
@@ -150,8 +180,8 @@ const AdminSchoolsComponent = () => {
       );
       
       toast({
-        title: `School ${newStatus}`,
-        description: `The school "${data.name}" has been ${newStatus} successfully.`,
+        title: t(`toast.school${newStatus === 'approved' ? 'Approved' : 'Rejected'}`),
+        description: t(`toast.school${newStatus === 'approved' ? 'Approved' : 'Rejected'}Description`, { schoolName: updatedSchool.name }),
         variant: newStatus === 'approved' ? 'default' : 'destructive',
       });
 
@@ -160,8 +190,8 @@ const AdminSchoolsComponent = () => {
     } catch (error: any) {
       console.error('Error updating school status:', error);
       toast({
-        title: "Error updating school status",
-        description: error.message || 'Failed to update school status',
+        title: t('toast.errorUpdatingSchoolStatus'),
+        description: error.message || t('toast.errorUpdatingSchoolStatusDescription'),
         variant: "destructive",
       });
       
@@ -182,24 +212,28 @@ const AdminSchoolsComponent = () => {
   };
 
   const getStatusBadge = (status: string) => {
+    const statusKey = `status.${status}`;
+    const translatedStatus = t(statusKey);
+
     switch (status) {
       case 'approved':
-        return <Badge className="bg-green-100 text-green-800">Approved</Badge>;
+        return <Badge className="bg-green-100 text-green-800">{translatedStatus}</Badge>;
       case 'rejected':
-        return <Badge className="bg-red-100 text-red-800">Rejected</Badge>;
+        return <Badge className="bg-red-100 text-red-800">{translatedStatus}</Badge>;
       case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800">{translatedStatus}</Badge>;
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline">{translatedStatus}</Badge>;
     }
   };
 
   const getEducationLevelLabel = (level?: string) => {
     switch (level) {
-      case 'primary': return 'Primary School';
-      case 'middle': return 'Middle School';
-      case 'high_school': return 'High School';
-      default: return 'Not specified';
+      case 'primary': return t('educationLevels.primary');
+      case 'middle': return t('educationLevels.middle');
+      case 'high_school': return t('educationLevels.highSchool');
+      case 'mixed': return t('educationLevels.mixed');
+      default: return t('common.notSpecified');
     }
   };
 
@@ -220,7 +254,7 @@ const AdminSchoolsComponent = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading schools...</p>
+          <p className="mt-4 text-gray-600">{t('admin.schools.loading')}</p>
         </div>
       </div>
     );
@@ -231,8 +265,8 @@ const AdminSchoolsComponent = () => {
       <AdminHeader />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">Schools Directory</h2>
-          <p className="text-gray-600 mt-2">Browse and manage all registered schools</p>
+          <h2 className="text-3xl font-bold text-gray-900">{t('admin.schools.directoryTitle')}</h2>
+          <p className="text-gray-600 mt-2">{t('admin.schools.directoryDescription')}</p>
         </div>
 
         {/* Search and Filters */}
@@ -240,7 +274,7 @@ const AdminSchoolsComponent = () => {
           <CardHeader>
             <CardTitle className="flex items-center">
               <Filter className="h-5 w-5 mr-2" />
-              Search & Filters
+              {t('admin.schools.searchFilters')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -248,7 +282,7 @@ const AdminSchoolsComponent = () => {
               <div className="relative md:col-span-2">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                 <Input
-                  placeholder="Search schools by name, address, or governorate..."
+                  placeholder={t('admin.schools.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-9"
@@ -257,42 +291,42 @@ const AdminSchoolsComponent = () => {
               
               <Select value={filters.status} onValueChange={(value) => setFilters(prev => ({ ...prev, status: value }))}>
                 <SelectTrigger>
-                  <SelectValue placeholder="All Status" />
+                  <SelectValue placeholder={t('admin.schools.allStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="approved">Approved</SelectItem>
-                  <SelectItem value="rejected">Rejected</SelectItem>
+                  <SelectItem value="all">{t('admin.schools.allStatus')}</SelectItem>
+                  <SelectItem value="pending">{t('status.pending')}</SelectItem>
+                  <SelectItem value="approved">{t('status.approved')}</SelectItem>
+                  <SelectItem value="rejected">{t('status.rejected')}</SelectItem>
                 </SelectContent>
               </Select>
 
               <Select value={filters.governorate} onValueChange={(value) => setFilters(prev => ({ ...prev, governorate: value }))}>
                 <SelectTrigger>
-                  <SelectValue placeholder="All Governorates" />
+                  <SelectValue placeholder={t('admin.schools.allGovernorates')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Governorates</SelectItem>
+                  <SelectItem value="all">{t('admin.schools.allGovernorates')}</SelectItem>
                   {uniqueGovernorates.map(gov => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                    <SelectItem key={gov} value={gov}>{t(`governorates.${gov}`)}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
 
               <Select value={filters.education_level} onValueChange={(value) => setFilters(prev => ({ ...prev, education_level: value }))}>
                 <SelectTrigger>
-                  <SelectValue placeholder="All Levels" />
+                  <SelectValue placeholder={t('admin.schools.allEducationLevels')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Education Levels</SelectItem>
-                  <SelectItem value="primary">Primary School</SelectItem>
-                  <SelectItem value="middle">Middle School</SelectItem>
-                  <SelectItem value="high_school">High School</SelectItem>
+                  <SelectItem value="all">{t('admin.schools.allEducationLevels')}</SelectItem>
+                  <SelectItem value="primary">{t('educationLevels.primary')}</SelectItem>
+                  <SelectItem value="middle">{t('educationLevels.middle')}</SelectItem>
+                  <SelectItem value="high_school">{t('educationLevels.highSchool')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="mt-2 text-sm text-gray-600">
-              Showing {filteredSchools.length} of {schools.length} schools
+              {t('admin.schools.showingResults', { count: filteredSchools.length, total: schools.length })}
             </div>
           </CardContent>
         </Card>
@@ -315,7 +349,7 @@ const AdminSchoolsComponent = () => {
                       {getStatusBadge(school.status)}
                       {stats.highPriorityNeeds > 0 && (
                         <Badge variant="destructive" className="text-xs">
-                          {stats.highPriorityNeeds} urgent
+                          {stats.highPriorityNeeds} {t('admin.schools.urgent')}
                         </Badge>
                       )}
                     </div>
@@ -331,7 +365,7 @@ const AdminSchoolsComponent = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center text-sm text-gray-600">
                         <Users className="h-4 w-4 mr-2" />
-                        {school.number_of_students} students
+                        {school.number_of_students} {t('admin.schools.students')}
                       </div>
                       <div className="flex items-center text-sm">
                         <GraduationCap className="h-4 w-4 mr-1" />
@@ -340,7 +374,7 @@ const AdminSchoolsComponent = () => {
                     </div>
                     <div className="flex items-center text-sm text-gray-600">
                       <MapPin className="h-4 w-4 mr-2" />
-                      {school.governorate}
+                      {t(`governorates.${school.governorate}`)}
                     </div>
                   </div>
 
@@ -362,19 +396,19 @@ const AdminSchoolsComponent = () => {
 
                   {/* Needs Summary */}
                   <div className="pt-3 border-t">
-                    <div className="text-sm font-medium mb-2">Needs Summary</div>
+                    <div className="text-sm font-medium mb-2">{t('admin.schools.needsSummary')}</div>
                     <div className="grid grid-cols-3 gap-2 text-xs">
                       <div className="text-center">
                         <div className="font-bold text-gray-900">{stats.totalNeeds}</div>
-                        <div className="text-gray-500">Total</div>
+                        <div className="text-gray-500">{t('admin.schools.total')}</div>
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-orange-600">{stats.pendingNeeds}</div>
-                        <div className="text-gray-500">Pending</div>
+                        <div className="text-gray-500">{t('admin.schools.pending')}</div>
                       </div>
                       <div className="text-center">
                         <div className="font-bold text-green-600">{stats.fulfilledNeeds}</div>
-                        <div className="text-gray-500">Fulfilled</div>
+                        <div className="text-gray-500">{t('admin.schools.fulfilled')}</div>
                       </div>
                     </div>
                   </div>
@@ -384,7 +418,7 @@ const AdminSchoolsComponent = () => {
                     <div className="flex space-x-2">
                       <Button variant="outline" size="sm" className="flex-1">
                         <Eye className="h-4 w-4 mr-1" />
-                        View
+                        {t('admin.schools.view')}
                       </Button>
                       {school.status === 'pending' && (
                         <>
@@ -395,7 +429,7 @@ const AdminSchoolsComponent = () => {
                             className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
-                            {isUpdating ? 'Approving...' : 'Approve'}
+                            {isUpdating ? t('admin.schools.approving') : t('admin.schools.approve')}
                           </Button>
                           <Button
                             variant="destructive"
@@ -405,7 +439,7 @@ const AdminSchoolsComponent = () => {
                             className="disabled:opacity-50"
                           >
                             <XCircle className="h-4 w-4 mr-1" />
-                            {isUpdating ? 'Rejecting...' : 'Reject'}
+                            {isUpdating ? t('admin.schools.rejecting') : t('admin.schools.reject')}
                           </Button>
                         </>
                       )}
@@ -415,27 +449,27 @@ const AdminSchoolsComponent = () => {
                   {/* Recent Needs */}
                   {school.needs.length > 0 && (
                     <div className="pt-3 border-t">
-                      <div className="text-sm font-medium mb-2">Recent Needs</div>
+                      <div className="text-sm font-medium mb-2">{t('admin.schools.recentNeeds')}</div>
                       <div className="space-y-1">
                         {school.needs.slice(0, 3).map((need) => (
                           <div key={need.id} className="flex items-center justify-between text-xs">
                             <span className="truncate flex-1 mr-2">{need.title}</span>
                             <div className="flex items-center space-x-1">
                               <Badge variant="outline" className="text-xs px-1">
-                                {need.priority}
+                                {t(`priority.${need.priority}`)}
                               </Badge>
                               <Badge 
                                 variant={need.status === 'fulfilled' ? 'default' : 'secondary'}
                                 className="text-xs px-1"
                               >
-                                {need.status}
+                                {t(`status.${need.status}`)}
                               </Badge>
                             </div>
                           </div>
                         ))}
                         {school.needs.length > 3 && (
                           <div className="text-xs text-gray-500 text-center">
-                            +{school.needs.length - 3} more needs
+                            +{school.needs.length - 3} {t('admin.schools.moreNeeds')}
                           </div>
                         )}
                       </div>
@@ -451,9 +485,9 @@ const AdminSchoolsComponent = () => {
           <Card>
             <CardContent className="text-center py-12">
               <School className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No schools found</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">{t('admin.schools.noSchoolsFound')}</h3>
               <p className="text-gray-600">
-                {searchTerm ? 'Try adjusting your search terms.' : 'No schools match your current filters.'}
+                {searchTerm ? t('admin.schools.noSchoolsSearchAdjust') : t('admin.schools.noSchoolsFilterAdjust')}
               </p>
             </CardContent>
           </Card>

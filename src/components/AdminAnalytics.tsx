@@ -196,16 +196,14 @@ const AdminAnalytics = () => {
             <CardDescription>Distribution of schools across Syrian governorates</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data.schoolsByGovernorate}>
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                <BarChart data={data.schoolsByGovernorate} width={546} height={307}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="governorate" />
                   <YAxis />
                   <Tooltip />
                   <Bar dataKey="count" fill="#2563eb" />
                 </BarChart>
-              </ResponsiveContainer>
             </ChartContainer>
           </CardContent>
         </Card>
@@ -217,9 +215,8 @@ const AdminAnalytics = () => {
             <CardDescription>Most requested items and fulfillment status</CardDescription>
           </CardHeader>
           <CardContent>
-            <ChartContainer config={chartConfig}>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={data.needsByCategory}>
+            <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                <BarChart data={data.needsByCategory} width={546} height={307}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="category" />
                   <YAxis />
@@ -228,7 +225,6 @@ const AdminAnalytics = () => {
                   <Bar dataKey="fulfilled" stackId="a" fill="#16a34a" />
                   <Bar dataKey="pending" stackId="a" fill="#ea580c" />
                 </BarChart>
-              </ResponsiveContainer>
             </ChartContainer>
           </CardContent>
         </Card>

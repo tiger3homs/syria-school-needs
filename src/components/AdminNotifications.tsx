@@ -1,13 +1,15 @@
-
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bell, Check, School, ClipboardList, X } from "lucide-react";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
-
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface Notification {
   id: string;
   title: string;
@@ -24,6 +26,7 @@ const AdminNotifications = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   const fetchNotifications = async () => {
     if (!user) return;
@@ -34,13 +37,13 @@ const AdminNotifications = () => {
         .select('*')
         .eq('recipient_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(10); // Limit notifications for dropdown
 
       if (error) throw error;
       setNotifications(data || []);
     } catch (error: any) {
       toast({
-        title: "Error fetching notifications",
+        title: t('notifications.errorFetching'),
         description: error.message,
         variant: "destructive",
       });
@@ -63,7 +66,7 @@ const AdminNotifications = () => {
       );
     } catch (error: any) {
       toast({
-        title: "Error updating notification",
+        title: t('notifications.errorUpdating'),
         description: error.message,
         variant: "destructive",
       });
@@ -87,12 +90,12 @@ const AdminNotifications = () => {
       );
 
       toast({
-        title: "Success",
-        description: "All notifications marked as read",
+        title: t('common.success'),
+        description: t('notifications.allRead'),
       });
     } catch (error: any) {
       toast({
-        title: "Error updating notifications",
+        title: t('notifications.errorUpdating'),
         description: error.message,
         variant: "destructive",
       });
@@ -108,104 +111,91 @@ const AdminNotifications = () => {
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'school_registered':
-        return <School className="h-4 w-4 text-blue-600" />;
+        return <AvatarFallback className="bg-primary/20 text-primary"><School className="h-4 w-4" /></AvatarFallback>;
       case 'need_submitted':
-        return <ClipboardList className="h-4 w-4 text-orange-600" />;
+        return <AvatarFallback className="bg-accent/20 text-accent"><ClipboardList className="h-4 w-4" /></AvatarFallback>;
       default:
-        return <Bell className="h-4 w-4 text-gray-600" />;
+        return <AvatarFallback className="bg-muted/20 text-muted-foreground"><Bell className="h-4 w-4" /></AvatarFallback>;
     }
   };
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Bell className="h-5 w-5 mr-2" />
-            Notifications
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="animate-pulse space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-16 bg-gray-200 rounded"></div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center">
-            <Bell className="h-5 w-5 mr-2" />
-            Notifications
-            {unreadCount > 0 && (
-              <Badge variant="destructive" className="ml-2">
-                {unreadCount}
-              </Badge>
-            )}
-          </CardTitle>
-          {unreadCount > 0 && (
-            <Button variant="outline" size="sm" onClick={markAllAsRead}>
-              <Check className="h-4 w-4 mr-1" />
-              Mark all read
-            </Button>
-          )}
-        </div>
-        <CardDescription>Recent system notifications and updates</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4 max-h-96 overflow-y-auto">
-          {notifications.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Bell className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p>No notifications yet</p>
-            </div>
-          ) : (
-            notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-4 rounded-lg border transition-colors ${
-                  notification.read 
-                    ? 'bg-gray-50 border-gray-200' 
-                    : 'bg-blue-50 border-blue-200'
-                }`}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start space-x-3">
-                    {getNotificationIcon(notification.type)}
-                    <div className="flex-1">
-                      <h4 className={`font-medium ${!notification.read ? 'text-blue-900' : 'text-gray-900'}`}>
-                        {notification.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {notification.message}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-2">
-                        {new Date(notification.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                  </div>
-                  {!notification.read && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => markAsRead(notification.id)}
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                  )}
+    <DropdownMenuContent className="w-80 p-0" align="end" forceMount>
+      <DropdownMenuLabel className="flex items-center justify-between px-4 py-2">
+        <span className="font-semibold text-foreground">{t('notifications.title')}</span>
+        {unreadCount > 0 && (
+          <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-auto px-2 py-1 text-xs text-primary hover:bg-primary/10">
+            {t('notifications.markAllRead')}
+          </Button>
+        )}
+      </DropdownMenuLabel>
+      <DropdownMenuSeparator />
+      <ScrollArea className="h-72">
+        {loading ? (
+          <div className="p-4 space-y-3">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="flex items-center space-x-3">
+                <div className="h-8 w-8 rounded-full bg-secondary animate-pulse"></div>
+                <div className="flex-1 space-y-1">
+                  <div className="h-4 bg-secondary rounded w-3/4 animate-pulse"></div>
+                  <div className="h-3 bg-secondary rounded w-1/2 animate-pulse"></div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-      </CardContent>
-    </Card>
+            ))}
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <Bell className="h-12 w-12 mx-auto mb-4 text-muted" />
+            <p className="text-sm">{t('notifications.noNotifications')}</p>
+          </div>
+        ) : (
+          notifications.map((notification) => (
+            <DropdownMenuItem
+              key={notification.id}
+              className={`flex items-start space-x-3 p-3 cursor-pointer ${
+                !notification.read ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-secondary/50'
+              }`}
+              onSelect={(e) => e.preventDefault()} // Prevent dropdown from closing on item click
+            >
+              <Avatar className="h-8 w-8">
+                {getNotificationIcon(notification.type)}
+              </Avatar>
+              <div className="flex-1">
+                <p className={`text-sm font-medium ${!notification.read ? 'text-foreground' : 'text-muted-foreground'}`}>
+                  {notification.title}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                  {notification.message}
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {new Date(notification.created_at).toLocaleString()}
+                </p>
+              </div>
+              {!notification.read && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 shrink-0 text-muted-foreground hover:text-primary"
+                  onClick={() => markAsRead(notification.id)}
+                >
+                  <Check className="h-4 w-4" />
+                </Button>
+              )}
+            </DropdownMenuItem>
+          ))
+        )}
+      </ScrollArea>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem className="px-4 py-2">
+        <Button 
+          variant="ghost" 
+          className="w-full text-center text-primary hover:bg-primary/10"
+          asChild
+        >
+          <Link to="/admin/notifications">{t('notifications.viewAll')}</Link>
+        </Button>
+      </DropdownMenuItem>
+    </DropdownMenuContent>
   );
 };
 

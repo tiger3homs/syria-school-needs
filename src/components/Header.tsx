@@ -75,6 +75,9 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className={`hidden lg:flex items-center ${isRTL ? 'space-x-reverse space-x-1' : 'space-x-1'}`}>
+                        {/* Language Switcher */}
+            <LanguageSwitcher />
+            
             <Link to="/" className={getLinkClass('/')}>
               <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
                 {t('nav.home')}
@@ -91,8 +94,7 @@ const Header = () => {
               </Button>
             </Link>
 
-            {/* Language Switcher */}
-            <LanguageSwitcher />
+
 
             {/* User Authentication - Desktop */}
             {!user && (
@@ -141,6 +143,8 @@ const Header = () => {
               </div>
             )}
           </div>
+
+          
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden">
