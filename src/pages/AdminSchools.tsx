@@ -112,39 +112,33 @@ const AdminSchoolsComponent = () => {
     try {
       console.log(`Updating school ${schoolId} to status: ${newStatus}`);
       
-      // First, let's check if the school exists
-      const { data: existingSchool, error: checkError } = await supabaseAdmin
-        .from('schools')
-        .select('id, status')
-        .eq('id', schoolId)
-        .maybeSingle();
-
-      if (checkError) {
-        console.error('Error checking school existence:', checkError);
-        throw new Error('Failed to verify school exists');
-      }
-
-      if (!existingSchool) {
-        throw new Error('School not found');
-      }
-
-      console.log('School exists, current status:', existingSchool.status);
-
-      // Now update the school status without expecting a return
-      const { error: updateError } = await supabaseAdmin
+      // Use a more direct approach with proper error handling
+      const { data, error } = await supabaseAdmin
         .from('schools')
         .update({ 
           status: newStatus,
           updated_at: new Date().toISOString()
         })
-        .eq('id', schoolId);
+        .eq('id', schoolId)
+        .select('id, status, name')
+        .single();
 
-      if (updateError) {
-        console.error('Supabase update error:', updateError);
-        throw updateError;
+      if (error) {
+        console.error('Supabase update error:', error);
+        
+        // Check if it's a constraint violation
+        if (error.message?.includes('check constraint')) {
+          throw new Error(`Invalid status value. The database only accepts specific status values.`);
+        }
+        
+        throw new Error(error.message || 'Failed to update school status');
       }
 
-      console.log('School status updated successfully');
+      if (!data) {
+        throw new Error('No data returned from update operation');
+      }
+
+      console.log('School status updated successfully:', data);
 
       // Update the local state immediately
       setSchools(prevSchools => 
@@ -157,7 +151,7 @@ const AdminSchoolsComponent = () => {
       
       toast({
         title: `School ${newStatus}`,
-        description: `The school has been ${newStatus} successfully.`,
+        description: `The school "${data.name}" has been ${newStatus} successfully.`,
         variant: newStatus === 'approved' ? 'default' : 'destructive',
       });
 
@@ -170,6 +164,9 @@ const AdminSchoolsComponent = () => {
         description: error.message || 'Failed to update school status',
         variant: "destructive",
       });
+      
+      // Refresh the schools list to ensure UI is in sync with database
+      await fetchSchools();
     } finally {
       setUpdatingSchoolId(null);
     }
@@ -395,7 +392,7 @@ const AdminSchoolsComponent = () => {
                             size="sm"
                             onClick={() => updateSchoolStatus(school.id, 'approved')}
                             disabled={isUpdating}
-                            className="bg-green-600 hover:bg-green-700"
+                            className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
                             {isUpdating ? 'Approving...' : 'Approve'}
@@ -405,6 +402,7 @@ const AdminSchoolsComponent = () => {
                             size="sm"
                             onClick={() => updateSchoolStatus(school.id, 'rejected')}
                             disabled={isUpdating}
+                            className="disabled:opacity-50"
                           >
                             <XCircle className="h-4 w-4 mr-1" />
                             {isUpdating ? 'Rejecting...' : 'Reject'}
