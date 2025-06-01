@@ -1,4 +1,3 @@
-
 {
   "site": {
     "title": "School Rebuild Syria",
@@ -147,7 +146,9 @@
     "selectCategoryPlaceholder": "Select category",
     "quantityLabel": "Quantity *",
     "priorityLabel": "Priority *",
-    "selectPriorityPlaceholder": "Select priority"
+    "selectPriorityPlaceholder": "Select priority",
+    "contactPhoneLabel": "Contact Phone",
+    "contactEmailLabel": "Contact Email"
   },
   "governorates": {
     "damascus": "Damascus",
@@ -258,13 +259,29 @@
     "pendingNeeds": "Pending Needs",
     "fulfilledNeeds": "Fulfilled Needs",
     "activeNeeds": "Active Needs",
-    "schoolName": "School Name",
-    "numberOfStudents": "Number of Students",
-    "governorate": "Governorate",
-    "phone": "Phone",
-    "email": "Email",
-    "address": "Address",
-    "description": "Description"
+    "schoolNameLabel": "School Name",
+    "numberOfStudentsLabel": "Number of Students",
+    "governorateLabel": "Governorate",
+    "educationLevelLabel": "Education Level",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Address",
+    "descriptionLabel": "Description"
+  },
+  "dashboardStats": {
+    "totalNeeds": "Total Needs",
+    "pending": "pending",
+    "inProgress": "in progress",
+    "fulfilled": "Fulfilled",
+    "completionRate": "completion rate",
+    "highPriority": "High Priority",
+    "urgentAttentionNeeded": "Urgent attention needed",
+    "students": "Students",
+    "totalEnrollment": "Total enrollment",
+    "mostNeeded": "Most Needed",
+    "none": "None",
+    "requests": "requests",
+    "beingProcessed": "Being processed"
   },
   "admin": {
     "dashboard": "Admin Dashboard",
@@ -306,6 +323,10 @@
   "needsPage": {
     "title": "School Needs",
     "description": "Help schools across Syria by fulfilling their educational needs"
+  },
+  "schoolsPage": {
+    "title": "Schools Directory",
+    "description": "Browse schools across Syria and learn about their needs"
   },
   "settings": {
     "title": "Settings",
@@ -351,7 +372,13 @@
     "schoolDetails": "School Details",
     "studentsCount": "Students",
     "established": "Established",
-    "contactInfo": "Contact Information"
+    "contactInfo": "Contact Information",
+    "noSchools": "No schools found",
+    "noSchoolsDescription": "Try adjusting your filters to see more results.",
+    "showingResults": "Showing {{count}} of {{total}} schools",
+    "contactWhatsapp": "Contact via WhatsApp",
+    "allGovernorates": "All Governorates",
+    "allEducationLevels": "All Education Levels"
   },
   "common": {
     "loading": "Loading...",
@@ -368,6 +395,7 @@
     "sort": "Sort",
     "actions": "Actions",
     "view": "View",
+    "resetFilters": "Reset Filters",
     "approve": "Approve",
     "reject": "Reject",
     "details": "Details",
@@ -398,7 +426,11 @@
     "notProvided": "Not provided",
     "noDescriptionProvided": "No description provided",
     "updating": "Updating...",
-    "submitting": "Submitting..."
+    "submitting": "Submitting...",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "showMore": "Show More",
+    "showLess": "Show Less"
   },
   "errors": {
     "pageNotFound": "Page not found",
@@ -471,6 +503,42 @@
     "needUpdatedDescription": "The need has been successfully updated.",
     "needCreatedDescription": "Your need has been recorded and will be reviewed.",
     "failedToUpdateNeed": "Failed to update need. Please try again.",
-    "failedToCreateNeed": "Failed to create need. Please try again."
+    "failedToCreateNeed": "Failed to create need. Please try again.",
+    "school_profile_updated_title": "School profile updated",
+    "school_profile_updated_description": "Your school information has been successfully updated.",
+    "failed_to_update_school_profile_title": "Error",
+    "failed_to_update_school_profile_description": "Failed to update school profile. Please try again."
+  },
+  "imageUpload": {
+    "imageLabel": "Image",
+    "invalidFileTypeTitle": "Invalid file type",
+    "invalidFileTypeDescription": "Please upload an image file (JPG, PNG, or WebP).",
+    "fileTooLargeTitle": "File too large",
+    "fileTooLargeDescription": "Please upload an image smaller than {{maxSizeMB}}MB.",
+    "uploadFailedTitle": "Upload failed",
+    "uploadFailedDescription": "Failed to upload image. Please try again.",
+    "unexpectedErrorDescription": "An unexpected error occurred.",
+    "imageUploadedTitle": "Image uploaded",
+    "imageUploadedDescription": "Image has been uploaded successfully.",
+    "dragAndDropText": "Drag and drop an image here, or click to select",
+    "fileTypeAndSizeInfo": "PNG, JPG, WebP up to {{maxSizeMB}}MB",
+    "chooseFileButton": "Choose File",
+    "uploadingButton": "Uploading..."
+  },
+  "school_profile": {
+    "edit_title": "Edit School Profile",
+    "edit_description": "Update your school information",
+    "school_name_label": "School Name *",
+    "governorate_label": "Governorate *",
+    "select_governorate_placeholder": "Select governorate",
+    "address_label": "Address *",
+    "number_of_students_label": "Number of Students *",
+    "contact_phone_label": "Contact Phone",
+    "contact_email_label": "Contact Email",
+    "education_level_label": "Education Level *",
+    "select_education_level_placeholder": "Select education level",
+    "description_label": "Description",
+    "save_changes_button": "Save Changes",
+    "cancel_button": "Cancel"
   }
 }

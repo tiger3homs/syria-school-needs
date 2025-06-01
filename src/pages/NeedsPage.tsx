@@ -2,13 +2,12 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { MapPin, Mail, Phone, Calendar, Package, AlertCircle } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { Package } from "lucide-react";
+import NeedCard from "@/components/NeedCard";
 
 interface Need {
   id: string;
@@ -216,105 +215,7 @@ const NeedsPage = () => {
         {/* Needs Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredAndSortedNeeds.map((need) => (
-            <Card key={need.id} className="h-full flex flex-col shadow-lg rounded-2xl border-t-4 border-primary hover:shadow-xl transition-shadow duration-200">
-              {/* Image Header */}
-              {need.image_url ? (
-                <div className="relative h-48 overflow-hidden rounded-t-2xl">
-                  <img
-                    src={`https://fdusgurjkmdroacxtrtb.supabase.co/storage/v1/object/public/need-images/${need.image_url}`}
-                    alt={need.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ) : (
-                <div className="h-48 bg-primary/10 flex items-center justify-center rounded-t-2xl">
-                  <Package className="h-16 w-16 text-primary" />
-                </div>
-              )}
-
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-xl font-semibold text-primary line-clamp-2">
-                    {need.title}
-                  </CardTitle>
-                  <div className="flex flex-col gap-1">
-                    <Badge variant={getPriorityBadgeVariant(need.priority)} className="text-xs">
-                      {need.priority}
-                    </Badge>
-                    <Badge variant={getStatusBadgeVariant(need.status)} className="text-xs">
-                      {need.status}
-                    </Badge>
-                  </div>
-                </div>
-                <CardDescription className="text-gray-700 line-clamp-3">
-                  {need.description}
-                </CardDescription>
-              </CardHeader>
-
-              <CardContent className="flex-1 pt-0">
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <Package className="h-4 w-4 text-gray-500" />
-                    <span>{t('needs.quantity')}: {need.quantity}</span>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <AlertCircle className="h-4 w-4 text-gray-500" />
-                    <span>{t('needs.category')}: {need.category}</span>
-                  </div>
-
-                  {need.created_at && (
-                    <div className="flex items-center gap-2 text-sm text-gray-700">
-                      <Calendar className="h-4 w-4 text-gray-500" />
-                      <span>{t('needs.posted')}: {new Date(need.created_at).toLocaleDateString()}</span>
-                    </div>
-                  )}
-
-                  {need.schools && (
-                    <div className="mt-4 p-3 bg-primary/10 rounded-lg">
-                      <h4 className="font-semibold text-primary mb-2">{need.schools.name}</h4>
-                      
-                      {need.schools.governorate && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
-                          <MapPin className="h-4 w-4 text-gray-500" />
-                          <span>{need.schools.governorate}</span>
-                        </div>
-                      )}
-                      
-                      {need.schools.contact_email && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
-                          <Mail className="h-4 w-4 text-gray-500" />
-                          <span className="truncate">{need.schools.contact_email}</span>
-                        </div>
-                      )}
-                      
-                      {need.schools.contact_phone && (
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Phone className="h-4 w-4 text-gray-500" />
-                          <span>{need.schools.contact_phone}</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-
-              <CardFooter className="pt-4">
-                <Button 
-                  className="w-full bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105"
-                  onClick={() => {
-                    if (need.schools?.contact_phone) {
-                      window.open(`https://wa.me/${need.schools.contact_phone}`, '_blank');
-                    } else if (need.schools?.contact_email) {
-                      window.location.href = `mailto:${need.schools.contact_email}?subject=Interest in: ${need.title}`;
-                    }
-                  }}
-                >
-                  <FaWhatsapp className="inline-block mr-2" />
-                  {t('needs.contactWhatsapp')}
-                </Button>
-              </CardFooter>
-            </Card>
+            <NeedCard key={need.id} need={need} />
           ))}
         </div>
 

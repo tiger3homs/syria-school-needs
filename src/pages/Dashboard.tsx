@@ -193,7 +193,7 @@ const Dashboard = () => {
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className={`min-h-screen bg-gray-50 ${isRTL ? 'text-right' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
@@ -216,22 +216,22 @@ const Dashboard = () => {
             {/* Recent Needs */}
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
+                <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div>
                     <CardTitle>{t('dashboard.recentNeeds')}</CardTitle>
                     <CardDescription>{t('dashboard.stats')}</CardDescription>
                   </div>
                   <Button onClick={handleAddNeed}>
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {t('needs.addNeed')}
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className={`space-y-4 ${isRTL ? 'text-right' : ''}`}>
                   {needs.slice(0, 3).map((need) => (
-                    <div key={need.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-4">
+                    <div key={need.id} className={`flex items-center justify-between p-4 border rounded-lg ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         {need.image_url && (
                           <img
                             src={need.image_url}
@@ -240,7 +240,7 @@ const Dashboard = () => {
                           />
                         )}
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                             <h4 className="font-medium">{need.title}</h4>
                             <Badge className={getPriorityColor(need.priority)}>
                               {t(`priority.${need.priority}`)}
@@ -255,7 +255,7 @@ const Dashboard = () => {
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -282,29 +282,29 @@ const Dashboard = () => {
           <TabsContent value="needs" className="space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
+                <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div>
                     <CardTitle>{t('needs.allNeeds')}</CardTitle>
                     <CardDescription>{t('dashboard.manageNeeds')}</CardDescription>
                   </div>
                   <Button onClick={handleAddNeed}>
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {t('needs.addNeed')}
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className={`${isRTL ? 'text-right' : ''}`}>
                 {/* Filters */}
                 <div className="mb-6 space-y-4">
-                  <div className="flex items-center gap-4">
+                  <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div className="flex-1">
                       <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4`} />
                         <Input
                           placeholder={t('needs.searchPlaceholder')}
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-10"
+                          className={`${isRTL ? 'pr-10' : 'pl-10'}`}
                           dir={isRTL ? 'rtl' : 'ltr'}
                         />
                       </div>
@@ -314,10 +314,10 @@ const Dashboard = () => {
                   
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <Select value={statusFilter} onValueChange={setStatusFilter}>
-                      <SelectTrigger>
+                      <SelectTrigger dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectValue placeholder={t('needs.filters.allStatuses')} />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectItem value="all">{t('needs.filters.allStatuses')}</SelectItem>
                         <SelectItem value="pending">{t('status.pending')}</SelectItem>
                         <SelectItem value="in_progress">{t('status.in_progress')}</SelectItem>
@@ -326,10 +326,10 @@ const Dashboard = () => {
                     </Select>
 
                     <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-                      <SelectTrigger>
+                      <SelectTrigger dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectValue placeholder={t('needs.filters.allPriorities')} />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectItem value="all">{t('needs.filters.allPriorities')}</SelectItem>
                         <SelectItem value="high">{t('priority.high')}</SelectItem>
                         <SelectItem value="medium">{t('priority.medium')}</SelectItem>
@@ -338,10 +338,10 @@ const Dashboard = () => {
                     </Select>
 
                     <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                      <SelectTrigger>
+                      <SelectTrigger dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectValue placeholder={t('needs.filters.allCategories')} />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectItem value="all">{t('needs.filters.allCategories')}</SelectItem>
                         {categories.map((category) => (
                           <SelectItem key={category} value={category}>
@@ -352,10 +352,10 @@ const Dashboard = () => {
                     </Select>
 
                     <Select value={sortBy} onValueChange={setSortBy}>
-                      <SelectTrigger>
+                      <SelectTrigger dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectValue placeholder={t('needs.filters.sortBy')} />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent dir={isRTL ? 'rtl' : 'ltr'}>
                         <SelectItem value="newest">{t('needs.filters.newest')}</SelectItem>
                         <SelectItem value="oldest">{t('needs.filters.oldest')}</SelectItem>
                         <SelectItem value="priority">{t('needs.filters.priority')}</SelectItem>
@@ -369,12 +369,12 @@ const Dashboard = () => {
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead>{t('needs.title')}</TableHead>
-                        <TableHead>{t('needs.category')}</TableHead>
-                        <TableHead>{t('needs.priority')}</TableHead>
-                        <TableHead>{t('needs.status')}</TableHead>
-                        <TableHead>{t('needs.quantity')}</TableHead>
-                        <TableHead>{t('needs.posted')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.title')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.category')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.priority')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.status')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.quantity')}</TableHead>
+                        <TableHead className={`${isRTL ? 'text-right' : ''}`}>{t('needs.posted')}</TableHead>
                         <TableHead className="text-right">{t('common.actions')}</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -382,7 +382,7 @@ const Dashboard = () => {
                       {filteredAndSortedNeeds.map((need) => (
                         <TableRow key={need.id}>
                           <TableCell>
-                            <div className="flex items-center gap-3">
+                            <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                               {need.image_url && (
                                 <img
                                   src={need.image_url}
@@ -400,23 +400,23 @@ const Dashboard = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>{need.category}</TableCell>
-                          <TableCell>
+                          <TableCell className={`${isRTL ? 'text-right' : ''}`}>{t(`categories.${need.category}`)}</TableCell>
+                          <TableCell className={`${isRTL ? 'text-right' : ''}`}>
                             <Badge className={getPriorityColor(need.priority)}>
                               {t(`priority.${need.priority}`)}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className={`${isRTL ? 'text-right' : ''}`}>
                             <Badge className={getStatusColor(need.status)}>
                               {t(`status.${need.status}`)}
                             </Badge>
                           </TableCell>
-                          <TableCell>{need.quantity}</TableCell>
-                          <TableCell>
+                          <TableCell className={`${isRTL ? 'text-right' : ''}`}>{need.quantity}</TableCell>
+                          <TableCell className={`${isRTL ? 'text-right' : ''}`}>
                             {new Date(need.created_at).toLocaleDateString()}
                           </TableCell>
                           <TableCell className="text-right">
-                            <div className="flex justify-end gap-2">
+                            <div className={`flex justify-end gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                               <Button 
                                 variant="outline" 
                                 size="sm"
@@ -461,18 +461,18 @@ const Dashboard = () => {
             ) : (
               <Card>
                 <CardHeader>
-                  <div className="flex justify-between items-center">
+                  <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <div>
                       <CardTitle>{t('dashboard.profile')}</CardTitle>
                       <CardDescription>{t('dashboard.schoolInfo')}</CardDescription>
                     </div>
                     <Button variant="outline" onClick={() => setIsEditingProfile(true)}>
-                      <Edit className="h-4 w-4 mr-2" />
+                      <Edit className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {t('dashboard.editProfile')}
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-6">
+                <CardContent className={`space-y-6 ${isRTL ? 'text-right' : ''}`}>
                   {/* School Image */}
                   {school.image_url && (
                     <div className="flex justify-center">
@@ -485,46 +485,52 @@ const Dashboard = () => {
                   )}
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">School Name</label>
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.schoolNameLabel')}</label>
                       <p className="mt-1 text-sm">{school.name}</p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Number of Students</label>
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.numberOfStudentsLabel')}</label>
                       <p className="mt-1 text-sm flex items-center gap-1">
-                        <Users className="h-4 w-4" />
+                        <Users className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
                         {school.number_of_students}
                       </p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Governorate</label>
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.governorateLabel')}</label>
                       <p className="mt-1 text-sm flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />
-                        {school.governorate || 'Not specified'}
+                        <MapPin className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                        {school.governorate || t('common.notSpecified')}
                       </p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Phone</label>
-                      <p className="mt-1 text-sm flex items-center gap-1">
-                        <Phone className="h-4 w-4" />
-                        {school.contact_phone || 'Not provided'}
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.educationLevelLabel')}</label>
+                      <p className="mt-1 text-sm">
+                        {school.education_level ? t(`educationLevels.${school.education_level}`) : t('common.notSpecified')}
                       </p>
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-500">Email</label>
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.phoneLabel')}</label>
                       <p className="mt-1 text-sm flex items-center gap-1">
-                        <Mail className="h-4 w-4" />
-                        {school.contact_email || 'Not provided'}
+                        <Phone className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                        {school.contact_phone || t('common.notProvided')}
+                      </p>
+                    </div>
+                    <div dir={isRTL ? 'rtl' : 'ltr'}>
+                      <label className="text-sm font-medium text-gray-500">{t('dashboard.emailLabel')}</label>
+                      <p className="mt-1 text-sm flex items-center gap-1">
+                        <Mail className={`h-4 w-4 ${isRTL ? 'ml-1' : 'mr-1'}`} />
+                        {school.contact_email || t('common.notProvided')}
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Address</label>
+                  <div dir={isRTL ? 'rtl' : 'ltr'}>
+                    <label className="text-sm font-medium text-gray-500">{t('dashboard.addressLabel')}</label>
                     <p className="mt-1 text-sm">{school.address}</p>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-500">Description</label>
-                    <p className="mt-1 text-sm">{school.description || 'No description provided'}</p>
+                  <div dir={isRTL ? 'rtl' : 'ltr'}>
+                    <label className="text-sm font-medium text-gray-500">{t('dashboard.descriptionLabel')}</label>
+                    <p className="mt-1 text-sm">{school.description || t('common.noDescriptionProvided')}</p>
                   </div>
                 </CardContent>
               </Card>

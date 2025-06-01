@@ -18,6 +18,7 @@ import AdminNeeds from "./pages/AdminNeeds";
 import AdminSchools from "./pages/AdminSchools";
 import NotFound from "./pages/NotFound";
 import NeedsPage from "./pages/NeedsPage";
+import SchoolsPage from "./pages/SchoolsPage";
 
 // Import i18n configuration
 import './i18n';
@@ -47,7 +48,7 @@ const AppContent = () => {
   }, [i18n.language]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-[4rem] sm:pt-[4.5rem]">
       <HeaderConditional />
       <Routes>
         <Route path="/" element={<Index />} />
@@ -68,6 +69,7 @@ const AppContent = () => {
           </ProtectedRoute>
         } />
         <Route path="/needs" element={<NeedsPage />} />
+        <Route path="/schools" element={<SchoolsPage />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={
           <ProtectedRoute requiredRole="admin">

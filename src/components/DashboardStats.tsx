@@ -1,6 +1,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Target, CheckCircle, AlertTriangle, Users, TrendingUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface Need {
   id: string;
@@ -32,6 +33,7 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats = ({ needs, school }: DashboardStatsProps) => {
+  const { t } = useTranslation();
   const totalNeeds = needs.length;
   const pendingNeeds = needs.filter(need => need.status === 'pending').length;
   const fulfilledNeeds = needs.filter(need => need.status === 'fulfilled').length;
@@ -54,73 +56,73 @@ export const DashboardStats = ({ needs, school }: DashboardStatsProps) => {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Needs</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.totalNeeds')}</CardTitle>
           <Target className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalNeeds}</div>
           <p className="text-xs text-muted-foreground">
-            {pendingNeeds} pending, {inProgressNeeds} in progress
+            {pendingNeeds} {t('dashboardStats.pending')}, {inProgressNeeds} {t('dashboardStats.inProgress')}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Fulfilled</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.fulfilled')}</CardTitle>
           <CheckCircle className="h-4 w-4 text-green-600" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-green-600">{fulfilledNeeds}</div>
           <p className="text-xs text-muted-foreground">
-            {fulfillmentRate}% completion rate
+            {fulfillmentRate}% {t('dashboardStats.completionRate')}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">High Priority</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.highPriority')}</CardTitle>
           <AlertTriangle className="h-4 w-4 text-red-600" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-red-600">{highPriorityNeeds}</div>
-          <p className="text-xs text-muted-foreground">Urgent attention needed</p>
+          <p className="text-xs text-muted-foreground">{t('dashboardStats.urgentAttentionNeeded')}</p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Students</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.students')}</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{school.number_of_students}</div>
-          <p className="text-xs text-muted-foreground">Total enrollment</p>
+          <p className="text-xs text-muted-foreground">{t('dashboardStats.totalEnrollment')}</p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Most Needed</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.mostNeeded')}</CardTitle>
           <TrendingUp className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-sm font-bold truncate">{mostCommonCategory}</div>
+          <div className="text-sm font-bold truncate">{mostCommonCategory === 'None' ? t('dashboardStats.none') : mostCommonCategory}</div>
           <p className="text-xs text-muted-foreground">
-            {categoryCount[mostCommonCategory] || 0} requests
+            {categoryCount[mostCommonCategory] || 0} {t('dashboardStats.requests')}
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">In Progress</CardTitle>
+          <CardTitle className="text-sm font-medium">{t('dashboardStats.inProgress')}</CardTitle>
           <div className="h-2 w-2 bg-blue-500 rounded-full animate-pulse" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold text-blue-600">{inProgressNeeds}</div>
-          <p className="text-xs text-muted-foreground">Being processed</p>
+          <p className="text-xs text-muted-foreground">{t('dashboardStats.beingProcessed')}</p>
         </CardContent>
       </Card>
     </div>

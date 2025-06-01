@@ -1,5 +1,6 @@
 
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,6 +23,7 @@ export const ImageUpload = ({
   maxSizeMB = 5,
   className = "" 
 }: ImageUploadProps) => {
+  const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,8 +35,8 @@ export const ImageUpload = ({
     // Validate file type
     if (!file.type.startsWith('image/')) {
       toast({
-        title: "Invalid file type",
-        description: "Please upload an image file (JPG, PNG, or WebP).",
+        title: t("imageUpload.invalidFileTypeTitle"),
+        description: t("imageUpload.invalidFileTypeDescription"),
         variant: "destructive",
       });
       return;
@@ -43,8 +45,8 @@ export const ImageUpload = ({
     // Validate file size
     if (file.size > maxSizeMB * 1024 * 1024) {
       toast({
-        title: "File too large",
-        description: `Please upload an image smaller than ${maxSizeMB}MB.`,
+        title: t("imageUpload.fileTooLargeTitle"),
+        description: t("imageUpload.fileTooLargeDescription", { maxSizeMB }),
         variant: "destructive",
       });
       return;
@@ -63,8 +65,8 @@ export const ImageUpload = ({
       if (error) {
         console.error('Upload error:', error);
         toast({
-          title: "Upload failed",
-          description: "Failed to upload image. Please try again.",
+          title: t("imageUpload.uploadFailedTitle"),
+          description: t("imageUpload.uploadFailedDescription"),
           variant: "destructive",
         });
         return;
@@ -77,15 +79,15 @@ export const ImageUpload = ({
       onImageUploaded(publicUrl);
       
       toast({
-        title: "Image uploaded",
-        description: "Image has been uploaded successfully.",
+        title: t("imageUpload.imageUploadedTitle"),
+        description: t("imageUpload.imageUploadedDescription"),
       });
 
     } catch (error) {
       console.error('Upload error:', error);
       toast({
-        title: "Upload failed",
-        description: "An unexpected error occurred.",
+        title: t("imageUpload.uploadFailedTitle"),
+        description: t("imageUpload.unexpectedErrorDescription"),
         variant: "destructive",
       });
     } finally {
@@ -125,7 +127,7 @@ export const ImageUpload = ({
 
   return (
     <div className={`space-y-2 ${className}`}>
-      <Label>Image</Label>
+      <Label>{t("imageUpload.imageLabel")}</Label>
       
       {currentImageUrl ? (
         <div className="relative">
@@ -156,10 +158,10 @@ export const ImageUpload = ({
         >
           <Image className="h-12 w-12 mx-auto mb-4 text-gray-400" />
           <p className="text-sm text-gray-600 mb-2">
-            Drag and drop an image here, or click to select
+            {t("imageUpload.dragAndDropText")}
           </p>
           <p className="text-xs text-gray-500">
-            PNG, JPG, WebP up to {maxSizeMB}MB
+            {t("imageUpload.fileTypeAndSizeInfo", { maxSizeMB })}
           </p>
           <Button
             type="button"
@@ -169,7 +171,7 @@ export const ImageUpload = ({
             disabled={uploading}
           >
             <Upload className="h-4 w-4 mr-2" />
-            {uploading ? 'Uploading...' : 'Choose File'}
+            {uploading ? t("imageUpload.uploadingButton") : t("imageUpload.chooseFileButton")}
           </Button>
         </div>
       )}

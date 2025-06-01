@@ -1,4 +1,3 @@
-
 {
   "site": {
     "title": "إعادة بناء المدارس السورية",
@@ -258,13 +257,29 @@
     "pendingNeeds": "الاحتياجات قيد الانتظار",
     "fulfilledNeeds": "الاحتياجات المحققة",
     "activeNeeds": "الاحتياجات النشطة",
-    "schoolName": "اسم المدرسة",
-    "numberOfStudents": "عدد الطلاب",
-    "governorate": "المحافظة",
-    "phone": "الهاتف",
-    "email": "البريد الإلكتروني",
-    "address": "العنوان",
-    "description": "الوصف"
+    "schoolNameLabel": "اسم المدرسة",
+    "numberOfStudentsLabel": "عدد الطلاب",
+    "governorateLabel": "المحافظة",
+    "educationLevelLabel": "المستوى التعليمي",
+    "phoneLabel": "الهاتف",
+    "emailLabel": "البريد الإلكتروني",
+    "addressLabel": "العنوان",
+    "descriptionLabel": "الوصف"
+  },
+  "dashboardStats": {
+    "totalNeeds": "إجمالي الاحتياجات",
+    "pending": "قيد الانتظار",
+    "inProgress": "قيد التنفيذ",
+    "fulfilled": "مُحقق",
+    "completionRate": "معدل الإنجاز",
+    "highPriority": "أولوية عالية",
+    "urgentAttentionNeeded": "عناية عاجلة مطلوبة",
+    "students": "الطلاب",
+    "totalEnrollment": "إجمالي عدد الطلاب",
+    "mostNeeded": "الأكثر احتياجاً",
+    "none": "لا يوجد",
+    "requests": "طلبات",
+    "beingProcessed": "قيد المعالجة"
   },
   "admin": {
     "dashboard": "لوحة تحكم المدير",
@@ -306,6 +321,10 @@
   "needsPage": {
     "title": "احتياجات المدارس",
     "description": "ساعد المدارس في جميع أنحاء سوريا من خلال تلبية احتياجاتها التعليمية"
+  },
+  "schoolsPage": {
+    "title": "دليل المدارس",
+    "description": "تصفح المدارس في جميع أنحاء سوريا وتعرف على احتياجاتها"
   },
   "settings": {
     "title": "الإعدادات",
@@ -351,7 +370,13 @@
     "schoolDetails": "تفاصيل المدرسة",
     "studentsCount": "الطلاب",
     "established": "تأسست",
-    "contactInfo": "معلومات الاتصال"
+    "contactInfo": "معلومات الاتصال",
+    "noSchools": "لم يتم العثور على مدارس",
+    "noSchoolsDescription": "جرب تعديل المرشحات لرؤية المزيد من النتائج.",
+    "showingResults": "عرض {{count}} من أصل {{total}} مدرسة",
+    "contactWhatsapp": "التواصل عبر واتساب",
+    "allGovernorates": "جميع المحافظات",
+    "allEducationLevels": "جميع المراحل التعليمية"
   },
   "common": {
     "loading": "جاري التحميل...",
@@ -368,6 +393,7 @@
     "sort": "ترتيب",
     "actions": "الإجراءات",
     "view": "عرض",
+    "resetFilters": "إعادة تعيين المرشحات",
     "approve": "موافقة",
     "reject": "رفض",
     "details": "التفاصيل",
@@ -398,7 +424,11 @@
     "notProvided": "غير متوفر",
     "noDescriptionProvided": "لا يوجد وصف",
     "updating": "جاري التحديث...",
-    "submitting": "جاري الإرسال..."
+    "submitting": "جاري الإرسال...",
+    "saving": "جاري الحفظ...",
+    "saveChanges": "حفظ التغييرات",
+    "showMore": "عرض المزيد",
+    "showLess": "عرض أقل"
   },
   "errors": {
     "pageNotFound": "الصفحة غير موجودة",
@@ -471,6 +501,42 @@
     "needUpdatedDescription": "تم تحديث الاحتياج بنجاح.",
     "needCreatedDescription": "تم تسجيل احتياجك وسيتم مراجعته.",
     "failedToUpdateNeed": "فشل تحديث الاحتياج. يرجى المحاولة مرة أخرى.",
-    "failedToCreateNeed": "فشل إنشاء الاحتياج. يرجى المحاولة مرة أخرى."
+    "failedToCreateNeed": "فشل إنشاء الاحتياج. يرجى المحاولة مرة أخرى.",
+    "school_profile_updated_title": "تم تحديث ملف المدرسة",
+    "school_profile_updated_description": "تم تحديث معلومات مدرستك بنجاح.",
+    "failed_to_update_school_profile_title": "خطأ",
+    "failed_to_update_school_profile_description": "فشل تحديث ملف المدرسة. يرجى المحاولة مرة أخرى."
+  },
+  "imageUpload": {
+    "imageLabel": "صورة",
+    "invalidFileTypeTitle": "نوع ملف غير صالح",
+    "invalidFileTypeDescription": "يرجى تحميل ملف صورة (JPG، PNG، أو WebP).",
+    "fileTooLargeTitle": "الملف كبير جداً",
+    "fileTooLargeDescription": "يرجى تحميل صورة أصغر من {{maxSizeMB}} ميجابايت.",
+    "uploadFailedTitle": "فشل الرفع",
+    "uploadFailedDescription": "فشل رفع الصورة. يرجى المحاولة مرة أخرى.",
+    "unexpectedErrorDescription": "حدث خطأ غير متوقع.",
+    "imageUploadedTitle": "تم رفع الصورة",
+    "imageUploadedDescription": "تم رفع الصورة بنجاح.",
+    "dragAndDropText": "اسحب وأفلت صورة هنا، أو انقر للاختيار",
+    "fileTypeAndSizeInfo": "PNG، JPG، WebP حتى {{maxSizeMB}} ميجابايت",
+    "chooseFileButton": "اختر ملف",
+    "uploadingButton": "جاري الرفع..."
+  },
+  "school_profile": {
+    "edit_title": "تعديل ملف المدرسة",
+    "edit_description": "تحديث معلومات مدرستك",
+    "school_name_label": "اسم المدرسة *",
+    "governorate_label": "المحافظة *",
+    "select_governorate_placeholder": "اختر المحافظة",
+    "address_label": "العنوان *",
+    "number_of_students_label": "عدد الطلاب *",
+    "contact_phone_label": "رقم الهاتف",
+    "contact_email_label": "البريد الإلكتروني",
+    "education_level_label": "المستوى التعليمي *",
+    "select_education_level_placeholder": "اختر المستوى التعليمي",
+    "description_label": "الوصف",
+    "save_changes_button": "حفظ التغييرات",
+    "cancel_button": "إلغاء"
   }
 }
