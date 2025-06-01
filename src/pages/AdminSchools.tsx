@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,10 +40,12 @@ const AdminSchoolsComponent = () => {
     governorate: "all",
     education_level: "all"
   });
+  const [updatingSchoolId, setUpdatingSchoolId] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchSchools = async () => {
     try {
+      console.log('Fetching schools...');
       const { data, error } = await supabaseAdmin
         .from('schools')
         .select(`
@@ -68,9 +69,15 @@ const AdminSchoolsComponent = () => {
         `)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching schools:', error);
+        throw error;
+      }
+      
+      console.log('Fetched schools:', data);
       setSchools(data || []);
     } catch (error: any) {
+      console.error('Failed to fetch schools:', error);
       toast({
         title: "Error fetching schools",
         description: error.message,
@@ -99,30 +106,55 @@ const AdminSchoolsComponent = () => {
     setFilteredSchools(filtered);
   }, [schools, searchTerm, filters]);
 
-  const updateSchoolStatus = async (schoolId: string, status: 'approved' | 'rejected') => {
+  const updateSchoolStatus = async (schoolId: string, newStatus: 'approved' | 'rejected') => {
+    setUpdatingSchoolId(schoolId);
+    
     try {
-      const { error } = await supabaseAdmin
+      console.log(`Updating school ${schoolId} to status: ${newStatus}`);
+      
+      const { data, error } = await supabaseAdmin
         .from('schools')
-        .update({ status })
-        .eq('id', schoolId);
+        .update({ 
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', schoolId)
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
 
-      setSchools(schools.map(school => 
-        school.id === schoolId ? { ...school, status } : school
-      ));
+      console.log('School updated successfully:', data);
+
+      // Update the local state immediately
+      setSchools(prevSchools => 
+        prevSchools.map(school => 
+          school.id === schoolId 
+            ? { ...school, status: newStatus }
+            : school
+        )
+      );
       
       toast({
-        title: `School ${status}`,
-        description: `The school has been ${status} successfully.`,
-        variant: status === 'approved' ? 'default' : 'destructive',
+        title: `School ${newStatus}`,
+        description: `The school has been ${newStatus} successfully.`,
+        variant: newStatus === 'approved' ? 'default' : 'destructive',
       });
+
+      console.log(`School ${schoolId} successfully ${newStatus}`);
+      
     } catch (error: any) {
+      console.error('Error updating school status:', error);
       toast({
         title: "Error updating school status",
-        description: error.message,
+        description: error.message || 'Failed to update school status',
         variant: "destructive",
       });
+    } finally {
+      setUpdatingSchoolId(null);
     }
   };
 
@@ -255,6 +287,8 @@ const AdminSchoolsComponent = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSchools.map((school) => {
             const stats = getSchoolStats(school);
+            const isUpdating = updatingSchoolId === school.id;
+            
             return (
               <Card key={school.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
@@ -343,18 +377,20 @@ const AdminSchoolsComponent = () => {
                           <Button
                             size="sm"
                             onClick={() => updateSchoolStatus(school.id, 'approved')}
+                            disabled={isUpdating}
                             className="bg-green-600 hover:bg-green-700"
                           >
                             <CheckCircle className="h-4 w-4 mr-1" />
-                            Approve
+                            {isUpdating ? 'Approving...' : 'Approve'}
                           </Button>
                           <Button
                             variant="destructive"
                             size="sm"
                             onClick={() => updateSchoolStatus(school.id, 'rejected')}
+                            disabled={isUpdating}
                           >
                             <XCircle className="h-4 w-4 mr-1" />
-                            Reject
+                            {isUpdating ? 'Rejecting...' : 'Reject'}
                           </Button>
                         </>
                       )}
