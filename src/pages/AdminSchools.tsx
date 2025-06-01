@@ -112,22 +112,39 @@ const AdminSchoolsComponent = () => {
     try {
       console.log(`Updating school ${schoolId} to status: ${newStatus}`);
       
-      const { data, error } = await supabaseAdmin
+      // First, let's check if the school exists
+      const { data: existingSchool, error: checkError } = await supabaseAdmin
+        .from('schools')
+        .select('id, status')
+        .eq('id', schoolId)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Error checking school existence:', checkError);
+        throw new Error('Failed to verify school exists');
+      }
+
+      if (!existingSchool) {
+        throw new Error('School not found');
+      }
+
+      console.log('School exists, current status:', existingSchool.status);
+
+      // Now update the school status without expecting a return
+      const { error: updateError } = await supabaseAdmin
         .from('schools')
         .update({ 
           status: newStatus,
           updated_at: new Date().toISOString()
         })
-        .eq('id', schoolId)
-        .select()
-        .single();
+        .eq('id', schoolId);
 
-      if (error) {
-        console.error('Supabase update error:', error);
-        throw error;
+      if (updateError) {
+        console.error('Supabase update error:', updateError);
+        throw updateError;
       }
 
-      console.log('School updated successfully:', data);
+      console.log('School status updated successfully');
 
       // Update the local state immediately
       setSchools(prevSchools => 
