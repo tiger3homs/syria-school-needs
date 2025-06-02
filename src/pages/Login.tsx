@@ -53,31 +53,31 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light via-white to-light font-inter text-primary flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary font-inter text-foreground flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className={`inline-flex items-center group ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <School className={`h-10 w-10 text-primary group-hover:text-gold transition-colors ${isRTL ? 'ml-3' : 'mr-3'}`} />
-            <span className="text-2xl font-extrabold text-primary group-hover:text-gold transition-colors">
+            <School className={`h-10 w-10 text-primary group-hover:text-accent transition-colors ${isRTL ? 'ml-3' : 'mr-3'}`} />
+            <span className="text-2xl font-extrabold text-primary group-hover:text-accent transition-colors">
               {t('site.title')}
             </span>
           </Link>
         </div>
 
-        <Card className="shadow-2xl rounded-3xl border-t-4 border-primary overflow-hidden">
-          <CardHeader className="text-center bg-gradient-to-r from-primary/5 to-gold/5 pb-8">
-            <CardTitle className="text-3xl font-bold text-primary mb-3">
+        <Card className="shadow-2xl rounded-3xl border-t-4 border-primary overflow-hidden bg-card">
+          <CardHeader className="text-center bg-gradient-to-r from-primary/5 to-accent/5 pb-8">
+            <CardTitle className="text-3xl font-bold text-foreground mb-3">
               {t('auth.login.title')}
             </CardTitle>
-            <CardDescription className="text-gray-700 text-lg leading-relaxed">
+            <CardDescription className="text-muted-foreground text-lg leading-relaxed">
               {t('auth.login.description')}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-3">
-                <Label htmlFor="email" className="text-primary font-semibold text-base">
+                <Label htmlFor="email" className="text-foreground font-semibold text-base">
                   {t('auth.login.email')}
                 </Label>
                 <Input
@@ -87,13 +87,13 @@ const Login = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="border-2 border-gray-300 focus:border-gold focus:ring-gold focus:ring-2 h-12 text-base rounded-xl"
+                  className="border-2 border-border focus:border-accent focus:ring-accent focus:ring-2 h-12 text-base rounded-xl bg-background"
                   dir={isRTL ? 'rtl' : 'ltr'}
                 />
               </div>
               
               <div className="space-y-3">
-                <Label htmlFor="password" className="text-primary font-semibold text-base">
+                <Label htmlFor="password" className="text-foreground font-semibold text-base">
                   {t('auth.login.password')}
                 </Label>
                 <div className="relative">
@@ -104,7 +104,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="border-2 border-gray-300 focus:border-gold focus:ring-gold focus:ring-2 h-12 text-base rounded-xl pr-12"
+                    className="border-2 border-border focus:border-accent focus:ring-accent focus:ring-2 h-12 text-base rounded-xl pr-12 bg-background"
                     dir={isRTL ? 'rtl' : 'ltr'}
                   />
                   <Button
@@ -115,9 +115,9 @@ const Login = () => {
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-500" />
+                      <EyeOff className="h-5 w-5 text-muted-foreground" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-500" />
+                      <Eye className="h-5 w-5 text-muted-foreground" />
                     )}
                   </Button>
                 </div>
@@ -125,7 +125,7 @@ const Login = () => {
 
               <Button 
                 type="submit" 
-                className="w-full bg-gold text-primary hover:bg-gold/90 rounded-xl shadow-lg px-6 py-4 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 h-14" 
+                className="w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-xl shadow-lg px-6 py-4 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105 h-14" 
                 disabled={isLoading}
               >
                 {isLoading ? t('auth.login.signingIn') : t('auth.login.signIn')}
@@ -133,15 +133,15 @@ const Login = () => {
             </form>
 
             <div className="mt-8 space-y-6">
-              <div className="text-center text-base text-gray-700">
+              <div className="text-center text-base text-muted-foreground">
                 {t('auth.login.noAccount')}{" "}
-                <Link to="/register" className="text-primary hover:text-gold font-semibold transition-colors">
+                <Link to="/register" className="text-primary hover:text-accent font-semibold transition-colors">
                   {t('auth.login.registerHere')}
                 </Link>
               </div>
               
               <div className="text-center">
-                <Link to="/admin/login" className="text-gold hover:text-primary font-semibold text-base transition-colors">
+                <Link to="/admin/login" className="text-accent hover:text-primary font-semibold text-base transition-colors">
                   {t('auth.login.adminLogin')}
                 </Link>
               </div>
@@ -150,7 +150,7 @@ const Login = () => {
         </Card>
 
         <div className="text-center mt-8">
-          <Link to="/" className={`text-primary hover:text-gold font-medium text-base transition-colors inline-flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Link to="/" className={`text-primary hover:text-accent font-medium text-base transition-colors inline-flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
             <ArrowLeft className={`h-4 w-4 ${isRTL ? 'ml-2 rotate-180' : 'mr-2'}`} />
             {t('auth.login.backToHome')}
           </Link>

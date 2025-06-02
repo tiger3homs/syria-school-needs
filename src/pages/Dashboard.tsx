@@ -15,6 +15,7 @@ import { EditSchoolProfile } from "@/components/EditSchoolProfile";
 import { AddEditNeedModal } from "@/components/AddEditNeedModal";
 import { DeleteNeedDialog } from "@/components/DeleteNeedDialog";
 import { DashboardStats } from "@/components/DashboardStats";
+import DashboardBottomNav from "@/components/DashboardBottomNav";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
@@ -35,10 +36,10 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">{t('common.loading')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -46,10 +47,10 @@ const Dashboard = () => {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="mt-4 text-gray-600">{t('errors.loginRequired')}</p>
-          <Link to="/login" className="text-blue-500">{t('nav.login')}</Link>
+          <p className="mt-4 text-muted-foreground">{t('errors.loginRequired')}</p>
+          <Link to="/login" className="text-primary hover:text-primary/80">{t('nav.login')}</Link>
         </div>
       </div>
     );
@@ -57,10 +58,10 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <p className="mt-4 text-red-600">{error}</p>
-          <p className="text-gray-600">{t('common.tryAgain')}</p>
+          <p className="mt-4 text-destructive">{error}</p>
+          <p className="text-muted-foreground">{t('common.tryAgain')}</p>
         </div>
       </div>
     );
@@ -68,13 +69,13 @@ const Dashboard = () => {
 
   if (!school) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center">
-            <School className="h-16 w-16 mx-auto mb-4 text-gray-300" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">{t('errors.pageNotFound')}</h2>
-            <p className="text-gray-600 mb-4">{t('dashboard.mySchool')}</p>
-            <p className="text-sm text-gray-500">{t('errors.accessDenied')}</p>
+            <School className="h-16 w-16 mx-auto mb-4 text-muted" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t('errors.pageNotFound')}</h2>
+            <p className="text-muted-foreground mb-4">{t('dashboard.mySchool')}</p>
+            <p className="text-sm text-muted-foreground">{t('errors.accessDenied')}</p>
           </div>
         </div>
       </div>
@@ -193,19 +194,19 @@ const Dashboard = () => {
     });
 
   return (
-    <div className={`min-h-screen bg-gray-50 ${isRTL ? 'text-right' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
+    <div className={`min-h-screen bg-background pb-16 md:pb-0 ${isRTL ? 'text-right' : ''}`} dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t('dashboard.welcome')}</h1>
-          <p className="text-gray-600">{t('dashboard.mySchool')}</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">{t('dashboard.welcome')}</h1>
+          <p className="text-muted-foreground">{t('dashboard.mySchool')}</p>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="overview">{t('dashboard.overview')}</TabsTrigger>
-            <TabsTrigger value="needs">{t('dashboard.manageNeeds')}</TabsTrigger>
-            <TabsTrigger value="profile">{t('dashboard.profile')}</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 bg-secondary">
+            <TabsTrigger value="overview" className="text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('dashboard.overview')}</TabsTrigger>
+            <TabsTrigger value="needs" className="text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('dashboard.manageNeeds')}</TabsTrigger>
+            <TabsTrigger value="profile" className="text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground">{t('dashboard.profile')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -218,10 +219,10 @@ const Dashboard = () => {
               <CardHeader>
                 <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div>
-                    <CardTitle>{t('dashboard.recentNeeds')}</CardTitle>
+                    <CardTitle className="text-foreground">{t('dashboard.recentNeeds')}</CardTitle>
                     <CardDescription>{t('dashboard.stats')}</CardDescription>
                   </div>
-                  <Button onClick={handleAddNeed}>
+                  <Button onClick={handleAddNeed} className="bg-primary hover:bg-primary/90">
                     <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {t('needs.addNeed')}
                   </Button>
@@ -284,10 +285,10 @@ const Dashboard = () => {
               <CardHeader>
                 <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div>
-                    <CardTitle>{t('needs.allNeeds')}</CardTitle>
+                    <CardTitle className="text-foreground">{t('needs.allNeeds')}</CardTitle>
                     <CardDescription>{t('dashboard.manageNeeds')}</CardDescription>
                   </div>
-                  <Button onClick={handleAddNeed}>
+                  <Button onClick={handleAddNeed} className="bg-primary hover:bg-primary/90">
                     <Plus className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
                     {t('needs.addNeed')}
                   </Button>
@@ -538,6 +539,9 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <DashboardBottomNav />
 
       {/* Unified Add/Edit Need Modal */}
       <AddEditNeedModal
