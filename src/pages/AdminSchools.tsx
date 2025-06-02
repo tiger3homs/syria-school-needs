@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import AdminHeader from "@/components/AdminHeader";
-import AdminBottomNav from "@/components/AdminBottomNav";
 import EditSchoolModal from "@/components/EditSchoolModal";
 import QuickStatusEditor from "@/components/QuickStatusEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -402,8 +400,6 @@ const AdminSchoolsComponent = () => {
           </Card>
         )}
       </main>
-
-      <AdminBottomNav />
 
       <EditSchoolModal
         open={editModalOpen}
