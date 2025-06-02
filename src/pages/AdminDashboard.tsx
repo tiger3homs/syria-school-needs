@@ -7,7 +7,6 @@ import AdminHeader from "@/components/AdminHeader";
 import AdminAnalytics from "@/components/AdminAnalytics";
 import SchoolModerationPanel from "@/components/SchoolModerationPanel";
 import AuditLog from "@/components/AuditLog";
-import AdminBottomNav from "@/components/AdminBottomNav";
 import { BarChart3, Users, History } from "lucide-react";
 
 const AdminDashboardComponent = () => {
@@ -15,7 +14,7 @@ const AdminDashboardComponent = () => {
   const [activeTab, setActiveTab] = useState("analytics");
 
   return (
-    <div className="min-h-screen bg-background pb-16 md:pb-0">
+    <div className="min-h-screen bg-background">
       <AdminHeader />
       
       {/* Main Content */}
@@ -63,9 +62,6 @@ const AdminDashboardComponent = () => {
           </TabsContent>
         </Tabs>
       </main>
-
-      {/* Mobile Bottom Navigation */}
-      <AdminBottomNav />
     </div>
   );
 };

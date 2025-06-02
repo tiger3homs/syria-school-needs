@@ -1,4 +1,3 @@
-
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Globe } from 'lucide-react';
@@ -17,7 +16,7 @@ const LanguageSwitcher = () => {
     <Button
       variant="ghost"
       size="sm"
-      className="h-8 w-8 px-0 text-primary-foreground hover:bg-primary-foreground/10"
+      className="h-8 w-8 px-0 text-white hover:bg-white/10"
       onClick={toggleLanguage}
     >
       <Globe className="h-4 w-4" />

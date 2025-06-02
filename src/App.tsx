@@ -31,10 +31,9 @@ const queryClient = new QueryClient();
 const HeaderConditional = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const isDashboardRoute = location.pathname === "/dashboard";
 
-  if (isAdminRoute || isDashboardRoute) {
-    return null; // Don't render header on admin routes or dashboard
+  if (isAdminRoute) {
+    return null; // Don't render header on admin routes
   }
 
   return <Header />;
@@ -42,10 +41,6 @@ const HeaderConditional = () => {
 
 const AppContent = () => {
   const { i18n } = useTranslation();
-  const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith("/admin");
-  const isDashboardRoute = location.pathname === "/dashboard";
-  const showHeader = !isAdminRoute && !isDashboardRoute;
 
   useEffect(() => {
     // Set document direction based on language
@@ -54,7 +49,7 @@ const AppContent = () => {
   }, [i18n.language]);
 
   return (
-    <div className={`min-h-screen bg-background ${showHeader ? 'pt-[4rem] sm:pt-[4.5rem]' : ''}`}>
+    <div className="min-h-screen pt-[4rem] sm:pt-[4.5rem]">
       <HeaderConditional />
       <Routes>
         <Route path="/" element={<Index />} />
