@@ -2,11 +2,22 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import SubmitNeedForm from '@/components/SubmitNeedForm';
+import { SubmitNeedForm } from '@/components/SubmitNeedForm';
 import DashboardBottomNav from '@/components/DashboardBottomNav';
 
 const SubmitNeed = () => {
   const { t } = useTranslation();
+
+  const handleSubmit = async (needData: any) => {
+    // TODO: Implement actual submission logic
+    console.log('Submitting need:', needData);
+    return true;
+  };
+
+  const handleCancel = () => {
+    // TODO: Implement navigation back to dashboard
+    console.log('Canceling need submission');
+  };
 
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
@@ -21,7 +32,7 @@ const SubmitNeed = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <SubmitNeedForm />
+            <SubmitNeedForm onSubmit={handleSubmit} onCancel={handleCancel} />
           </CardContent>
         </Card>
       </div>
