@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -43,7 +44,7 @@ const SchoolsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      let query = supabase.from('schools').select('*');
+      let query = supabase.from('schools').select('*').eq('status', 'approved');
 
       if (selectedGovernorate !== 'all') {
         const formattedGovernorate = selectedGovernorate
