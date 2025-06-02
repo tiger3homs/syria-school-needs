@@ -1,14 +1,18 @@
+
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Search, School, Users, Phone, Mail, MapPin, Eye, CheckCircle, XCircle, Filter, GraduationCap } from "lucide-react";
+import { Search, School, Users, Phone, Mail, MapPin, Eye, Filter, GraduationCap, Plus, Edit } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import AdminHeader from "@/components/AdminHeader";
+import AdminBottomNav from "@/components/AdminBottomNav";
+import EditSchoolModal from "@/components/EditSchoolModal";
+import QuickStatusEditor from "@/components/QuickStatusEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface School {
@@ -22,6 +26,8 @@ interface School {
   contact_email?: string;
   status: string;
   created_at: string;
+  principal_id?: string;
+  description?: string;
   needs: Array<{
     id: string;
     title: string;
@@ -42,7 +48,8 @@ const AdminSchoolsComponent = () => {
     governorate: "all",
     education_level: "all"
   });
-  const [updatingSchoolId, setUpdatingSchoolId] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedSchool, setSelectedSchool] = useState<School | null>(null);
   const { toast } = useToast();
 
   const fetchSchools = async () => {
@@ -61,6 +68,8 @@ const AdminSchoolsComponent = () => {
           contact_email,
           status,
           created_at,
+          principal_id,
+          description,
           needs (
             id,
             title,
@@ -108,98 +117,18 @@ const AdminSchoolsComponent = () => {
     setFilteredSchools(filtered);
   }, [schools, searchTerm, filters]);
 
-  const updateSchoolStatus = async (schoolId: string, newStatus: 'approved' | 'rejected') => {
-    setUpdatingSchoolId(schoolId);
-    
-    try {
-      console.log(`Updating school ${schoolId} to status: ${newStatus}`);
+  const handleEditSchool = (school: School) => {
+    setSelectedSchool(school);
+    setEditModalOpen(true);
+  };
 
-      // Step 1: Fetch the current status of the school from the database
-      const { data: currentSchoolData, error: fetchError } = await supabaseAdmin
-        .from('schools')
-        .select('status')
-        .eq('id', schoolId)
-        .single();
+  const handleAddSchool = () => {
+    setSelectedSchool(null);
+    setEditModalOpen(true);
+  };
 
-      if (fetchError) {
-        console.error('Supabase fetch error:', fetchError);
-        throw new Error(fetchError.message || 'Failed to fetch current school status.');
-      }
-
-      if (!currentSchoolData) {
-        throw new Error('School not found.');
-      }
-
-      if (currentSchoolData.status !== 'pending') {
-        throw new Error(`School is not in 'pending' status. Current status: ${currentSchoolData.status}.`);
-      }
-      
-      // Step 2: Proceed with the update only if status is pending
-      const { data, error } = await supabaseAdmin
-        .from('schools')
-        .update({ 
-          status: newStatus,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', schoolId)
-        .eq('status', 'pending') // This condition is still good for double-checking at DB level
-        .select('id, status, name');
-
-      if (error) {
-        console.error('Supabase update error:', error);
-        if (error.message?.includes('check constraint')) {
-          throw new Error(`Invalid status value. The database only accepts specific status values.`);
-        }
-        throw new Error(error.message || 'Failed to update school status');
-      }
-
-      if (!data || data.length === 0) {
-        // This means the update didn't affect any rows, likely because the status changed
-        // between the pre-check and the update, or the school was deleted.
-        // Instead of throwing a generic error, provide specific feedback.
-        toast({
-          title: "Action Failed",
-          description: "The school's status might have changed or it was already processed. Please refresh the list.",
-          variant: "destructive",
-        });
-        // No need to throw an error here, just return to avoid further processing
-        // and let the finally block handle the UI state reset.
-        return; 
-      }
-
-      const updatedSchool = data[0];
-      console.log('School status updated successfully:', updatedSchool);
-
-      // Update the local state immediately
-      setSchools(prevSchools => 
-        prevSchools.map(school => 
-          school.id === schoolId 
-            ? { ...school, status: newStatus }
-            : school
-        )
-      );
-      
-      toast({
-        title: t(`toast.school${newStatus === 'approved' ? 'Approved' : 'Rejected'}`),
-        description: t(`toast.school${newStatus === 'approved' ? 'Approved' : 'Rejected'}Description`, { schoolName: updatedSchool.name }),
-        variant: newStatus === 'approved' ? 'default' : 'destructive',
-      });
-
-      console.log(`School ${schoolId} successfully ${newStatus}`);
-      
-    } catch (error: any) {
-      console.error('Error updating school status:', error);
-      toast({
-        title: t('toast.errorUpdatingSchoolStatus'),
-        description: error.message || t('toast.errorUpdatingSchoolStatusDescription'),
-        variant: "destructive",
-      });
-      
-      // Refresh the schools list to ensure UI is in sync with database
-      await fetchSchools();
-    } finally {
-      setUpdatingSchoolId(null);
-    }
+  const handleModalSuccess = () => {
+    fetchSchools(); // Refresh the list
   };
 
   const getSchoolStats = (school: School) => {
@@ -209,22 +138,6 @@ const AdminSchoolsComponent = () => {
     const highPriorityNeeds = school.needs.filter(need => need.priority === 'high' && need.status === 'pending').length;
 
     return { totalNeeds, fulfilledNeeds, pendingNeeds, highPriorityNeeds };
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusKey = `status.${status}`;
-    const translatedStatus = t(statusKey);
-
-    switch (status) {
-      case 'approved':
-        return <Badge className="bg-green-100 text-green-800">{translatedStatus}</Badge>;
-      case 'rejected':
-        return <Badge className="bg-red-100 text-red-800">{translatedStatus}</Badge>;
-      case 'pending':
-        return <Badge className="bg-yellow-100 text-yellow-800">{translatedStatus}</Badge>;
-      default:
-        return <Badge variant="outline">{translatedStatus}</Badge>;
-    }
   };
 
   const getEducationLevelLabel = (level?: string) => {
@@ -261,12 +174,18 @@ const AdminSchoolsComponent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-0">
       <AdminHeader />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">{t('admin.schools.directoryTitle')}</h2>
-          <p className="text-gray-600 mt-2">{t('admin.schools.directoryDescription')}</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-900">{t('admin.schools.directoryTitle')}</h2>
+            <p className="text-gray-600 mt-2">{t('admin.schools.directoryDescription')}</p>
+          </div>
+          <Button onClick={handleAddSchool} className="bg-blue-600 hover:bg-blue-700">
+            <Plus className="h-4 w-4 mr-2" />
+            {t('admin.schools.addSchool')}
+          </Button>
         </div>
 
         {/* Search and Filters */}
@@ -335,18 +254,22 @@ const AdminSchoolsComponent = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredSchools.map((school) => {
             const stats = getSchoolStats(school);
-            const isUpdating = updatingSchoolId === school.id;
             
             return (
               <Card key={school.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center">
+                    <div className="flex items-center flex-1">
                       <School className="h-5 w-5 text-blue-600 mr-2" />
                       <CardTitle className="text-lg">{school.name}</CardTitle>
                     </div>
-                    <div className="flex flex-col space-y-2">
-                      {getStatusBadge(school.status)}
+                    <div className="flex flex-col space-y-2 items-end">
+                      <QuickStatusEditor
+                        schoolId={school.id}
+                        currentStatus={school.status}
+                        schoolName={school.name}
+                        onStatusUpdate={fetchSchools}
+                      />
                       {stats.highPriorityNeeds > 0 && (
                         <Badge variant="destructive" className="text-xs">
                           {stats.highPriorityNeeds} {t('admin.schools.urgent')}
@@ -416,33 +339,19 @@ const AdminSchoolsComponent = () => {
                   {/* Actions */}
                   <div className="pt-3 border-t">
                     <div className="flex space-x-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleEditSchool(school)}
+                      >
+                        <Edit className="h-4 w-4 mr-1" />
+                        {t('common.edit')}
+                      </Button>
                       <Button variant="outline" size="sm" className="flex-1">
                         <Eye className="h-4 w-4 mr-1" />
                         {t('admin.schools.view')}
                       </Button>
-                      {school.status === 'pending' && (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => updateSchoolStatus(school.id, 'approved')}
-                            disabled={isUpdating}
-                            className="bg-green-600 hover:bg-green-700 disabled:opacity-50"
-                          >
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            {isUpdating ? t('admin.schools.approving') : t('admin.schools.approve')}
-                          </Button>
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => updateSchoolStatus(school.id, 'rejected')}
-                            disabled={isUpdating}
-                            className="disabled:opacity-50"
-                          >
-                            <XCircle className="h-4 w-4 mr-1" />
-                            {isUpdating ? t('admin.schools.rejecting') : t('admin.schools.reject')}
-                          </Button>
-                        </>
-                      )}
                     </div>
                   </div>
 
@@ -493,6 +402,15 @@ const AdminSchoolsComponent = () => {
           </Card>
         )}
       </main>
+
+      <AdminBottomNav />
+
+      <EditSchoolModal
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+        school={selectedSchool}
+        onSuccess={handleModalSuccess}
+      />
     </div>
   );
 };
