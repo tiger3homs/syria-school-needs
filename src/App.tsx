@@ -11,7 +11,6 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import SubmitNeed from "./pages/SubmitNeed";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminNeeds from "./pages/AdminNeeds";
@@ -62,11 +61,6 @@ const AppContent = () => {
         <Route path="/dashboard" element={
           <ProtectedRoute requireAuth>
             <Dashboard />
-          </ProtectedRoute>
-        } />
-        <Route path="/needs/new" element={
-          <ProtectedRoute requireAuth>
-            <SubmitNeed />
           </ProtectedRoute>
         } />
         <Route path="/needs" element={<NeedsPage />} />
