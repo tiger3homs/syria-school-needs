@@ -3,6 +3,21 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-quill/dist/quill.snow.css';
 
+// Type definitions for react-quill since @types/react-quill doesn't exist
+interface ReactQuillProps {
+  theme?: string;
+  value?: string;
+  onChange?: (content: string, delta: any, source: string, editor: any) => void;
+  modules?: any;
+  formats?: string[];
+  placeholder?: string;
+  style?: React.CSSProperties;
+}
+
+interface ReactQuillComponent extends React.ComponentType<ReactQuillProps> {
+  new (props: ReactQuillProps): any;
+}
+
 interface RichTextEditorProps {
   content: string;
   onChange: (content: string) => void;
@@ -13,14 +28,14 @@ const RichTextEditor = ({ content, onChange, placeholder }: RichTextEditorProps)
   const { i18n } = useTranslation();
   const isRTL = i18n.language === 'ar';
   const quillRef = useRef<any>(null);
-  const ReactQuill = useRef<any>(null);
+  const ReactQuill = useRef<ReactQuillComponent | null>(null);
 
   useEffect(() => {
     // Dynamically import ReactQuill to avoid SSR issues
     const loadQuill = async () => {
       if (typeof window !== 'undefined') {
         const { default: QuillComponent } = await import('react-quill');
-        ReactQuill.current = QuillComponent;
+        ReactQuill.current = QuillComponent as ReactQuillComponent;
         
         // Force re-render after import
         if (quillRef.current) {
@@ -126,9 +141,11 @@ const RichTextEditor = ({ content, onChange, placeholder }: RichTextEditorProps)
     );
   }
 
+  const QuillComponent = ReactQuill.current;
+
   return (
     <div className={`${isRTL ? 'rtl' : 'ltr'}`}>
-      <ReactQuill.current
+      <QuillComponent
         ref={quillRef}
         theme="snow"
         value={content}
