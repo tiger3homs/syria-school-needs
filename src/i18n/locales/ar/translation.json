@@ -15,7 +15,46 @@
     "logout": "تسجيل الخروج"
   },
   "common": {
-    "switchLanguage": "تغيير اللغة"
+    "switchLanguage": "تغيير اللغة",
+    "success": "نجح",
+    "error": "خطأ",
+    "loading": "جارٍ التحميل",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "close": "إغلاق",
+    "submit": "إرسال",
+    "search": "بحث",
+    "filter": "تصفية",
+    "resetFilters": "إعادة تعيين المرشحات",
+    "noData": "لا توجد بيانات متاحة",
+    "actions": "الإجراءات"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل دخول المدير",
+      "description": "الوصول إلى لوحة تحكم مدرستك",
+      "email": "عنوان البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "signIn": "تسجيل الدخول",
+      "signingIn": "جارٍ تسجيل الدخول...",
+      "noAccount": "ليس لديك حساب؟",
+      "registerHere": "سجل هنا",
+      "adminLogin": "دخول الإدارة",
+      "backToHome": "العودة للرئيسية",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "rememberMe": "تذكرني"
+    },
+    "register": {
+      "title": "سجل مدرستك",
+      "description": "انضم إلى منصتنا للحصول على المساعدة في إعادة بناء مدرستك",
+      "getStarted": "ابدأ",
+      "registerDescription": "أكمل نموذج التسجيل لإرسال معلومات مدرستك واحتياجاتها إلى منصتنا.",
+      "alreadyHaveAccount": "لديك حساب بالفعل؟",
+      "signInHere": "سجل الدخول هنا"
+    }
   },
   "home": {
     "hero": {
@@ -71,12 +110,75 @@
       "button": "ابدأ اليوم"
     }
   },
+  "schools": {
+    "title": "المدارس",
+    "searchSchools": "البحث في المدارس...",
+    "allGovernorates": "كل المحافظات",
+    "allEducationLevels": "كل المستويات التعليمية",
+    "noSchools": "لم يتم العثور على مدارس",
+    "noSchoolsDescription": "حاول تعديل معايير البحث أو المرشحات",
+    "showingResults": "عرض {{count}} من {{total}} مدرسة",
+    "viewDetails": "عرض التفاصيل",
+    "contactInfo": "معلومات الاتصال",
+    "principal": "المدير",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "students": "الطلاب",
+    "level": "المستوى التعليمي",
+    "location": "الموقع",
+    "description": "الوصف",
+    "status": "الحالة"
+  },
+  "schoolsPage": {
+    "title": "المدارس المسجلة",
+    "description": "تصفح المدارس التي سجلت على منصتنا"
+  },
+  "needs": {
+    "title": "احتياجات المدارس",
+    "description": "تصفح الاحتياجات الحالية للمدارس في جميع أنحاء سوريا",
+    "searchNeeds": "البحث في الاحتياجات...",
+    "allCategories": "كل الفئات",
+    "allPriorities": "كل الأولويات",
+    "noNeeds": "لم يتم العثور على احتياجات",
+    "noNeedsDescription": "حاول تعديل معايير البحث أو المرشحات",
+    "showingResults": "عرض {{count}} من {{total}} احتياج",
+    "viewDetails": "عرض التفاصيل",
+    "category": "الفئة",
+    "priority": "الأولوية",
+    "quantity": "الكمية",
+    "urgency": "الإلحاح",
+    "school": "المدرسة",
+    "requestedBy": "طلب من قبل",
+    "submittedOn": "تم الإرسال في"
+  },
+  "needsPage": {
+    "title": "احتياجات المدارس",
+    "description": "الاحتياجات الحالية للمدارس في جميع أنحاء سوريا"
+  },
+  "dashboard": {
+    "title": "لوحة تحكم المدرسة",
+    "welcome": "أهلاً بعودتك",
+    "overview": "نظرة عامة",
+    "schoolProfile": "ملف المدرسة",
+    "needs": "الاحتياجات",
+    "notifications": "الإشعارات",
+    "settings": "الإعدادات",
+    "addNeed": "إضافة احتياج جديد",
+    "editProfile": "تعديل الملف الشخصي",
+    "viewPublicProfile": "عرض الملف العام"
+  },
   "admin": {
     "dashboard": "لوحة الإدارة",
     "systemStats": "إحصائيات النظام والإدارة",
     "analytics": "التحليلات",
     "moderation": "الإشراف",
-    "auditLog": "سجل المراجعة"
+    "auditLog": "سجل المراجعة",
+    "schools": "المدارس",
+    "needs": "الاحتياجات",
+    "users": "المستخدمون",
+    "reports": "التقارير",
+    "customPages": "الصفحات المخصصة",
+    "notifications": "الإشعارات"
   },
   "status": {
     "pending": "في الانتظار",
@@ -85,10 +187,62 @@
     "fulfilled": "مُنجز",
     "in_progress": "قيد التنفيذ"
   },
+  "priority": {
+    "low": "منخفضة",
+    "medium": "متوسطة",
+    "high": "عالية",
+    "urgent": "عاجلة"
+  },
+  "categories": {
+    "infrastructure": "البنية التحتية",
+    "equipment": "المعدات",
+    "supplies": "اللوازم",
+    "furniture": "الأثاث",
+    "technology": "التكنولوجيا",
+    "books": "الكتب",
+    "maintenance": "الصيانة",
+    "utilities": "المرافق",
+    "safety": "السلامة",
+    "other": "أخرى"
+  },
+  "governorates": {
+    "damascus": "دمشق",
+    "aleppo": "حلب",
+    "homs": "حمص",
+    "hama": "حماة",
+    "lattakia": "اللاذقية",
+    "idlib": "إدلب",
+    "daraa": "درعا",
+    "deir_ez_zor": "دير الزور",
+    "al_hasakah": "الحسكة",
+    "ar_raqqa": "الرقة",
+    "as_suwayda": "السويداء",
+    "quneitra": "القنيطرة",
+    "tartus": "طرطوس",
+    "damascus_countryside": "ريف دمشق"
+  },
+  "educationLevels": {
+    "preschool": "ما قبل المدرسة",
+    "elementary": "ابتدائي",
+    "middle": "إعدادي",
+    "high": "ثانوي",
+    "vocational": "مهني",
+    "mixed": "مستويات مختلطة"
+  },
   "toast": {
     "statusUpdated": "تم تحديث الحالة",
     "statusUpdatedDescription": "تم تحديث الحالة لـ {{schoolName}}",
-    "errorUpdatingStatus": "خطأ في تحديث الحالة"
+    "errorUpdatingStatus": "خطأ في تحديث الحالة",
+    "schoolRegistered": "تم تسجيل المدرسة",
+    "schoolRegisteredDescription": "تم تسجيل مدرستك بنجاح",
+    "needSubmitted": "تم إرسال الاحتياج",
+    "needSubmittedDescription": "تم إرسال احتياجك بنجاح",
+    "profileUpdated": "تم تحديث الملف الشخصي",
+    "profileUpdatedDescription": "تم تحديث ملفك الشخصي بنجاح",
+    "loginSuccess": "تم تسجيل الدخول بنجاح",
+    "loginError": "فشل تسجيل الدخول",
+    "registrationSuccess": "تم التسجيل بنجاح",
+    "registrationError": "فشل التسجيل"
   },
   "dashboardStats": {
     "totalNeeds": "إجمالي الاحتياجات",
@@ -104,6 +258,16 @@
     "none": "لا يوجد",
     "requests": "طلبات",
     "beingProcessed": "قيد المعالجة"
+  },
+  "forms": {
+    "required": "هذا الحقل مطلوب",
+    "invalidEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "passwordTooShort": "كلمة المرور يجب أن تكون 8 أحرف على الأقل",
+    "passwordsDoNotMatch": "كلمات المرور غير متطابقة",
+    "invalidPhone": "يرجى إدخال رقم هاتف صحيح",
+    "selectOption": "يرجى اختيار خيار",
+    "maxLength": "الحد الأقصى {{max}} حرف مسموح",
+    "minLength": "الحد الأدنى {{min}} حرف مطلوب"
   },
   "footer": {
     "initiative": "مبادرة من وزارة التربية والتعليم السورية لإعادة بناء وتحديث المدارس في جميع أنحاء سوريا",

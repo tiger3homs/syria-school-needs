@@ -15,7 +15,46 @@
     "logout": "Logout"
   },
   "common": {
-    "switchLanguage": "Switch Language"
+    "switchLanguage": "Switch Language",
+    "success": "Success",
+    "error": "Error",
+    "loading": "Loading",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "close": "Close",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "resetFilters": "Reset Filters",
+    "noData": "No data available",
+    "actions": "Actions"
+  },
+  "auth": {
+    "login": {
+      "title": "Principal Login",
+      "description": "Access your school dashboard",
+      "email": "Email Address",
+      "password": "Password",
+      "signIn": "Sign In",
+      "signingIn": "Signing In...",
+      "noAccount": "Don't have an account?",
+      "registerHere": "Register here",
+      "adminLogin": "Admin Login",
+      "backToHome": "Back to Home",
+      "forgotPassword": "Forgot Password?",
+      "rememberMe": "Remember me"
+    },
+    "register": {
+      "title": "Register Your School",
+      "description": "Join our platform to get help rebuilding your school",
+      "getStarted": "Get Started",
+      "registerDescription": "Complete the registration form to submit your school's information and needs to our platform.",
+      "alreadyHaveAccount": "Already have an account?",
+      "signInHere": "Sign in here"
+    }
   },
   "home": {
     "hero": {
@@ -71,12 +110,75 @@
       "button": "Get Started Today"
     }
   },
+  "schools": {
+    "title": "Schools",
+    "searchSchools": "Search schools...",
+    "allGovernorates": "All Governorates",
+    "allEducationLevels": "All Education Levels",
+    "noSchools": "No Schools Found",
+    "noSchoolsDescription": "Try adjusting your search criteria or filters",
+    "showingResults": "Showing {{count}} of {{total}} schools",
+    "viewDetails": "View Details",
+    "contactInfo": "Contact Information",
+    "principal": "Principal",
+    "phone": "Phone",
+    "email": "Email",
+    "students": "Students",
+    "level": "Education Level",
+    "location": "Location",
+    "description": "Description",
+    "status": "Status"
+  },
+  "schoolsPage": {
+    "title": "Registered Schools",
+    "description": "Browse schools that have registered on our platform"
+  },
+  "needs": {
+    "title": "School Needs",
+    "description": "Browse current needs from schools across Syria",
+    "searchNeeds": "Search needs...",
+    "allCategories": "All Categories",
+    "allPriorities": "All Priorities",
+    "noNeeds": "No Needs Found",
+    "noNeedsDescription": "Try adjusting your search criteria or filters",
+    "showingResults": "Showing {{count}} of {{total}} needs",
+    "viewDetails": "View Details",
+    "category": "Category",
+    "priority": "Priority",
+    "quantity": "Quantity",
+    "urgency": "Urgency",
+    "school": "School",
+    "requestedBy": "Requested by",
+    "submittedOn": "Submitted on"
+  },
+  "needsPage": {
+    "title": "School Needs",
+    "description": "Current needs from schools across Syria"
+  },
+  "dashboard": {
+    "title": "School Dashboard",
+    "welcome": "Welcome back",
+    "overview": "Overview",
+    "schoolProfile": "School Profile",
+    "needs": "Needs",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "addNeed": "Add New Need",
+    "editProfile": "Edit Profile",
+    "viewPublicProfile": "View Public Profile"
+  },
   "admin": {
     "dashboard": "Admin Dashboard",
     "systemStats": "System Statistics and Management",
     "analytics": "Analytics",
     "moderation": "Moderation",
-    "auditLog": "Audit Log"
+    "auditLog": "Audit Log",
+    "schools": "Schools",
+    "needs": "Needs",
+    "users": "Users",
+    "reports": "Reports",
+    "customPages": "Custom Pages",
+    "notifications": "Notifications"
   },
   "status": {
     "pending": "Pending",
@@ -85,10 +187,62 @@
     "fulfilled": "Fulfilled",
     "in_progress": "In Progress"
   },
+  "priority": {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "categories": {
+    "infrastructure": "Infrastructure",
+    "equipment": "Equipment",
+    "supplies": "Supplies",
+    "furniture": "Furniture",
+    "technology": "Technology",
+    "books": "Books",
+    "maintenance": "Maintenance",
+    "utilities": "Utilities",
+    "safety": "Safety",
+    "other": "Other"
+  },
+  "governorates": {
+    "damascus": "Damascus",
+    "aleppo": "Aleppo",
+    "homs": "Homs",
+    "hama": "Hama",
+    "lattakia": "Lattakia",
+    "idlib": "Idlib",
+    "daraa": "Daraa",
+    "deir_ez_zor": "Deir ez-Zor",
+    "al_hasakah": "Al-Hasakah",
+    "ar_raqqa": "Ar-Raqqa",
+    "as_suwayda": "As-Suwayda",
+    "quneitra": "Quneitra",
+    "tartus": "Tartus",
+    "damascus_countryside": "Damascus Countryside"
+  },
+  "educationLevels": {
+    "preschool": "Preschool",
+    "elementary": "Elementary",
+    "middle": "Middle School",
+    "high": "High School",
+    "vocational": "Vocational",
+    "mixed": "Mixed Levels"
+  },
   "toast": {
     "statusUpdated": "Status Updated",
     "statusUpdatedDescription": "Status has been updated for {{schoolName}}",
-    "errorUpdatingStatus": "Error Updating Status"
+    "errorUpdatingStatus": "Error Updating Status",
+    "schoolRegistered": "School Registered",
+    "schoolRegisteredDescription": "Your school has been registered successfully",
+    "needSubmitted": "Need Submitted",
+    "needSubmittedDescription": "Your need has been submitted successfully",
+    "profileUpdated": "Profile Updated",
+    "profileUpdatedDescription": "Your profile has been updated successfully",
+    "loginSuccess": "Login Successful",
+    "loginError": "Login Failed",
+    "registrationSuccess": "Registration Successful",
+    "registrationError": "Registration Failed"
   },
   "dashboardStats": {
     "totalNeeds": "Total Needs",
@@ -104,6 +258,16 @@
     "none": "None",
     "requests": "requests",
     "beingProcessed": "being processed"
+  },
+  "forms": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "invalidPhone": "Please enter a valid phone number",
+    "selectOption": "Please select an option",
+    "maxLength": "Maximum {{max}} characters allowed",
+    "minLength": "Minimum {{min}} characters required"
   },
   "footer": {
     "initiative": "An initiative by the Syrian Ministry of Education to rebuild and modernize schools across Syria",
