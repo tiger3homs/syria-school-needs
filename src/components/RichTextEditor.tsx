@@ -32,6 +32,42 @@ const RichTextEditor = ({ content, onChange, placeholder }: RichTextEditorProps)
     loadQuill();
   }, []);
 
+  // Add dynamic styles to document head
+  useEffect(() => {
+    const styleId = 'quill-rtl-styles';
+    let existingStyle = document.getElementById(styleId);
+    
+    if (!existingStyle) {
+      existingStyle = document.createElement('style');
+      existingStyle.id = styleId;
+      document.head.appendChild(existingStyle);
+    }
+
+    existingStyle.textContent = `
+      .ql-editor {
+        direction: ${isRTL ? 'rtl' : 'ltr'};
+        text-align: ${isRTL ? 'right' : 'left'};
+        min-height: 200px;
+      }
+      .ql-editor p {
+        direction: ${isRTL ? 'rtl' : 'ltr'};
+        text-align: ${isRTL ? 'right' : 'left'};
+      }
+      .ql-toolbar {
+        direction: ${isRTL ? 'rtl' : 'ltr'};
+      }
+      .ql-container {
+        font-family: inherit;
+      }
+    `;
+
+    return () => {
+      if (existingStyle && existingStyle.parentNode) {
+        existingStyle.parentNode.removeChild(existingStyle);
+      }
+    };
+  }, [isRTL]);
+
   const modules = {
     toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -92,23 +128,6 @@ const RichTextEditor = ({ content, onChange, placeholder }: RichTextEditorProps)
 
   return (
     <div className={`${isRTL ? 'rtl' : 'ltr'}`}>
-      <style jsx global>{`
-        .ql-editor {
-          direction: ${isRTL ? 'rtl' : 'ltr'};
-          text-align: ${isRTL ? 'right' : 'left'};
-          min-height: 200px;
-        }
-        .ql-editor p {
-          direction: ${isRTL ? 'rtl' : 'ltr'};
-          text-align: ${isRTL ? 'right' : 'left'};
-        }
-        .ql-toolbar {
-          direction: ${isRTL ? 'rtl' : 'ltr'};
-        }
-        .ql-container {
-          font-family: inherit;
-        }
-      `}</style>
       <ReactQuill.current
         ref={quillRef}
         theme="snow"
