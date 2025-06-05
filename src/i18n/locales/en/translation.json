@@ -71,6 +71,40 @@
       "button": "Get Started Today"
     }
   },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "systemStats": "System Statistics and Management",
+    "analytics": "Analytics",
+    "moderation": "Moderation",
+    "auditLog": "Audit Log"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "fulfilled": "Fulfilled",
+    "in_progress": "In Progress"
+  },
+  "toast": {
+    "statusUpdated": "Status Updated",
+    "statusUpdatedDescription": "Status has been updated for {{schoolName}}",
+    "errorUpdatingStatus": "Error Updating Status"
+  },
+  "dashboardStats": {
+    "totalNeeds": "Total Needs",
+    "pending": "pending",
+    "inProgress": "in progress",
+    "fulfilled": "Fulfilled",
+    "completionRate": "completion rate",
+    "highPriority": "High Priority",
+    "urgentAttentionNeeded": "urgent attention needed",
+    "students": "Students",
+    "totalEnrollment": "total enrollment",
+    "mostNeeded": "Most Needed",
+    "none": "None",
+    "requests": "requests",
+    "beingProcessed": "being processed"
+  },
   "footer": {
     "initiative": "An initiative by the Syrian Ministry of Education to rebuild and modernize schools across Syria",
     "quickLinks": "Quick Links",

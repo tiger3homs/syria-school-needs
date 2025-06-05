@@ -71,6 +71,40 @@
       "button": "ابدأ اليوم"
     }
   },
+  "admin": {
+    "dashboard": "لوحة الإدارة",
+    "systemStats": "إحصائيات النظام والإدارة",
+    "analytics": "التحليلات",
+    "moderation": "الإشراف",
+    "auditLog": "سجل المراجعة"
+  },
+  "status": {
+    "pending": "في الانتظار",
+    "approved": "موافق عليه",
+    "rejected": "مرفوض",
+    "fulfilled": "مُنجز",
+    "in_progress": "قيد التنفيذ"
+  },
+  "toast": {
+    "statusUpdated": "تم تحديث الحالة",
+    "statusUpdatedDescription": "تم تحديث الحالة لـ {{schoolName}}",
+    "errorUpdatingStatus": "خطأ في تحديث الحالة"
+  },
+  "dashboardStats": {
+    "totalNeeds": "إجمالي الاحتياجات",
+    "pending": "في الانتظار",
+    "inProgress": "قيد التنفيذ",
+    "fulfilled": "مُنجز",
+    "completionRate": "معدل الإنجاز",
+    "highPriority": "أولوية عالية",
+    "urgentAttentionNeeded": "تحتاج لانتباه عاجل",
+    "students": "الطلاب",
+    "totalEnrollment": "إجمالي المقيدين",
+    "mostNeeded": "الأكثر احتياجاً",
+    "none": "لا يوجد",
+    "requests": "طلبات",
+    "beingProcessed": "قيد المعالجة"
+  },
   "footer": {
     "initiative": "مبادرة من وزارة التربية والتعليم السورية لإعادة بناء وتحديث المدارس في جميع أنحاء سوريا",
     "quickLinks": "روابط سريعة",
