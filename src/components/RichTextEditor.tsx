@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-quill/dist/quill.snow.css';
 
@@ -11,6 +11,7 @@ interface ReactQuillProps {
   formats?: string[];
   placeholder?: string;
   style?: React.CSSProperties;
+  ref?: React.Ref<any>;
 }
 
 // Simplified type for ReactQuill component
