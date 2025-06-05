@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-quill/dist/quill.snow.css';
@@ -14,9 +13,8 @@ interface ReactQuillProps {
   style?: React.CSSProperties;
 }
 
-interface ReactQuillComponent extends React.ComponentType<ReactQuillProps> {
-  new (props: ReactQuillProps): any;
-}
+// Simplified type for ReactQuill component
+type ReactQuillComponent = React.ComponentType<ReactQuillProps>;
 
 interface RichTextEditorProps {
   content: string;
