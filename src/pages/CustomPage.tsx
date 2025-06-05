@@ -59,54 +59,6 @@ const CustomPage = () => {
     fetchPage();
   }, [slug]);
 
-  // Add dynamic styles for RTL support
-  useEffect(() => {
-    const styleId = 'custom-page-styles';
-    let existingStyle = document.getElementById(styleId);
-    
-    if (!existingStyle) {
-      existingStyle = document.createElement('style');
-      existingStyle.id = styleId;
-      document.head.appendChild(existingStyle);
-    }
-
-    existingStyle.textContent = `
-      .prose-rtl {
-        direction: rtl;
-        text-align: right;
-      }
-      .prose-rtl h1,
-      .prose-rtl h2,
-      .prose-rtl h3,
-      .prose-rtl h4,
-      .prose-rtl h5,
-      .prose-rtl h6 {
-        text-align: right;
-      }
-      .prose-rtl p {
-        text-align: right;
-      }
-      .prose-rtl ul,
-      .prose-rtl ol {
-        padding-right: 1.5rem;
-        padding-left: 0;
-      }
-      .prose img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 8px;
-        margin: 1rem auto;
-        display: block;
-      }
-    `;
-
-    return () => {
-      if (existingStyle && existingStyle.parentNode) {
-        existingStyle.parentNode.removeChild(existingStyle);
-      }
-    };
-  }, []);
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -161,6 +113,36 @@ const CustomPage = () => {
           </article>
         </div>
       </div>
+
+      <style jsx>{`
+        .prose-rtl {
+          direction: rtl;
+          text-align: right;
+        }
+        .prose-rtl h1,
+        .prose-rtl h2,
+        .prose-rtl h3,
+        .prose-rtl h4,
+        .prose-rtl h5,
+        .prose-rtl h6 {
+          text-align: right;
+        }
+        .prose-rtl p {
+          text-align: right;
+        }
+        .prose-rtl ul,
+        .prose-rtl ol {
+          padding-right: 1.5rem;
+          padding-left: 0;
+        }
+        .prose img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 8px;
+          margin: 1rem auto;
+          display: block;
+        }
+      `}</style>
     </div>
   );
 };
