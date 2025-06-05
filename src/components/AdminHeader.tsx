@@ -79,7 +79,6 @@ const AdminHeader = () => {
     { path: '/admin/dashboard', label: t('admin.header.dashboard'), icon: Shield },
     { path: '/admin/needs', label: t('admin.header.needs'), icon: FileText },
     { path: '/admin/schools', label: t('admin.header.schools'), icon: School },
-    { path: '/admin/custom-pages', label: t('admin.header.customPages'), icon: Users },
     { path: '/', label: t('admin.header.home'), icon: Home },
   ];
 

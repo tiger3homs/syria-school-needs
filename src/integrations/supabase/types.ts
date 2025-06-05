@@ -42,39 +42,6 @@ export type Database = {
         }
         Relationships: []
       }
-      custom_pages: {
-        Row: {
-          content: string
-          created_at: string
-          created_by: string
-          id: string
-          published: boolean
-          slug: string
-          subject: string
-          updated_at: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          created_by: string
-          id?: string
-          published?: boolean
-          slug: string
-          subject: string
-          updated_at?: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          created_by?: string
-          id?: string
-          published?: boolean
-          slug?: string
-          subject?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       needs: {
         Row: {
           category: string
@@ -282,10 +249,6 @@ export type Database = {
           p_entity_id?: string
         }
         Returns: undefined
-      }
-      validate_slug: {
-        Args: { slug_text: string }
-        Returns: boolean
       }
     }
     Enums: {
