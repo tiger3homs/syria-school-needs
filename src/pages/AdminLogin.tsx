@@ -15,7 +15,7 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { signIn, signOut } = useAuth();
+  const { signIn, signOut } = useAuth(); // Destructure signOut
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +31,8 @@ const AdminLogin = () => {
         });
         navigate('/admin/dashboard');
       } else {
-        await signOut();
+        // If a non-admin tries to log in via the admin login page
+        await signOut(); // Clear the session
         toast({
           title: "Access Denied",
           description: "Only administrators can access this page.",
@@ -50,30 +51,27 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md">
-        {/* Mobile-First Logo Section */}
-        <div className="text-center mb-6 sm:mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center">
-            <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
-            <span className="ml-2 text-lg sm:text-xl font-bold text-gray-900">Admin Panel</span>
+            <Shield className="h-8 w-8 text-blue-600" />
+            <span className="ml-2 text-xl font-bold text-gray-900">Admin Panel</span>
           </div>
-          <p className="text-gray-600 mt-1 sm:mt-2 text-sm sm:text-base">School Rebuild Syria</p>
+          <p className="text-gray-600 mt-2">School Rebuild Syria</p>
         </div>
 
-        {/* Mobile-Optimized Card */}
-        <Card className="shadow-lg rounded-lg sm:rounded-xl border-0 sm:border">
-          <CardHeader className="text-center pb-4 sm:pb-6">
-            <CardTitle className="text-xl sm:text-2xl">Admin Login</CardTitle>
-            <CardDescription className="text-sm sm:text-base px-2">
+        <Card className="shadow-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Admin Login</CardTitle>
+            <CardDescription>
               Access the administration panel to manage school needs
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-4 sm:px-6 pb-6">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              {/* Email Field */}
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -81,13 +79,11 @@ const AdminLogin = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 text-base"
                 />
               </div>
               
-              {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -96,13 +92,12 @@ const AdminLogin = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="h-11 text-base pr-10"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
@@ -114,22 +109,13 @@ const AdminLogin = () => {
                 </div>
               </div>
 
-              {/* Submit Button */}
-              <Button 
-                type="submit" 
-                className="w-full h-11 text-base font-medium rounded-lg"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
-            {/* Back Link */}
             <div className="mt-6 text-center">
-              <Link 
-                to="/" 
-                className="text-sm text-gray-600 hover:text-gray-900 transition-colors inline-flex items-center"
-              >
+              <Link to="/" className="text-sm text-gray-600 hover:text-gray-900">
                 ← Back to main site
               </Link>
             </div>

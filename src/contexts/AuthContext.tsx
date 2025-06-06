@@ -1,10 +1,7 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { sanitizeInput, isValidEmail, validatePassword, rateLimiter } from '@/utils/security';
-import { performanceMonitor } from '@/utils/performance';
 
 interface UserProfile {
   id: string;
@@ -40,8 +37,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
-    performanceMonitor.mark('auth-init-start');
-    
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -62,9 +57,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
       }
     });
-
-    performanceMonitor.mark('auth-init-end');
-    performanceMonitor.measure('auth-initialization', 'auth-init-start', 'auth-init-end');
 
     return () => subscription.unsubscribe();
   }, []);
@@ -100,34 +92,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string): Promise<UserProfile | null> => {
-    // Security: Input validation and sanitization
-    const sanitizedEmail = sanitizeInput(email.toLowerCase().trim());
-    
-    if (!isValidEmail(sanitizedEmail)) {
-      throw new Error('Please enter a valid email address');
-    }
-    
-    if (!password || password.length < 6) {
-      throw new Error('Password must be at least 6 characters long');
-    }
-
-    // Security: Rate limiting
-    const clientId = `signin_${sanitizedEmail}`;
-    if (!rateLimiter.isAllowed(clientId)) {
-      throw new Error('Too many login attempts. Please try again later.');
-    }
-
-    performanceMonitor.mark('signin-start');
-
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: sanitizedEmail,
+      email,
       password,
     });
 
-    if (error) {
-      performanceMonitor.mark('signin-error');
-      throw error;
-    }
+    if (error) throw error;
 
     if (data.user) {
       // Fetch profile immediately after successful sign-in
@@ -150,12 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (profileData) {
         const userProfile: UserProfile = { ...profileData, role: profileData.role as 'admin' | 'principal' };
         setProfile(userProfile);
-        setUser(data.user);
-        setLoading(false);
-        
-        performanceMonitor.mark('signin-success');
-        performanceMonitor.measure('signin-duration', 'signin-start', 'signin-success');
-        
+        setUser(data.user); // Ensure user state is updated
+        setLoading(false); // Ensure loading is set to false
         return userProfile;
       }
     }
@@ -163,40 +129,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signUp = async (email: string, password: string, userData: any) => {
-    // Security: Input validation and sanitization
-    const sanitizedEmail = sanitizeInput(email.toLowerCase().trim());
-    
-    if (!isValidEmail(sanitizedEmail)) {
-      throw new Error('Please enter a valid email address');
-    }
-    
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      throw new Error(passwordValidation.errors[0]);
-    }
-
-    // Sanitize user data
-    const sanitizedUserData = {
-      ...userData,
-      name: userData.name ? sanitizeInput(userData.name) : '',
-      phone: userData.phone ? sanitizeInput(userData.phone) : '',
-    };
-
-    // Security: Rate limiting
-    const clientId = `signup_${sanitizedEmail}`;
-    if (!rateLimiter.isAllowed(clientId, 3)) { // More restrictive for signup
-      throw new Error('Too many signup attempts. Please try again later.');
-    }
-
     const { error } = await supabase.auth.signUp({
-      email: sanitizedEmail,
+      email,
       password,
       options: {
         data: {
           role: 'principal',
-          ...sanitizedUserData
-        },
-        emailRedirectTo: `${window.location.origin}/`
+          ...userData
+        }
       }
     });
 
@@ -205,15 +145,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signOut = async () => {
     setLoading(true);
-    
-    // Security: Clear any cached sensitive data
-    try {
-      localStorage.removeItem('i18nextLng'); // Keep language preference
-      sessionStorage.clear(); // Clear session data
-    } catch (error) {
-      console.warn('Error clearing storage:', error);
-    }
-    
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.error("Error signing out:", error);

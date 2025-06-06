@@ -8,11 +8,11 @@ import enTranslation from './locales/en/translation.json';
 import arTranslation from './locales/ar/translation.json';
 
 const resources = {
-  ar: {
-    translation: arTranslation
-  },
   en: {
     translation: enTranslation
+  },
+  ar: {
+    translation: arTranslation
   }
 };
 
@@ -22,25 +22,15 @@ i18n
   .init({
     resources,
     fallbackLng: 'en',
-    lng: 'ar', // Set Arabic as default language
     debug: false,
     
     interpolation: {
-      escapeValue: false, // React already escapes values
+      escapeValue: false,
     },
     
     detection: {
-      order: ['localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+      order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'i18nextLng',
-      lookupFromPathIndex: 0,
-      lookupFromSubdomainIndex: 0,
-    },
-    
-    // Security: Prevent potential XSS through translations
-    parseMissingKeyHandler: (key) => {
-      console.warn(`Missing translation key: ${key}`);
-      return key;
     },
   });
 

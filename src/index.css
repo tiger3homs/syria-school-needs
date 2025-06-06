@@ -102,19 +102,19 @@
 
   /* Mobile-first typography scale */
   h1 {
-    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight;
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight;
   }
   
   h2 {
-    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold leading-tight;
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold leading-tight;
   }
   
   h3 {
-    @apply text-base sm:text-lg md:text-xl lg:text-2xl font-semibold leading-snug;
+    @apply text-lg sm:text-xl md:text-2xl font-semibold leading-snug;
   }
   
   p {
-    @apply text-sm sm:text-base md:text-lg leading-relaxed;
+    @apply text-base sm:text-lg leading-relaxed;
   }
 
   /* Arabic RTL support */
@@ -148,16 +148,6 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
   }
-
-  /* Mobile-first input and form styles */
-  input, textarea, select {
-    @apply text-base; /* Prevent zoom on iOS */
-  }
-
-  /* Mobile-friendly buttons */
-  button {
-    @apply touch-manipulation; /* Optimize touch events */
-  }
 }
 
 /* Custom utility classes for Syrian government styling */
@@ -175,163 +165,15 @@
     background: linear-gradient(135deg, hsl(var(--forest-green)) 0%, hsl(var(--forest-green)) 50%, rgba(212, 175, 55, 0.1) 100%);
   }
   
-  /* Mobile-first card design */
   .mobile-card {
-    @apply bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-100 p-3 sm:p-4 md:p-6;
+    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6;
   }
   
-  /* Mobile-first button designs */
   .mobile-button-primary {
-    @apply bg-gold text-white font-semibold text-base py-3 px-6 rounded-lg sm:rounded-xl shadow-md hover:shadow-lg hover:bg-gold/90 transition-all duration-200 touch-target focus-enhanced min-h-[44px];
+    @apply bg-gold text-white font-semibold text-base py-3 px-6 rounded-xl shadow-md hover:shadow-lg hover:bg-gold/90 transition-all duration-200 touch-target focus-enhanced;
   }
   
   .mobile-button-secondary {
-    @apply bg-white text-primary border-2 border-primary font-semibold text-base py-3 px-6 rounded-lg sm:rounded-xl hover:bg-primary hover:text-white transition-all duration-200 touch-target focus-enhanced min-h-[44px];
-  }
-
-  /* Mobile-first responsive containers */
-  .mobile-container {
-    @apply px-3 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto;
-  }
-
-  .mobile-section {
-    @apply py-4 sm:py-6 md:py-8 lg:py-12;
-  }
-
-  /* Mobile-first spacing utilities */
-  .mobile-space-y {
-    @apply space-y-3 sm:space-y-4 md:space-y-6;
-  }
-
-  .mobile-space-x {
-    @apply space-x-2 sm:space-x-3 md:space-x-4;
-  }
-
-  /* Mobile-first grid utilities */
-  .mobile-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6;
-  }
-
-  .mobile-grid-2 {
-    @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-6;
-  }
-
-  /* Mobile-optimized table alternatives */
-  .mobile-table-card {
-    @apply block md:hidden space-y-3;
-  }
-
-  .mobile-table-desktop {
-    @apply hidden md:block;
-  }
-
-  /* Mobile-first modal/dialog sizes */
-  .mobile-dialog {
-    @apply w-full max-w-lg mx-auto m-0 sm:m-4 rounded-none sm:rounded-lg max-h-screen sm:max-h-[90vh] overflow-y-auto;
-  }
-
-  /* Responsive text utilities */
-  .text-responsive-xs {
-    @apply text-xs sm:text-sm;
-  }
-
-  .text-responsive-sm {
-    @apply text-sm sm:text-base;
-  }
-
-  .text-responsive-base {
-    @apply text-base sm:text-lg;
-  }
-
-  .text-responsive-lg {
-    @apply text-lg sm:text-xl md:text-2xl;
-  }
-
-  .text-responsive-xl {
-    @apply text-xl sm:text-2xl md:text-3xl;
-  }
-
-  /* Mobile-optimized padding and margins */
-  .p-mobile {
-    @apply p-3 sm:p-4 md:p-6;
-  }
-
-  .px-mobile {
-    @apply px-3 sm:px-4 md:px-6;
-  }
-
-  .py-mobile {
-    @apply py-3 sm:py-4 md:py-6;
-  }
-
-  .m-mobile {
-    @apply m-3 sm:m-4 md:m-6;
-  }
-
-  .mx-mobile {
-    @apply mx-3 sm:mx-4 md:mx-6;
-  }
-
-  .my-mobile {
-    @apply my-3 sm:my-4 md:my-6;
-  }
-
-  /* Mobile-first safe areas for devices with notches */
-  .safe-top {
-    padding-top: env(safe-area-inset-top);
-  }
-
-  .safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  .safe-left {
-    padding-left: env(safe-area-inset-left);
-  }
-
-  .safe-right {
-    padding-right: env(safe-area-inset-right);
-  }
-}
-
-/* Mobile-first media queries for custom behavior */
-@media (max-width: 640px) {
-  /* Hide complex interactions on very small screens */
-  .hide-mobile {
-    display: none !important;
-  }
-
-  /* Ensure full-width forms on mobile */
-  .mobile-full-width {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-
-  /* Reduce motion for battery saving on mobile */
-  @media (prefers-reduced-motion: no-preference) {
-    * {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
-}
-
-/* Tablet-specific optimizations */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .tablet-cols-2 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .tablet-cols-3 {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Desktop enhancements */
-@media (min-width: 1025px) {
-  .desktop-hover-effects:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    @apply bg-white text-primary border-2 border-primary font-semibold text-base py-3 px-6 rounded-xl hover:bg-primary hover:text-white transition-all duration-200 touch-target focus-enhanced;
   }
 }
