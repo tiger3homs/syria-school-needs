@@ -77,7 +77,8 @@
     "dashboard": "Dashboard",
     "logout": "Logout",
     "schools": "Schools",
-    "needs": "Needs"
+    "needs": "Needs",
+    "admin": "Admin"
   },
   "auth": {
     "loginTitle": "Login to Your Account",
@@ -105,6 +106,7 @@
   },
   "common": {
     "loading": "Loading...",
+    "loadingNeeds": "Loading needs...",
     "error": "Error",
     "success": "Success",
     "cancel": "Cancel",
@@ -154,7 +156,9 @@
     "updating": "Updating...",
     "deleting": "Deleting...",
     "saving": "Saving...",
-    "switchLanguage": "Switch Language"
+    "switchLanguage": "Switch Language",
+    "resetFilters": "Reset Filters",
+    "notSpecified": "Not Specified"
   },
   "schools": {
     "title": "Schools in Need",
@@ -165,7 +169,9 @@
     "addSchool": "Add School",
     "deleteSchool": "Delete School",
     "noSchools": "No schools found",
+    "noSchoolsDescription": "Try adjusting your search criteria or filters.",
     "searchPlaceholder": "Search schools...",
+    "searchSchools": "Search schools...",
     "schoolName": "School Name",
     "schoolNamePlaceholder": "Enter school name",
     "location": "Location",
@@ -207,7 +213,10 @@
     "requiredFields": "Please fill in all required fields",
     "imageUpload": "Upload School Image",
     "imageUploaded": "Image uploaded successfully",
-    "imageUploadError": "Failed to upload image"
+    "imageUploadError": "Failed to upload image",
+    "allGovernorates": "All Governorates",
+    "allEducationLevels": "All Education Levels",
+    "showingResults": "Showing {{count}} of {{total}} results"
   },
   "needs": {
     "title": "School Needs",
@@ -395,6 +404,13 @@
       "markAsFulfilledSwitch": "Mark as Fulfilled"
     },
     "schools": {
+      "directoryTitle": "Schools Directory",
+      "directoryDescription": "Manage and oversee all registered schools",
+      "addSchool": "Add School",
+      "addSchoolDescription": "Add a new school to the system",
+      "editSchool": "Edit School",
+      "editSchoolDescription": "Update school information",
+      "schoolName": "School Name",
       "educationLevel": "Education Level",
       "selectEducationLevel": "Select education level",
       "numberOfStudents": "Number of Students",
@@ -404,7 +420,26 @@
       "description": "Description",
       "status": "Status",
       "governorate": "Governorate",
-      "selectGovernorate": "Select governorate"
+      "selectGovernorate": "Select governorate",
+      "searchFilters": "Search & Filters",
+      "searchPlaceholder": "Search schools...",
+      "allStatus": "All Status",
+      "allGovernorates": "All Governorates",
+      "allEducationLevels": "All Education Levels",
+      "showingResults": "Showing {{count}} of {{total}} schools",
+      "loading": "Loading schools...",
+      "students": "students",
+      "needsSummary": "Needs Summary",
+      "total": "Total",
+      "pending": "Pending",
+      "fulfilled": "Fulfilled",
+      "urgent": "urgent",
+      "view": "View",
+      "recentNeeds": "Recent Needs",
+      "moreNeeds": "more needs",
+      "noSchoolsFound": "No schools found",
+      "noSchoolsFilterAdjust": "Try adjusting your filters to see more results.",
+      "noSchoolsSearchAdjust": "Try adjusting your search terms or filters to see more results."
     }
   },
   "auditLog": {
@@ -436,6 +471,7 @@
     "description": "Create and manage custom pages for your website",
     "createNew": "Create New Page",
     "createFirst": "Create Your First Page",
+    "create": "Create Page",
     "editPage": "Edit Page",
     "noPages": "No custom pages created yet",
     "subject": "Page Title",
@@ -491,7 +527,46 @@
     "rejected": "Rejected"
   },
   "governorates": {
-    "Homs": "Homs"
+    "aleppo": "Aleppo",
+    "damascus": "Damascus",
+    "rif_dimashq": "Rif Dimashq",
+    "homs": "Homs",
+    "hama": "Hama",
+    "lattakia": "Lattakia",
+    "idlib": "Idlib",
+    "hasakah": "Al-Hasakah",
+    "deir_ez_zor": "Deir ez-Zor",
+    "tartus": "Tartus",
+    "raqqa": "Raqqa",
+    "daraa": "Daraa",
+    "suweida": "As-Suwayda",
+    "quneitra": "Quneitra",
+    "Homs": "Homs",
+    "Rif Dimashq": "Rif Dimashq",
+    "tunis": "Tunis",
+    "ariana": "Ariana",
+    "ben_arous": "Ben Arous",
+    "manouba": "Manouba",
+    "nabeul": "Nabeul",
+    "zaghouan": "Zaghouan",
+    "bizerte": "Bizerte",
+    "beja": "Beja",
+    "jendouba": "Jendouba",
+    "kef": "Kef",
+    "siliana": "Siliana",
+    "kairouan": "Kairouan",
+    "kasserine": "Kasserine",
+    "sidi_bouzid": "Sidi Bouzid",
+    "sousse": "Sousse",
+    "monastir": "Monastir",
+    "mahdia": "Mahdia",
+    "sfax": "Sfax",
+    "gabes": "Gabes",
+    "medenine": "Medenine",
+    "tataouine": "Tataouine",
+    "gafsa": "Gafsa",
+    "tozeur": "Tozeur",
+    "kebili": "Kebili"
   },
   "educationLevels": {
     "primary": "Primary",
@@ -519,5 +594,13 @@
     "successMessage": "School registered successfully!",
     "errorMessage": "Failed to register school. Please try again.",
     "closeButton": "Close"
+  },
+  "toast": {
+    "schoolUpdated": "School Updated",
+    "schoolUpdatedDescription": "School information has been updated successfully.",
+    "schoolCreated": "School Created",
+    "schoolCreatedDescription": "New school has been created successfully.",
+    "errorSavingSchool": "Error Saving School",
+    "errorFetchingSchools": "Error Fetching Schools"
   }
 }

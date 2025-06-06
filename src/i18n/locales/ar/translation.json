@@ -77,7 +77,8 @@
     "dashboard": "لوحة التحكم",
     "logout": "تسجيل الخروج",
     "schools": "المدارس",
-    "needs": "الاحتياجات"
+    "needs": "الاحتياجات",
+    "admin": "المسؤول"
   },
   "auth": {
     "loginTitle": "تسجيل الدخول إلى حسابك",
@@ -105,6 +106,7 @@
   },
   "common": {
     "loading": "جارٍ التحميل...",
+    "loadingNeeds": "جارٍ تحميل الاحتياجات...",
     "error": "خطأ",
     "success": "نجح",
     "cancel": "إلغاء",
@@ -154,7 +156,9 @@
     "updating": "جارٍ التحديث...",
     "deleting": "جارٍ الحذف...",
     "saving": "جارٍ الحفظ...",
-    "switchLanguage": "تبديل اللغة"
+    "switchLanguage": "تبديل اللغة",
+    "resetFilters": "إعادة تعيين المرشحات",
+    "notSpecified": "غير محدد"
   },
   "schools": {
     "title": "المدارس المحتاجة",
@@ -165,7 +169,9 @@
     "addSchool": "إضافة مدرسة",
     "deleteSchool": "حذف المدرسة",
     "noSchools": "لا توجد مدارس",
+    "noSchoolsDescription": "جرب تعديل معايير البحث أو المرشحات.",
     "searchPlaceholder": "البحث في المدارس...",
+    "searchSchools": "البحث في المدارس...",
     "schoolName": "اسم المدرسة",
     "schoolNamePlaceholder": "أدخل اسم المدرسة",
     "location": "الموقع",
@@ -207,7 +213,10 @@
     "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
     "imageUpload": "تحميل صورة المدرسة",
     "imageUploaded": "تم تحميل الصورة بنجاح",
-    "imageUploadError": "فشل في تحميل الصورة"
+    "imageUploadError": "فشل في تحميل الصورة",
+    "allGovernorates": "جميع المحافظات",
+    "allEducationLevels": "جميع المراحل التعليمية",
+    "showingResults": "عرض {{count}} من {{total}} نتيجة"
   },
   "needs": {
     "title": "احتياجات المدارس",
@@ -395,6 +404,13 @@
       "markAsFulfilledSwitch": "تمييز كمكتمل"
     },
     "schools": {
+      "directoryTitle": "دليل المدارس",
+      "directoryDescription": "إدارة والإشراف على جميع المدارس المسجلة",
+      "addSchool": "إضافة مدرسة",
+      "addSchoolDescription": "إضافة مدرسة جديدة إلى النظام",
+      "editSchool": "تعديل المدرسة",
+      "editSchoolDescription": "تحديث معلومات المدرسة",
+      "schoolName": "اسم المدرسة",
       "educationLevel": "المرحلة التعليمية",
       "selectEducationLevel": "اختر المرحلة التعليمية",
       "numberOfStudents": "عدد الطلاب",
@@ -404,7 +420,26 @@
       "description": "الوصف",
       "status": "الحالة",
       "governorate": "المحافظة",
-      "selectGovernorate": "اختر المحافظة"
+      "selectGovernorate": "اختر المحافظة",
+      "searchFilters": "البحث والمرشحات",
+      "searchPlaceholder": "البحث في المدارس...",
+      "allStatus": "جميع الحالات",
+      "allGovernorates": "جميع المحافظات",
+      "allEducationLevels": "جميع المراحل التعليمية",
+      "showingResults": "عرض {{count}} من {{total}} مدرسة",
+      "loading": "جارٍ تحميل المدارس...",
+      "students": "طلاب",
+      "needsSummary": "ملخص الاحتياجات",
+      "total": "الإجمالي",
+      "pending": "في الانتظار",
+      "fulfilled": "مكتمل",
+      "urgent": "عاجل",
+      "view": "عرض",
+      "recentNeeds": "الاحتياجات الأخيرة",
+      "moreNeeds": "احتياجات أخرى",
+      "noSchoolsFound": "لم يتم العثور على مدارس",
+      "noSchoolsFilterAdjust": "جرب تعديل المرشحات لرؤية المزيد من النتائج.",
+      "noSchoolsSearchAdjust": "جرب تعديل مصطلحات البحث أو المرشحات لرؤية المزيد من النتائج."
     }
   },
   "auditLog": {
@@ -436,6 +471,7 @@
     "description": "إنشاء وإدارة صفحات مخصصة لموقعك",
     "createNew": "إنشاء صفحة جديدة",
     "createFirst": "أنشئ صفحتك الأولى",
+    "create": "إنشاء صفحة",
     "editPage": "تعديل الصفحة",
     "noPages": "لم يتم إنشاء أي صفحات مخصصة بعد",
     "subject": "عنوان الصفحة",
@@ -491,7 +527,46 @@
     "rejected": "مرفوض"
   },
   "governorates": {
-    "Homs": "حمص"
+    "aleppo": "حلب",
+    "damascus": "دمشق",
+    "rif_dimashq": "ريف دمشق",
+    "homs": "حمص",
+    "hama": "حماة",
+    "lattakia": "اللاذقية",
+    "idlib": "إدلب",
+    "hasakah": "الحسكة",
+    "deir_ez_zor": "دير الزور",
+    "tartus": "طرطوس",
+    "raqqa": "الرقة",
+    "daraa": "درعا",
+    "suweida": "السويداء",
+    "quneitra": "القنيطرة",
+    "Homs": "حمص",
+    "Rif Dimashq": "ريف دمشق",
+    "tunis": "تونس",
+    "ariana": "أريانة",
+    "ben_arous": "بن عروس",
+    "manouba": "منوبة",
+    "nabeul": "نابل",
+    "zaghouan": "زغوان",
+    "bizerte": "بنزرت",
+    "beja": "باجة",
+    "jendouba": "جندوبة",
+    "kef": "الكاف",
+    "siliana": "سليانة",
+    "kairouan": "القيروان",
+    "kasserine": "القصرين",
+    "sidi_bouzid": "سيدي بوزيد",
+    "sousse": "سوسة",
+    "monastir": "المنستير",
+    "mahdia": "المهدية",
+    "sfax": "صفاقس",
+    "gabes": "قابس",
+    "medenine": "مدنين",
+    "tataouine": "تطاوين",
+    "gafsa": "قفصة",
+    "tozeur": "توزر",
+    "kebili": "قبلي"
   },
   "educationLevels": {
     "primary": "ابتدائي",
@@ -519,5 +594,13 @@
     "successMessage": "تم تسجيل المدرسة بنجاح!",
     "errorMessage": "فشل في تسجيل المدرسة. يرجى المحاولة مرة أخرى.",
     "closeButton": "إغلاق"
+  },
+  "toast": {
+    "schoolUpdated": "تم تحديث المدرسة",
+    "schoolUpdatedDescription": "تم تحديث معلومات المدرسة بنجاح.",
+    "schoolCreated": "تم إنشاء المدرسة",
+    "schoolCreatedDescription": "تم إنشاء مدرسة جديدة بنجاح.",
+    "errorSavingSchool": "خطأ في حفظ المدرسة",
+    "errorFetchingSchools": "خطأ في جلب المدارس"
   }
 }
