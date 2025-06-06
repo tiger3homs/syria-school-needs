@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -56,10 +57,10 @@ const HeaderConditional = () => {
 
 // Performance: Loading component for Suspense
 const LoadingSpinner = () => (
-  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+  <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
     <div className="text-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-      <p className="mt-4 text-gray-600">Loading...</p>
+      <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-blue-600 mx-auto"></div>
+      <p className="mt-3 sm:mt-4 text-gray-600 text-sm sm:text-base">Loading...</p>
     </div>
   </div>
 );
@@ -94,7 +95,7 @@ const AppContent = () => {
   }, [i18n.language]);
 
   return (
-    <div className="min-h-screen pt-[4rem] sm:pt-[4.5rem]">
+    <div className="min-h-screen pt-14 sm:pt-16 md:pt-18 w-full">
       <HeaderConditional />
       <Suspense fallback={<LoadingSpinner />}>
         <Routes>
@@ -165,7 +166,9 @@ const App = () => {
         <Sonner />
         <AuthProvider>
           <BrowserRouter>
-            <AppContent />
+            <div className="min-h-screen flex w-full">
+              <AppContent />
+            </div>
           </BrowserRouter>
         </AuthProvider>
       </TooltipProvider>
