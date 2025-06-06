@@ -1,5 +1,73 @@
 
 {
+  "site": {
+    "title": "Syrian Schools Reconstruction Initiative",
+    "description": "A platform to help rebuild and support Syrian schools in need"
+  },
+  "home": {
+    "hero": {
+      "title": "Rebuilding Syria's Future",
+      "subtitle": "One School at a Time",
+      "description": "Join our mission to restore education and hope to Syrian children by supporting schools in need of reconstruction and resources.",
+      "mission": "Together, we can provide safe learning environments and quality education for the next generation of Syria."
+    },
+    "cta": {
+      "registerSchool": "Register Your School",
+      "viewNeeds": "View School Needs"
+    },
+    "stats": {
+      "schoolsRegistered": "Schools Registered",
+      "schoolsRebuilt": "Schools Rebuilt",
+      "needsFulfilled": "Needs Fulfilled"
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "description": "Our simple three-step process to help Syrian schools get the support they need",
+      "step1": {
+        "title": "Register Your School",
+        "description": "School administrators can register their institution and provide details about current conditions and urgent needs."
+      },
+      "step2": {
+        "title": "Review & Verification",
+        "description": "Our team reviews each submission to ensure authenticity and prioritize the most critical needs."
+      },
+      "step3": {
+        "title": "Community Support",
+        "description": "Verified schools receive support through donations, volunteers, and reconstruction efforts from the global community."
+      }
+    },
+    "mission": {
+      "title": "Our Mission & Values",
+      "description": "We are committed to rebuilding Syria's educational infrastructure with transparency, quality, and hope for the future.",
+      "transparency": {
+        "title": "Transparency",
+        "description": "Every donation and project is tracked and reported with full transparency to ensure accountability."
+      },
+      "education": {
+        "title": "Quality Education",
+        "description": "We believe every Syrian child deserves access to safe, well-equipped learning environments."
+      },
+      "infrastructure": {
+        "title": "Sustainable Infrastructure",
+        "description": "Our reconstruction efforts focus on building durable, modern facilities that will serve communities for decades."
+      }
+    },
+    "cta2": {
+      "title": "Ready to Make a Difference?",
+      "description": "Whether you're a school in need or someone who wants to help, your participation can change lives.",
+      "button": "Get Started Today"
+    }
+  },
+  "footer": {
+    "initiative": "A humanitarian initiative dedicated to rebuilding Syria's educational infrastructure",
+    "quickLinks": "Quick Links",
+    "contact": "Contact Us",
+    "officialInfo": "Official Information",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "accessibility": "Accessibility",
+    "copyright": "All rights reserved."
+  },
   "nav": {
     "home": "Home",
     "about": "About Us",
@@ -247,6 +315,7 @@
     "donationReceived": "Donation received",
     "schoolApproved": "School approved",
     "schoolRejected": "School rejected",
+    "viewAll": "View All",
     "types": {
       "info": "Information",
       "success": "Success",
@@ -299,6 +368,43 @@
       "schoolApproved": "School approved successfully",
       "schoolRejected": "School rejected successfully",
       "moderationError": "Failed to update school status"
+    },
+    "needs": {
+      "managementTitle": "Needs Management",
+      "managementDescription": "Manage and monitor all school needs",
+      "exportData": "Export Data",
+      "exportAllCSV": "Export All (CSV)",
+      "exportAllExcel": "Export All (Excel)",
+      "exportFilteredCSV": "Export Filtered (CSV)",
+      "exportFilteredExcel": "Export Filtered (Excel)",
+      "filtersSearch": "Filters & Search",
+      "searchPlaceholder": "Search needs...",
+      "allCategories": "All Categories",
+      "allPriorities": "All Priorities",
+      "allStatus": "All Status",
+      "allGovernorates": "All Governorates",
+      "showingResults": "Showing {{count}} results",
+      "tableHeaderSchoolName": "School Name",
+      "tableHeaderNeedTitle": "Need Title",
+      "tableHeaderCategory": "Category",
+      "tableHeaderGovernorate": "Governorate",
+      "tableHeaderQuantity": "Quantity",
+      "tableHeaderPriority": "Priority",
+      "tableHeaderStatus": "Status",
+      "tableHeaderActions": "Actions",
+      "markAsFulfilledSwitch": "Mark as Fulfilled"
+    },
+    "schools": {
+      "educationLevel": "Education Level",
+      "selectEducationLevel": "Select education level",
+      "numberOfStudents": "Number of Students",
+      "contactPhone": "Contact Phone",
+      "contactEmail": "Contact Email",
+      "address": "Address",
+      "description": "Description",
+      "status": "Status",
+      "governorate": "Governorate",
+      "selectGovernorate": "Select governorate"
     }
   },
   "auditLog": {
@@ -366,5 +472,52 @@
     "forbiddenAccess": "Forbidden Access",
     "tryAgain": "Try Again",
     "contactSupport": "Contact Support"
+  },
+  "categories": {
+    "furniture": "Furniture",
+    "outdoor_facilities": "Outdoor Facilities",
+    "equipment": "Equipment",
+    "other": "Other"
+  },
+  "priority": {
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "status": {
+    "pending": "Pending",
+    "fulfilled": "Fulfilled",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "governorates": {
+    "Homs": "Homs"
+  },
+  "educationLevels": {
+    "primary": "Primary",
+    "middle": "Middle School",
+    "highSchool": "High School",
+    "mixed": "Mixed"
+  },
+  "registerSchoolModal": {
+    "title": "Register Your School",
+    "step1": {
+      "title": "Basic Information",
+      "description": "Provide basic details about your school",
+      "nextButton": "Next Step"
+    },
+    "step2": {
+      "title": "Contact Details",
+      "description": "Add contact information and location",
+      "nextButton": "Next Step"
+    },
+    "step3": {
+      "title": "Additional Information",
+      "description": "Complete your school registration",
+      "submitButton": "Submit Registration"
+    },
+    "successMessage": "School registered successfully!",
+    "errorMessage": "Failed to register school. Please try again.",
+    "closeButton": "Close"
   }
 }

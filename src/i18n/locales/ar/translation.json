@@ -1,5 +1,73 @@
 
 {
+  "site": {
+    "title": "مبادرة إعادة إعمار المدارس السورية",
+    "description": "منصة لمساعدة إعادة بناء ودعم المدارس السورية المحتاجة"
+  },
+  "home": {
+    "hero": {
+      "title": "إعادة بناء مستقبل سوريا",
+      "subtitle": "مدرسة واحدة في كل مرة",
+      "description": "انضم إلى مهمتنا لاستعادة التعليم والأمل للأطفال السوريين من خلال دعم المدارس المحتاجة للإعمار والموارد.",
+      "mission": "معاً، يمكننا توفير بيئات تعلم آمنة وتعليم جيد للجيل القادم من سوريا."
+    },
+    "cta": {
+      "registerSchool": "سجل مدرستك",
+      "viewNeeds": "اعرض احتياجات المدارس"
+    },
+    "stats": {
+      "schoolsRegistered": "المدارس المسجلة",
+      "schoolsRebuilt": "المدارس المعاد بناؤها",
+      "needsFulfilled": "الاحتياجات المتحققة"
+    },
+    "howItWorks": {
+      "title": "كيف يعمل",
+      "description": "عمليتنا البسيطة المكونة من ثلاث خطوات لمساعدة المدارس السورية في الحصول على الدعم الذي تحتاجه",
+      "step1": {
+        "title": "سجل مدرستك",
+        "description": "يمكن لمديري المدارس تسجيل مؤسستهم وتقديم تفاصيل حول الظروف الحالية والاحتياجات العاجلة."
+      },
+      "step2": {
+        "title": "المراجعة والتحقق",
+        "description": "يراجع فريقنا كل طلب لضمان الأصالة وتحديد أولويات الاحتياجات الأكثر أهمية."
+      },
+      "step3": {
+        "title": "دعم المجتمع",
+        "description": "تتلقى المدارس المتحقق منها الدعم من خلال التبرعات والمتطوعين وجهود الإعمار من المجتمع العالمي."
+      }
+    },
+    "mission": {
+      "title": "مهمتنا وقيمنا",
+      "description": "نحن ملتزمون بإعادة بناء البنية التحتية التعليمية في سوريا بشفافية وجودة وأمل في المستقبل.",
+      "transparency": {
+        "title": "الشفافية",
+        "description": "يتم تتبع كل تبرع ومشروع والإبلاغ عنه بشفافية كاملة لضمان المساءلة."
+      },
+      "education": {
+        "title": "التعليم الجيد",
+        "description": "نحن نؤمن أن كل طفل سوري يستحق الوصول إلى بيئات تعلم آمنة ومجهزة جيداً."
+      },
+      "infrastructure": {
+        "title": "البنية التحتية المستدامة",
+        "description": "تركز جهود الإعمار لدينا على بناء مرافق دائمة وحديثة ستخدم المجتمعات لعقود."
+      }
+    },
+    "cta2": {
+      "title": "مستعد لإحداث فرق؟",
+      "description": "سواء كنت مدرسة محتاجة أو شخصاً يريد المساعدة، يمكن لمشاركتك أن تغير الحياة.",
+      "button": "ابدأ اليوم"
+    }
+  },
+  "footer": {
+    "initiative": "مبادرة إنسانية مكرسة لإعادة بناء البنية التحتية التعليمية في سوريا",
+    "quickLinks": "روابط سريعة",
+    "contact": "اتصل بنا",
+    "officialInfo": "معلومات رسمية",
+    "privacy": "سياسة الخصوصية",
+    "terms": "شروط الخدمة",
+    "accessibility": "إمكانية الوصول",
+    "copyright": "جميع الحقوق محفوظة."
+  },
   "nav": {
     "home": "الرئيسية",
     "about": "من نحن",
@@ -247,6 +315,7 @@
     "donationReceived": "تم استلام تبرع",
     "schoolApproved": "تم قبول المدرسة",
     "schoolRejected": "تم رفض المدرسة",
+    "viewAll": "عرض الكل",
     "types": {
       "info": "معلومات",
       "success": "نجح",
@@ -299,6 +368,43 @@
       "schoolApproved": "تم قبول المدرسة بنجاح",
       "schoolRejected": "تم رفض المدرسة بنجاح",
       "moderationError": "فشل في تحديث حالة المدرسة"
+    },
+    "needs": {
+      "managementTitle": "إدارة الاحتياجات",
+      "managementDescription": "إدارة ومراقبة جميع احتياجات المدارس",
+      "exportData": "تصدير البيانات",
+      "exportAllCSV": "تصدير الكل (CSV)",
+      "exportAllExcel": "تصدير الكل (Excel)",
+      "exportFilteredCSV": "تصدير المفلتر (CSV)",
+      "exportFilteredExcel": "تصدير المفلتر (Excel)",
+      "filtersSearch": "الفلاتر والبحث",
+      "searchPlaceholder": "البحث في الاحتياجات...",
+      "allCategories": "جميع الفئات",
+      "allPriorities": "جميع الأولويات",
+      "allStatus": "جميع الحالات",
+      "allGovernorates": "جميع المحافظات",
+      "showingResults": "عرض {{count}} نتيجة",
+      "tableHeaderSchoolName": "اسم المدرسة",
+      "tableHeaderNeedTitle": "عنوان الاحتياج",
+      "tableHeaderCategory": "الفئة",
+      "tableHeaderGovernorate": "المحافظة",
+      "tableHeaderQuantity": "الكمية",
+      "tableHeaderPriority": "الأولوية",
+      "tableHeaderStatus": "الحالة",
+      "tableHeaderActions": "الإجراءات",
+      "markAsFulfilledSwitch": "تمييز كمكتمل"
+    },
+    "schools": {
+      "educationLevel": "المرحلة التعليمية",
+      "selectEducationLevel": "اختر المرحلة التعليمية",
+      "numberOfStudents": "عدد الطلاب",
+      "contactPhone": "هاتف الاتصال",
+      "contactEmail": "بريد الاتصال الإلكتروني",
+      "address": "العنوان",
+      "description": "الوصف",
+      "status": "الحالة",
+      "governorate": "المحافظة",
+      "selectGovernorate": "اختر المحافظة"
     }
   },
   "auditLog": {
@@ -366,5 +472,52 @@
     "forbiddenAccess": "وصول ممنوع",
     "tryAgain": "حاول مرة أخرى",
     "contactSupport": "اتصل بالدعم"
+  },
+  "categories": {
+    "furniture": "أثاث",
+    "outdoor_facilities": "مرافق خارجية",
+    "equipment": "معدات",
+    "other": "أخرى"
+  },
+  "priority": {
+    "high": "عالي",
+    "medium": "متوسط",
+    "low": "منخفض"
+  },
+  "status": {
+    "pending": "في الانتظار",
+    "fulfilled": "مكتمل",
+    "approved": "مقبول",
+    "rejected": "مرفوض"
+  },
+  "governorates": {
+    "Homs": "حمص"
+  },
+  "educationLevels": {
+    "primary": "ابتدائي",
+    "middle": "إعدادي",
+    "highSchool": "ثانوي",
+    "mixed": "مختلط"
+  },
+  "registerSchoolModal": {
+    "title": "سجل مدرستك",
+    "step1": {
+      "title": "المعلومات الأساسية",
+      "description": "قدم التفاصيل الأساسية عن مدرستك",
+      "nextButton": "الخطوة التالية"
+    },
+    "step2": {
+      "title": "تفاصيل الاتصال",
+      "description": "أضف معلومات الاتصال والموقع",
+      "nextButton": "الخطوة التالية"
+    },
+    "step3": {
+      "title": "معلومات إضافية",
+      "description": "أكمل تسجيل مدرستك",
+      "submitButton": "إرسال التسجيل"
+    },
+    "successMessage": "تم تسجيل المدرسة بنجاح!",
+    "errorMessage": "فشل في تسجيل المدرسة. يرجى المحاولة مرة أخرى.",
+    "closeButton": "إغلاق"
   }
 }
