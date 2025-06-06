@@ -7,7 +7,8 @@ import AdminHeader from "@/components/AdminHeader";
 import AdminAnalytics from "@/components/AdminAnalytics";
 import SchoolModerationPanel from "@/components/SchoolModerationPanel";
 import AuditLog from "@/components/AuditLog";
-import { BarChart3, Users, History } from "lucide-react";
+import AdminCustomPages from "./AdminCustomPages";
+import { BarChart3, Users, History, FileText } from "lucide-react";
 
 const AdminDashboardComponent = () => {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ const AdminDashboardComponent = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 bg-secondary">
+          <TabsList className="grid w-full grid-cols-4 bg-secondary">
             <TabsTrigger 
               value="analytics" 
               className="flex items-center text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
@@ -39,6 +40,13 @@ const AdminDashboardComponent = () => {
             >
               <Users className="h-4 w-4 mr-2" />
               {t('admin.moderation')}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="pages" 
+              className="flex items-center text-muted-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
+              <FileText className="h-4 w-4 mr-2" />
+              {t('customPages.title')}
             </TabsTrigger>
             <TabsTrigger 
               value="audit" 
@@ -55,6 +63,10 @@ const AdminDashboardComponent = () => {
 
           <TabsContent value="moderation" className="space-y-6">
             <SchoolModerationPanel />
+          </TabsContent>
+
+          <TabsContent value="pages" className="space-y-6">
+            <AdminCustomPages />
           </TabsContent>
 
           <TabsContent value="audit" className="space-y-6">

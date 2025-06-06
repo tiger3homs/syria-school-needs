@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,7 @@ import AdminNotificationsPage from "./pages/AdminNotificationsPage";
 import NotFound from "./pages/NotFound";
 import NeedsPage from "./pages/NeedsPage";
 import SchoolsPage from "./pages/SchoolsPage";
+import CustomPage from "./pages/CustomPage";
 
 // Import i18n configuration
 import './i18n';
@@ -133,6 +133,8 @@ const AppContent = () => {
               <AdminNotificationsPage />
             </ProtectedRoute>
           } />
+          {/* Dynamic route for custom pages - must be last */}
+          <Route path="/:slug" element={<CustomPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
