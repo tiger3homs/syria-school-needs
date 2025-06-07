@@ -23,24 +23,31 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>');
     html = html.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>');
     
+    // Images - improved regex and styling
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg my-4 shadow-sm" loading="lazy" />');
+    
     // Links
     html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline" target="_blank" rel="noopener noreferrer">$1</a>');
     
-    // Images
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="max-w-full h-auto rounded-lg my-4" />');
-    
-    // Line breaks
+    // Line breaks - handle both \n and <br> tags
     html = html.replace(/\n/g, '<br />');
     
-    // Lists
-    html = html.replace(/^\- (.+)$/gm, '<li class="ml-4">• $1</li>');
+    // Lists - improved list handling
+    html = html.replace(/^\- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
     html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>');
     
-    // Wrap lists
-    html = html.replace(/(<li[^>]*>.*<\/li>)/gms, '<ul class="space-y-2 my-4">$1</ul>');
+    // Wrap lists properly
+    html = html.replace(/(<li[^>]*>.*?<\/li>)/gs, (match) => {
+      return `<ul class="space-y-2 my-4 ml-4">${match}</ul>`;
+    });
     
-    // Paragraphs
-    html = html.replace(/^(?!<[h|u|l])(.*?)$/gm, '<p class="mb-4">$1</p>');
+    // Paragraphs - only wrap text that isn't already in HTML tags
+    html = html.replace(/^(?!<[h|u|l|i])(.*?)(?:<br \/>)?$/gm, (match, content) => {
+      if (content.trim() && !content.match(/^<[a-zA-Z]/)) {
+        return `<p class="mb-4">${content}</p>`;
+      }
+      return match;
+    });
     
     return html;
   };
