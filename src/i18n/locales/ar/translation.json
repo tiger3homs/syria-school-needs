@@ -343,7 +343,20 @@
       "updateSchool": "تحديث المدرسة",
       "editSchool": "تعديل المدرسة",
       "addNewSchool": "إضافة مدرسة جديدة",
-      "schoolDetails": "تفاصيل المدرسة"
+      "schoolDetails": "تفاصيل المدرسة",
+      "editSchoolDescription": "تحديث معلومات المدرسة",
+      "addSchoolDescription": "إضافة مدرسة جديدة إلى النظام",
+      "schoolName": "اسم المدرسة",
+      "status": "الحالة",
+      "governorate": "المحافظة",
+      "selectGovernorate": "اختر المحافظة",
+      "educationLevel": "المرحلة التعليمية",
+      "selectEducationLevel": "اختر المرحلة التعليمية",
+      "numberOfStudents": "عدد الطلاب",
+      "contactPhone": "هاتف التواصل",
+      "contactEmail": "بريد التواصل",
+      "address": "العنوان",
+      "description": "الوصف"
     },
     "needs": {
       "managementTitle": "إدارة الاحتياجات",
@@ -571,7 +584,7 @@
     "email": "يرجى إدخال عنوان بريد إلكتروني صحيح",
     "phone": "يرجى إدخال رقم هاتف صحيح",
     "minLength": "الحد الأدنى {{count}} أحرف مطلوبة",
-    "maxLength": "الحد الأقصى {{count}} أحرف مسموحة",
+    "maxLength": "الحد الأقصى {{count}} أحرف مطلوبة",
     "passwordStrength": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، بما في ذلك أحرف كبيرة وصغيرة وأرقام"
   },
   "registerSchoolModal": {
@@ -648,7 +661,12 @@
     "noDataToExport": "لا توجد بيانات للتصدير",
     "selectItemsAdjustFilters": "يرجى تحديد بعض العناصر أو تعديل المرشحات.",
     "exportSuccessful": "تم التصدير بنجاح",
-    "needsExported": "تم تصدير {{count}} احتياج كـ {{format}}"
+    "needsExported": "تم تصدير {{count}} احتياج كـ {{format}}",
+    "schoolUpdated": "تم تحديث المدرسة بنجاح",
+    "schoolUpdatedDescription": "تم تحديث المدرسة بنجاح.",
+    "schoolCreated": "تم إنشاء المدرسة بنجاح",
+    "schoolCreatedDescription": "تم إنشاء المدرسة بنجاح.",
+    "errorSavingSchool": "خطأ في حفظ المدرسة"
   },
   "imageUpload": {
     "imageLabel": "صورة",

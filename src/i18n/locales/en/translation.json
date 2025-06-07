@@ -343,7 +343,20 @@
       "updateSchool": "Update School",
       "editSchool": "Edit School",
       "addNewSchool": "Add New School",
-      "schoolDetails": "School Details"
+      "schoolDetails": "School Details",
+      "editSchoolDescription": "Update school information",
+      "addSchoolDescription": "Add a new school to the system",
+      "schoolName": "School Name",
+      "status": "Status",
+      "governorate": "Governorate",
+      "selectGovernorate": "Select governorate",
+      "educationLevel": "Education Level",
+      "selectEducationLevel": "Select education level",
+      "numberOfStudents": "Number of Students",
+      "contactPhone": "Contact Phone",
+      "contactEmail": "Contact Email",
+      "address": "Address",
+      "description": "Description"
     },
     "needs": {
       "managementTitle": "Needs Management",
@@ -648,7 +661,12 @@
     "noDataToExport": "No data to export",
     "selectItemsAdjustFilters": "Please select some items or adjust your filters.",
     "exportSuccessful": "Export successful",
-    "needsExported": "{{count}} needs exported as {{format}}"
+    "needsExported": "{{count}} needs exported as {{format}}",
+    "schoolUpdated": "School updated successfully",
+    "schoolUpdatedDescription": "The school has been successfully updated.",
+    "schoolCreated": "School created successfully",
+    "schoolCreatedDescription": "The school has been successfully created.",
+    "errorSavingSchool": "Error saving school"
   },
   "imageUpload": {
     "imageLabel": "Image",

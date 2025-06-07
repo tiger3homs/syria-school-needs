@@ -48,11 +48,11 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
     status: "pending"
   });
 
-  const governorates = [
-    'tunis', 'ariana', 'ben_arous', 'manouba', 'nabeul', 'zaghouan', 'bizerte',
-    'beja', 'jendouba', 'kef', 'siliana', 'kairouan', 'kasserine', 'sidi_bouzid',
-    'sousse', 'monastir', 'mahdia', 'sfax', 'gabes', 'medenine', 'tataouine',
-    'gafsa', 'tozeur', 'kebili'
+  // Syrian governorates only
+  const syrianGovernorates = [
+    'damascus', 'aleppo', 'homs', 'latakia', 'daraa', 'deir_ez_zor', 
+    'idlib', 'hasakah', 'raqqa', 'sweida', 'quneitra', 'tartus', 
+    'rif_damascus', 'hama'
   ];
 
   useEffect(() => {
@@ -206,7 +206,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
                   <SelectValue placeholder={t('admin.schools.selectGovernorate')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {governorates.map(gov => (
+                  {syrianGovernorates.map(gov => (
                     <SelectItem key={gov} value={gov}>
                       {t(`governorates.${gov}`)}
                     </SelectItem>
