@@ -1,4 +1,3 @@
-
 {
   "site": {
     "title": "School Rebuild Syria",
@@ -682,5 +681,25 @@
     "description_label": "Description",
     "save_changes_button": "Save Changes",
     "cancel_button": "Cancel"
+  },
+  "customPages": {
+    "title": "Custom Pages",
+    "description": "Create and manage custom pages for your website",
+    "create": "Create Page",
+    "createNew": "Create New Page",
+    "createDescription": "Create a new custom page that will be accessible via a unique URL",
+    "createFirst": "Create Your First Page",
+    "edit": "Edit Page",
+    "editDescription": "Edit the selected custom page",
+    "subject": "Page Title",
+    "slug": "URL Slug",
+    "content": "Page Content",
+    "published": "Published",
+    "draft": "Draft",
+    "noPages": "No custom pages created yet",
+    "deleteConfirm": "Delete Page",
+    "deleteDescription": "Are you sure you want to delete the page \"{{title}}\"? This action cannot be undone.",
+    "created": "Created",
+    "updated": "Last updated"
   }
 }

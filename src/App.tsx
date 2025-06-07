@@ -16,6 +16,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminNeeds from "./pages/AdminNeeds";
 import AdminSchools from "./pages/AdminSchools";
 import AdminNotificationsPage from "./pages/AdminNotificationsPage";
+import CustomPage from "./pages/CustomPage";
 import NotFound from "./pages/NotFound";
 import NeedsPage from "./pages/NeedsPage";
 import SchoolsPage from "./pages/SchoolsPage";
@@ -86,6 +87,8 @@ const AppContent = () => {
             <AdminNotificationsPage />
           </ProtectedRoute>
         } />
+        {/* Dynamic route for custom pages */}
+        <Route path="/:slug" element={<CustomPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
