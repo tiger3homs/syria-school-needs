@@ -215,7 +215,7 @@ export const AddEditNeedModal = ({ need, isOpen, onClose, onSubmit }: AddEditNee
 
             {isEditMode && (
               <div className="space-y-2">
-                <Label htmlFor="status">{t('status.status')}</Label>
+                <Label htmlFor="status">{t('status.title')}</Label>
                 <Select 
                   value={formData.status} 
                   onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}

@@ -12,26 +12,27 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 
 const SYRIAN_GOVERNORATES = [
-  "Damascus",
-  "Rif Dimashq", 
-  "Aleppo",
-  "Homs",
-  "Hama",
-  "Latakia",
-  "Tartus",
-  "Deir ez-Zor",
-  "Raqqa",
-  "Hasakah",
-  "Daraa",
-  "Suwayda",
-  "Quneitra",
-  "Idlib"
-];
+  "damascus",
+  "rif_damascus",
+  "aleppo",
+  "homs",
+  "hama",
+  "latakia",
+  "tartus",
+  "deir_ez_zor",
+  "raqqa",
+  "hasakah",
+  "daraa",
+  "sweida",
+  "quneitra",
+  "idlib"
+] as const;
 
 const EDUCATION_LEVELS = [
   { value: "primary", label: "Primary School" },
   { value: "middle", label: "Middle School" },
-  { value: "highSchool", label: "High School" }
+  { value: "high_school", label: "High School" },
+  { value: "mixed", label: "Mixed Levels" }
 ];
 
 interface RegisterSchoolModalProps {
@@ -195,7 +196,9 @@ const RegisterSchoolModal = ({ open, onOpenChange }: RegisterSchoolModalProps) =
                 </SelectTrigger>
                 <SelectContent>
                   {SYRIAN_GOVERNORATES.map((gov) => (
-                    <SelectItem key={gov} value={gov}>{gov}</SelectItem>
+                    <SelectItem key={gov} value={gov}>
+                      {t(`governorates.${gov}`)}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

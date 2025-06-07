@@ -152,24 +152,24 @@
   },
   "governorates": {
     "damascus": "Damascus",
+    "rif_damascus": "Rif Damascus",
     "aleppo": "Aleppo",
     "homs": "Homs",
     "latakia": "Latakia",
-    "daraa": "Daraa",
+    "daraa": "Daraa", 
     "deir_ez_zor": "Deir ez-Zor",
     "idlib": "Idlib",
     "hasakah": "Al-Hasakah",
     "raqqa": "Raqqa",
-    "sweida": "As-Sweida",
+    "sweida": "As-Suwayda",
     "quneitra": "Quneitra",
     "tartus": "Tartus",
-    "rif_damascus": "Rif Dimashq",
     "hama": "Hama"
   },
   "educationLevels": {
     "primary": "Primary School",
-    "middle": "Middle School", 
-    "highSchool": "High School",
+    "middle": "Middle School",
+    "high_school": "High School",
     "mixed": "Mixed Levels"
   },
   "categories": {
@@ -194,6 +194,7 @@
     "low": "Low"
   },
   "status": {
+    "title": "Status",
     "pending": "Pending",
     "approved": "Approved",
     "rejected": "Rejected",

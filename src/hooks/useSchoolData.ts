@@ -2,35 +2,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Tables } from '@/integrations/supabase/types';
 
-interface School {
-  id: string;
-  name: string;
-  address: string;
-  governorate: string | null;
-  education_level: string | null;
-  number_of_students: number;
-  contact_phone: string | null;
-  contact_email: string | null;
-  description: string | null;
-  image_url: string | null;
-  status: string | null;
-}
-
-interface Need {
-  id: string;
-  title: string;
-  description: string | null;
-  category: string;
-  priority: string;
-  quantity: number;
-  status: string;
-  image_url: string | null;
-  created_at: string;
-  submitted_by: string | null;
-  fulfilled_by: string | null;
-  fulfilled_at: string | null;
-}
+type School = Tables<'schools'>;
+type Need = Tables<'needs'>;
 
 export const useSchoolData = () => {
   const { user } = useAuth();
@@ -63,21 +38,7 @@ export const useSchoolData = () => {
       }
 
       if (schoolData) {
-        // Create a complete School object with all fields including education_level
-        const completeSchoolData: School = {
-          id: schoolData.id,
-          name: schoolData.name,
-          address: schoolData.address,
-          governorate: schoolData.governorate,
-          education_level: schoolData.education_level,
-          number_of_students: schoolData.number_of_students,
-          contact_phone: schoolData.contact_phone,
-          contact_email: schoolData.contact_email,
-          description: schoolData.description,
-          image_url: schoolData.image_url || null,
-          status: schoolData.status || null
-        };
-        setSchool(completeSchoolData);
+        setSchool(schoolData);
 
         // Fetch needs data if school exists
         const { data: needsData, error: needsError } = await supabase
@@ -92,23 +53,7 @@ export const useSchoolData = () => {
           return;
         }
 
-        // Transform needs data to include new audit fields
-        const transformedNeeds: Need[] = (needsData || []).map(need => ({
-          id: need.id,
-          title: need.title,
-          description: need.description,
-          category: need.category,
-          priority: need.priority,
-          quantity: need.quantity,
-          status: need.status,
-          image_url: need.image_url,
-          created_at: need.created_at,
-          submitted_by: need.submitted_by,
-          fulfilled_by: need.fulfilled_by,
-          fulfilled_at: need.fulfilled_at
-        }));
-
-        setNeeds(transformedNeeds);
+        setNeeds(needsData || []);
       }
       // If no school exists, we just continue without showing an error
     } catch (err) {
@@ -169,23 +114,7 @@ export const useSchoolData = () => {
         return false;
       }
 
-      // Transform the response to match our Need interface
-      const transformedNeed: Need = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        category: data.category,
-        priority: data.priority,
-        quantity: data.quantity,
-        status: data.status,
-        image_url: data.image_url,
-        created_at: data.created_at,
-        submitted_by: data.submitted_by,
-        fulfilled_by: data.fulfilled_by,
-        fulfilled_at: data.fulfilled_at
-      };
-
-      setNeeds([transformedNeed, ...needs]);
+      setNeeds([data, ...needs]);
       return true;
     } catch (err) {
       console.error('Error creating need:', err);

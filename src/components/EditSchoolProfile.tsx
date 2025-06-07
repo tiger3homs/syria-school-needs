@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
@@ -9,54 +8,65 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ImageUpload } from './ImageUpload';
 import { useToast } from '@/hooks/use-toast';
+import { Tables } from '@/integrations/supabase/types';
 
-interface School {
-  id: string;
-  name: string;
-  address: string;
-  governorate: string | null;
-  number_of_students: number;
-  contact_phone: string | null;
-  contact_email: string | null;
-  description: string | null;
-  image_url: string | null;
-  education_level: string | null;
-}
+type GovernorateKey = "damascus" | "rif_damascus" | "aleppo" | "homs" | "latakia" | 
+                      "daraa" | "deir_ez_zor" | "idlib" | "hasakah" | "raqqa" | 
+                      "sweida" | "quneitra" | "tartus" | "hama";
+
+type EducationLevel = "primary" | "middle" | "high_school" | "mixed";
 
 interface EditSchoolProfileProps {
-  school: School;
-  onUpdate: (updates: Partial<School>) => Promise<boolean>;
+  school: Tables<'schools'>;
+  onUpdate: (updates: Partial<Tables<'schools'>>) => Promise<boolean>;
   onCancel: () => void;
 }
 
-const GOVERNORATES = [
-  'Damascus', 'Rif Dimashq', 'Aleppo', 'Homs', 'Hama', 'Latakia',
-  'Tartus', 'Deir ez-Zor', 'Raqqa', 'Hasakah', 'Daraa', 'Suwayda',
-  'Quneitra', 'Idlib'
+const GOVERNORATES: GovernorateKey[] = [
+  "damascus",
+  "rif_damascus",
+  "aleppo",
+  "homs",
+  "latakia",
+  "daraa", 
+  "deir_ez_zor",
+  "idlib",
+  "hasakah",
+  "raqqa",
+  "sweida",
+  "quneitra",
+  "tartus",
+  "hama"
 ];
 
-const EDUCATION_LEVELS = [
-  { value: "primary", label: "Primary School" },
-  { value: "middle", label: "Middle School" },
-  { value: "highSchool", label: "High School" },
-  { value: "mixed", label: "Mixed Levels" }
+const EDUCATION_LEVELS: EducationLevel[] = [
+  "primary",
+  "middle",
+  "high_school",
+  "mixed"
 ];
 
 export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProfileProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  // Sort governorates by their translated names in the current language
+  const sortedGovernorates = [...GOVERNORATES].sort((a, b) => 
+    t(`governorates.${a}`).localeCompare(t(`governorates.${b}`), i18n.language)
+  );
+
   const [formData, setFormData] = useState({
     name: school.name,
     address: school.address,
-    governorate: school.governorate || '',
+    governorate: school.governorate || 'damascus',
     number_of_students: school.number_of_students,
     contact_phone: school.contact_phone || '',
     contact_email: school.contact_email || '',
     description: school.description || '',
     image_url: school.image_url || '',
-    education_level: school.education_level || '' // This will store the 'value' string
+    education_level: school.education_level || 'primary'
   });
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +74,8 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
 
     const dataToUpdate = {
       ...formData,
-      education_level: formData.education_level === '' ? null : formData.education_level,
+      governorate: formData.governorate as GovernorateKey,
+      education_level: formData.education_level as EducationLevel,
     };
 
     const success = await onUpdate(dataToUpdate);
@@ -134,15 +145,18 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
               <Label htmlFor="governorate">{t('school_profile.governorate_label')}</Label>
               <Select 
                 value={formData.governorate} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, governorate: value }))}
+                onValueChange={(value) => setFormData(prev => ({ 
+                  ...prev, 
+                  governorate: value as GovernorateKey 
+                }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder={t('school_profile.select_governorate_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {GOVERNORATES.map((gov) => (
+                  {sortedGovernorates.map(gov => (
                     <SelectItem key={gov} value={gov}>
-                      {gov}
+                      {t(`governorates.${gov}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -199,15 +213,18 @@ export const EditSchoolProfile = ({ school, onUpdate, onCancel }: EditSchoolProf
               <Label htmlFor="education_level">{t('school_profile.education_level_label')}</Label>
               <Select 
                 value={formData.education_level} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, education_level: value }))}
+                onValueChange={(value) => setFormData(prev => ({ 
+                  ...prev, 
+                  education_level: value as EducationLevel 
+                }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder={t('school_profile.select_education_level_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {EDUCATION_LEVELS.map((level) => (
-                    <SelectItem key={level.value} value={level.value}>
-                      {t(`educationLevels.${level.value}`)}
+                  {EDUCATION_LEVELS.map(level => (
+                    <SelectItem key={level} value={level}>
+                      {t(`educationLevels.${level}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

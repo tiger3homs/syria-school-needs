@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useTranslation } from 'react-i18next';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -11,17 +10,23 @@ import { useToast } from "@/hooks/use-toast";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { Loader2 } from "lucide-react";
 
+type GovernorateKey = "damascus" | "rif_damascus" | "aleppo" | "homs" | "latakia" | 
+                      "daraa" | "deir_ez_zor" | "idlib" | "hasakah" | "raqqa" | 
+                      "sweida" | "quneitra" | "tartus" | "hama";
+
+type EducationLevel = "primary" | "middle" | "high_school" | "mixed";
+
 interface School {
   id?: string;
   name: string;
   address: string;
-  governorate: string;
-  education_level?: string;
+  governorate: GovernorateKey;
+  education_level?: EducationLevel;
   number_of_students: number;
   contact_phone?: string;
   contact_email?: string;
   description?: string;
-  status: string;
+  status: "pending" | "approved" | "rejected";
   principal_id?: string;
 }
 
@@ -32,28 +37,53 @@ interface EditSchoolModalProps {
   onSuccess: () => void;
 }
 
+const GOVERNORATES: GovernorateKey[] = [
+  "damascus",
+  "rif_damascus",
+  "aleppo",
+  "homs",
+  "latakia",
+  "daraa", 
+  "deir_ez_zor",
+  "idlib",
+  "hasakah",
+  "raqqa",
+  "sweida",
+  "quneitra",
+  "tartus",
+  "hama"
+];
+
+const EDUCATION_LEVELS: EducationLevel[] = [
+  "primary",
+  "middle",
+  "high_school",
+  "mixed"
+];
+
 const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolModalProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState<School>({
+
+  const defaultFormData: School = {
     name: "",
     address: "",
-    governorate: "",
-    education_level: "",
+    governorate: "damascus",
+    education_level: "primary",
     number_of_students: 0,
     contact_phone: "",
     contact_email: "",
     description: "",
     status: "pending"
-  });
+  };
 
-  // Syrian governorates only
-  const syrianGovernorates = [
-    'damascus', 'aleppo', 'homs', 'latakia', 'daraa', 'deir_ez_zor', 
-    'idlib', 'hasakah', 'raqqa', 'sweida', 'quneitra', 'tartus', 
-    'rif_damascus', 'hama'
-  ];
+  const [formData, setFormData] = useState<School>(defaultFormData);
+
+  // Sort governorates by their translated names in the current language
+  const sortedGovernorates = [...GOVERNORATES].sort((a, b) => 
+    t(`governorates.${a}`).localeCompare(t(`governorates.${b}`), i18n.language)
+  );
 
   useEffect(() => {
     if (school) {
@@ -61,8 +91,8 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
         id: school.id,
         name: school.name || "",
         address: school.address || "",
-        governorate: school.governorate || "",
-        education_level: school.education_level || "",
+        governorate: (school.governorate || "damascus") as GovernorateKey,
+        education_level: (school.education_level || "primary") as EducationLevel,
         number_of_students: school.number_of_students || 0,
         contact_phone: school.contact_phone || "",
         contact_email: school.contact_email || "",
@@ -71,17 +101,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
         principal_id: school.principal_id
       });
     } else {
-      setFormData({
-        name: "",
-        address: "",
-        governorate: "",
-        education_level: "",
-        number_of_students: 0,
-        contact_phone: "",
-        contact_email: "",
-        description: "",
-        status: "pending"
-      });
+      setFormData(defaultFormData);
     }
   }, [school]);
 
@@ -90,20 +110,24 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
     setLoading(true);
 
     try {
+      const schoolData = {
+        name: formData.name,
+        address: formData.address,
+        governorate: formData.governorate,
+        education_level: formData.education_level,
+        number_of_students: formData.number_of_students,
+        contact_phone: formData.contact_phone,
+        contact_email: formData.contact_email,
+        description: formData.description,
+        status: formData.status
+      };
+
       if (school?.id) {
         // Update existing school
         const { error } = await supabaseAdmin
           .from('schools')
           .update({
-            name: formData.name,
-            address: formData.address,
-            governorate: formData.governorate,
-            education_level: formData.education_level,
-            number_of_students: formData.number_of_students,
-            contact_phone: formData.contact_phone,
-            contact_email: formData.contact_email,
-            description: formData.description,
-            status: formData.status,
+            ...schoolData,
             updated_at: new Date().toISOString()
           })
           .eq('id', school.id);
@@ -118,17 +142,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
         // Create new school
         const { error } = await supabaseAdmin
           .from('schools')
-          .insert([{
-            name: formData.name,
-            address: formData.address,
-            governorate: formData.governorate,
-            education_level: formData.education_level,
-            number_of_students: formData.number_of_students,
-            contact_phone: formData.contact_phone,
-            contact_email: formData.contact_email,
-            description: formData.description,
-            status: formData.status
-          }]);
+          .insert([schoolData]);
 
         if (error) throw error;
 
@@ -170,7 +184,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="name">{t('admin.schools.schoolName')} *</Label>
+              <Label htmlFor="name">{t('form.schoolName')} *</Label>
               <Input
                 id="name"
                 value={formData.name}
@@ -180,13 +194,16 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="status">{t('admin.schools.status')} *</Label>
+              <Label htmlFor="status">{t('status.title')} *</Label>
               <Select 
                 value={formData.status} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}
+                onValueChange={(value) => setFormData(prev => ({ 
+                  ...prev, 
+                  status: value as "pending" | "approved" | "rejected"
+                }))}
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder={t('status.selectStatusPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pending">{t('status.pending')}</SelectItem>
@@ -197,16 +214,19 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="governorate">{t('admin.schools.governorate')} *</Label>
+              <Label htmlFor="governorate">{t('form.governorate')} *</Label>
               <Select 
                 value={formData.governorate} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, governorate: value }))}
+                onValueChange={(value) => setFormData(prev => ({ 
+                  ...prev, 
+                  governorate: value as GovernorateKey 
+                }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('admin.schools.selectGovernorate')} />
+                  <SelectValue placeholder={t('school_profile.select_governorate_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  {syrianGovernorates.map(gov => (
+                  {sortedGovernorates.map(gov => (
                     <SelectItem key={gov} value={gov}>
                       {t(`governorates.${gov}`)}
                     </SelectItem>
@@ -216,46 +236,59 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="education_level">{t('admin.schools.educationLevel')}</Label>
+              <Label htmlFor="education_level">{t('form.educationLevel')} *</Label>
               <Select 
                 value={formData.education_level} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, education_level: value }))}
+                onValueChange={(value) => setFormData(prev => ({ 
+                  ...prev, 
+                  education_level: value as EducationLevel 
+                }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder={t('admin.schools.selectEducationLevel')} />
+                  <SelectValue placeholder={t('school_profile.select_education_level_placeholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="primary">{t('educationLevels.primary')}</SelectItem>
-                  <SelectItem value="middle">{t('educationLevels.middle')}</SelectItem>
-                  <SelectItem value="high_school">{t('educationLevels.highSchool')}</SelectItem>
-                  <SelectItem value="mixed">{t('educationLevels.mixed')}</SelectItem>
+                  {EDUCATION_LEVELS.map(level => (
+                    <SelectItem key={level} value={level}>
+                      {t(`educationLevels.${level}`)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="number_of_students">{t('admin.schools.numberOfStudents')} *</Label>
+              <Label htmlFor="number_of_students">{t('form.numberOfStudents')} *</Label>
               <Input
                 id="number_of_students"
                 type="number"
                 min="0"
                 value={formData.number_of_students}
-                onChange={(e) => setFormData(prev => ({ ...prev, number_of_students: parseInt(e.target.value) || 0 }))}
+                onChange={(e) => setFormData(prev => ({ 
+                  ...prev, 
+                  number_of_students: parseInt(e.target.value) || 0 
+                }))}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contact_phone">{t('admin.schools.contactPhone')}</Label>
+              <Label htmlFor="contact_phone">{t('school_profile.contact_phone_label')}</Label>
               <Input
                 id="contact_phone"
                 value={formData.contact_phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (value && !value.startsWith("+963")) {
+                    value = "+963" + value;
+                  }
+                  setFormData(prev => ({ ...prev, contact_phone: value }));
+                }}
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contact_email">{t('admin.schools.contactEmail')}</Label>
+              <Label htmlFor="contact_email">{t('school_profile.contact_email_label')}</Label>
               <Input
                 id="contact_email"
                 type="email"
@@ -266,7 +299,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address">{t('admin.schools.address')} *</Label>
+            <Label htmlFor="address">{t('form.address')} *</Label>
             <Input
               id="address"
               value={formData.address}
@@ -276,7 +309,7 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">{t('admin.schools.description')}</Label>
+            <Label htmlFor="description">{t('form.description')}</Label>
             <Textarea
               id="description"
               value={formData.description}
@@ -296,7 +329,14 @@ const EditSchoolModal = ({ open, onOpenChange, school, onSuccess }: EditSchoolMo
             </Button>
             <Button type="submit" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-              {school ? t('common.update') : t('common.create')}
+              {loading 
+                ? school 
+                  ? t('components.editSchoolModal.saving')
+                  : t('components.editSchoolModal.adding')
+                : school 
+                  ? t('common.update') 
+                  : t('common.create')
+              }
             </Button>
           </div>
         </form>

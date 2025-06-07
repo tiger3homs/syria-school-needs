@@ -152,10 +152,11 @@
   },
   "governorates": {
     "damascus": "دمشق",
+    "rif_damascus": "ريف دمشق",
     "aleppo": "حلب",
     "homs": "حمص",
     "latakia": "اللاذقية",
-    "daraa": "درعا",
+    "daraa": "درعا", 
     "deir_ez_zor": "دير الزور",
     "idlib": "إدلب",
     "hasakah": "الحسكة",
@@ -163,13 +164,12 @@
     "sweida": "السويداء",
     "quneitra": "القنيطرة",
     "tartus": "طرطوس",
-    "rif_damascus": "ريف دمشق",
     "hama": "حماة"
   },
   "educationLevels": {
     "primary": "المرحلة الابتدائية",
     "middle": "المرحلة الإعدادية",
-    "highSchool": "المرحلة الثانوية",
+    "high_school": "المرحلة الثانوية",
     "mixed": "مراحل مختلطة"
   },
   "categories": {
@@ -194,6 +194,7 @@
     "low": "منخفضة"
   },
   "status": {
+    "title": "الحالة",
     "pending": "قيد الانتظار",
     "approved": "موافق عليه",
     "rejected": "مرفوض",
