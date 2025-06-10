@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { supabase } from "@/integrations/supabase/client";
@@ -31,47 +30,113 @@ const NeedsPage = () => {
   const { t } = useTranslation();
   const [needs, setNeeds] = useState<Need[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [governorateFilter, setGovernorateFilter] = useState<string>("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [governorateFilter, setGovernorateFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [governorateOptions, setGovernorateOptions] = useState<string[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("newest");
+  const [error, setError] = useState<string | null>(null);
 
+  // Fetch options separately to avoid re-fetching them on every filter change
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        // Fetch unique governorates
+        const { data: govData } = await supabase
+          .from('needs')
+          .select('schools(governorate)')
+          .not('schools', 'is', null);
+        
+        if (govData) {
+          const governorates = [...new Set(govData
+            .map(n => n.schools?.governorate)
+            .filter(Boolean))] as string[];
+          setGovernorateOptions(governorates);
+        }
+
+        // Fetch unique categories
+        const { data: catData } = await supabase
+          .from('needs')
+          .select('category')
+          .not('category', 'is', null);
+        
+        if (catData) {
+          const categories = [...new Set(catData
+            .map(n => n.category)
+            .filter(Boolean))] as string[];
+          setCategoryOptions(categories);
+        }
+      } catch (error) {
+        console.error("Error fetching options:", error);
+      }
+    };
+
+    fetchOptions();
+  }, []);
+
+  // Fetch needs with filters
   useEffect(() => {
     const fetchNeeds = async () => {
+      setIsLoading(true);
+      setError(null);
       try {
-        const { data, error } = await supabase
+        let query = supabase
           .from('needs')
-          .select('*, schools(name, governorate, contact_email, contact_phone)')
+          .select('*, schools(name, governorate, contact_email, contact_phone)');
 
-        if (error) {
-          console.error("Error fetching needs:", error);
-          return;
+        // Apply status filter
+        if (statusFilter !== "all") {
+          query = query.eq('status', statusFilter);
+        }
+
+        // Apply category filter
+        if (categoryFilter !== "all") {
+          query = query.ilike('category', categoryFilter);
+        }
+
+        // Apply governorate filter
+        if (governorateFilter !== "all") {
+          query = query.eq('schools.governorate', governorateFilter);
+        }
+
+        // Apply search query
+        if (searchQuery.trim()) {
+          query = query.or(`title.ilike.%${searchQuery.trim()}%,description.ilike.%${searchQuery.trim()}%`);
+        }
+
+        // Apply sorting
+        switch (sortBy) {
+          case "newest":
+            query = query.order('created_at', { ascending: false });
+            break;
+          case "oldest":
+            query = query.order('created_at', { ascending: true });
+            break;
+          case "priority":
+            // First high priority, then medium, then low
+            query = query.order('priority', { ascending: false });
+            break;
+        }
+
+        const { data, error: fetchError } = await query;
+
+        if (fetchError) {
+          throw new Error(fetchError.message);
         }
 
         setNeeds(data || []);
-
-        // Extract governorate options
-        const governorates = data
-          .map((need) => need.schools?.governorate)
-          .filter((governorate, index, self) => governorate && self.indexOf(governorate) === index) as string[];
-        setGovernorateOptions(governorates);
-
-        // Extract category options
-        const categories = data
-          .map((need) => need.category)
-          .filter((category, index, self) => category && self.indexOf(category) === index) as string[];
-        setCategoryOptions(categories);
-
+      } catch (err: any) {
+        setError(err.message);
+        setNeeds([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchNeeds();
-  }, []);
+  }, [governorateFilter, categoryFilter, statusFilter, searchQuery, sortBy]);
 
   const getPriorityBadgeVariant = (priority: string) => {
     switch (priority) {
@@ -137,7 +202,7 @@ const NeedsPage = () => {
                   <SelectItem value="all">{t('needs.filters.allGovernorates')}</SelectItem>
                   {governorateOptions.map((governorate) => (
                     <SelectItem key={governorate} value={governorate}>
-                      {governorate}
+                      {t(`governorates.${governorate}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -151,7 +216,7 @@ const NeedsPage = () => {
                   <SelectItem value="all">{t('needs.filters.allCategories')}</SelectItem>
                   {categoryOptions.map((category) => (
                     <SelectItem key={category} value={category}>
-                      {category}
+                      {t(`categories.${category}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

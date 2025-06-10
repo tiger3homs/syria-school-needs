@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supabase } from '@/integrations/supabase/client';
@@ -46,32 +45,37 @@ const SchoolsPage: React.FC = () => {
     try {
       let query = supabase.from('schools').select('*').eq('status', 'approved');
 
+      // Apply governorate filter
       if (selectedGovernorate !== 'all') {
-        const formattedGovernorate = selectedGovernorate
-          .split('_')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-        query = query.eq('governorate', formattedGovernorate);
+        query = query.ilike('governorate', selectedGovernorate);
       }
+
+      // Apply education level filter
       if (selectedEducationLevel !== 'all') {
-        const formattedEducationLevel = selectedEducationLevel
-          .split(/(?=[A-Z])/) // Split by capital letters (for camelCase)
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(' ');
-        query = query.eq('education_level', formattedEducationLevel);
-      }
-      if (searchTerm) {
-        query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
+        query = query.ilike('education_level', selectedEducationLevel);
       }
 
-      const { data, error } = await query;
-
-      if (error) {
-        throw error;
+      // Apply search term filter
+      if (searchTerm.trim()) {
+        // Use ilike for case-insensitive search and handle both name and description
+        query = query.or(`name.ilike.%${searchTerm.trim()}%,description.ilike.%${searchTerm.trim()}%,address.ilike.%${searchTerm.trim()}%`);
       }
+
+      const { data, error: fetchError } = await query;
+
+      if (fetchError) {
+        throw new Error(fetchError.message);
+      }
+
+      if (!data) {
+        setSchools([]);
+        return;
+      }
+
       setSchools(data as School[]);
     } catch (err: any) {
       setError(err.message);
+      setSchools([]);
     } finally {
       setLoading(false);
     }
