@@ -586,7 +586,10 @@
     "showMore": "Show More",
     "showLess": "Show Less",
     "goBack": "Go Back",
-    "lastUpdated": "Last Updated"
+    "lastUpdated": "Last Updated",
+    "update": "Update",
+    "cancel": "Cancel",
+    "create": "Create"
   },
   "errors": {
     "pageNotFound": "Page not found",

@@ -579,7 +579,10 @@
     "saving": "جاري الحفظ...",
     "saveChanges": "حفظ التغييرات",
     "showMore": "عرض المزيد",
-    "showLess": "عرض أقل"
+    "showLess": "عرض أقل",
+    "update": "تحديث",
+    "cancel": "إلغاء",
+    "create": "إنشاء"
   },
   "errors": {
     "pageNotFound": "الصفحة غير موجودة",
