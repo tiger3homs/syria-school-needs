@@ -65,10 +65,7 @@ const AdminLogin = () => {
         </div>
 
         <Card className="shadow-2xl rounded-3xl border-t-4 border-primary overflow-hidden">
-          <CardHeader className="text-center bg-gradient-to-r from-primary/5 to-gold/5 pb-8">
-            <CardTitle className="text-3xl font-bold text-primary mb-3">
-              {t('auth.adminLogin.title')}
-            </CardTitle>
+          <CardHeader className="text-center bg-gradient-to-r from-primary/5 to-gold/5 pb-1">
             <CardDescription className="text-gray-700 text-lg leading-relaxed">
               {t('auth.adminLogin.description')}
             </CardDescription>

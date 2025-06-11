@@ -1,7 +1,8 @@
 {
   "site": {
     "title": "School Rebuild Syria",
-    "description": "Ministry of Education - Syrian Arab Republic"
+    "description": "Ministry of Education - Syrian Arab Republic",
+    "adminPanel": "Admin Panel"
   },
   "nav": {
     "home": "Home",
@@ -97,6 +98,18 @@
       "backToHome": "Back to home",
       "forgotPassword": "Forgot Password?",
       "rememberMe": "Remember me"
+    },
+    "adminLogin": {
+      "title": "Admin Login",
+      "description": "Sign in to the admin panel to manage schools and needs",
+      "email": "Email",
+      "password": "Password",
+      "signIn": "Sign In",
+      "signingIn": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "registerHere": "Register your school",
+      "backToHome": "Back to home",
+      "backToSchoolLogin": "Back to School Login"
     },
     "register": {
       "title": "Register Your School",
@@ -523,6 +536,7 @@
   "common": {
     "loading": "Loading...",
     "error": "An error occurred",
+    "edit": "Edit",
     "success": "Success",
     "warning": "Warning",
     "info": "Information",

@@ -55,16 +55,6 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-light via-white to-light font-inter text-primary flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className={`inline-flex items-center group ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <School className={`h-10 w-10 text-primary group-hover:text-gold transition-colors ${isRTL ? 'ml-3' : 'mr-3'}`} />
-            <span className="text-2xl font-extrabold text-primary group-hover:text-gold transition-colors">
-              {t('site.title')}
-            </span>
-          </Link>
-        </div>
-
         <Card className="shadow-2xl rounded-3xl border-t-4 border-primary overflow-hidden">
           <CardHeader className="text-center bg-gradient-to-r from-primary/5 to-gold/5 pb-8">
             <CardTitle className="text-3xl font-bold text-primary mb-3">
