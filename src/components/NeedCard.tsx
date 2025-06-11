@@ -136,12 +136,6 @@ const NeedCard: React.FC<NeedCardProps> = ({ need }) => {
                   </div>
                 )}
                 
-                {need.schools.contact_email && (
-                  <div className="flex items-center gap-2 text-sm text-gray-700 mb-1">
-                    <Mail className="h-4 w-4 text-gray-500" />
-                    <span className="truncate">{need.schools.contact_email}</span>
-                  </div>
-                )}
                 
                 {need.schools.contact_phone && (
                   <div className="flex items-center gap-2 text-sm text-gray-700">
@@ -154,7 +148,7 @@ const NeedCard: React.FC<NeedCardProps> = ({ need }) => {
           </div>
         </CardContent>
 
-        <CardFooter className="pt-4">
+        <CardFooter className="pt-4 flex flex-col gap-2">
           <Button 
             className="w-full bg-gold text-primary hover:bg-gold/90 rounded-full shadow-md px-6 py-2 text-lg font-semibold transition-all duration-300 ease-in-out transform hover:scale-105"
             onClick={(e) => {
@@ -169,6 +163,19 @@ const NeedCard: React.FC<NeedCardProps> = ({ need }) => {
             <FaWhatsapp className="inline-block mr-2" />
             {t('needs.contactWhatsapp')}
           </Button>
+          {need.schools && (
+            <Button
+              variant="outline"
+              className="w-full rounded-full px-6 py-2 text-md font-medium border-primary text-primary hover:bg-primary/10"
+              onClick={e => {
+                e.stopPropagation();
+                const slug = need.schools.name.toLowerCase().replace(/\s+/g, '-');
+                window.location.href = `/schools/${slug}`;
+              }}
+            >
+              {t('needs.showSchoolProfile', 'Show School Profile')}
+            </Button>
+          )}
         </CardFooter>
       </div>
     </Card>

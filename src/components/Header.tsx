@@ -1,10 +1,16 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { 
+  Sheet, 
+  SheetContent, 
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription 
+} from '@/components/ui/sheet';
 import { MenuIcon, X, ArrowRight } from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 
@@ -21,14 +27,20 @@ const Header = () => {
 
   const handleScroll = () => {
     const currentScrollPos = window.scrollY;
-    setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
+    const isScrollingUp = prevScrollPos > currentScrollPos;
+    
+    // Show header when:
+    // 1. Scrolling up
+    // 2. At the top of the page (within first 10px)
+    // 3. When scroll position is less than 50px (to prevent quick hiding at start)
+    setVisible(isScrollingUp || currentScrollPos < 10 || currentScrollPos < 50);
     setPrevScrollPos(currentScrollPos);
   };
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos, visible]);
+  }, [prevScrollPos]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -46,6 +58,14 @@ const Header = () => {
   };
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  const NavButton = ({ to, children, className = '', onClick = () => {} }) => (
+    <Link to={to} onClick={() => { closeMobileMenu(); onClick(); }} className={`block w-full ${className}`}>
+      <Button variant="ghost" className={`text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium ${getLinkClass(to)}`}>
+        {children}
+      </Button>
+    </Link> 
+  );
 
   return (
     <nav className={`bg-primary/95 backdrop-blur-md shadow-lg font-inter fixed w-full z-50 top-0 transition-transform duration-300 ${visible ? 'translate-y-0' : '-translate-y-full'}`}>
@@ -98,7 +118,7 @@ const Header = () => {
 
             {/* User Authentication - Desktop */}
             {!user && (
-              <div className={`flex items-center ml-4 ${isRTL ? 'space-x-reverse space-x-2' : 'space-x-2'}`}>
+              <div className={`flex items-center ${isRTL ? 'mr-4 space-x-reverse space-x-2' : 'ml-4 space-x-2'}`}>
                 <Link to="/login" className={getLinkClass('/login')}>
                   <Button variant="ghost" className="text-white hover:bg-white/10 hover:text-gold px-3 py-2 text-sm font-medium">
                     {t('nav.login')}
@@ -154,7 +174,9 @@ const Header = () => {
                   variant="ghost" 
                   size="icon" 
                   className="text-white hover:bg-white/10 touch-target"
-                  aria-label="Open menu"
+                  aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+                  aria-expanded={mobileMenuOpen}
+                  aria-controls="mobile-navigation"
                 >
                   <MenuIcon className="h-6 w-6" />
                 </Button>
@@ -162,7 +184,14 @@ const Header = () => {
               <SheetContent 
                 side={isRTL ? "left" : "right"}
                 className="w-full sm:w-80 bg-primary text-white border-l-gold/20 p-0"
+                role="navigation"
+                id="mobile-navigation"
+                aria-label="Site navigation"
               >
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                  <SheetDescription className="sr-only">Access all site pages and features</SheetDescription>
+                </SheetHeader>
                 {/* Mobile Menu Header */}
                 <div className={`flex items-center justify-between p-4 border-b border-white/10 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className={`flex items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -171,15 +200,6 @@ const Header = () => {
                       {t('site.title')}
                     </span>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={closeMobileMenu}
-                    className="text-white hover:bg-white/10 touch-target"
-                    aria-label="Close menu"
-                  >
-                    <X className="h-6 w-6" />
-                  </Button>
                 </div>
 
                 {/* Mobile Menu Content */}
@@ -191,32 +211,17 @@ const Header = () => {
 
                   {/* Main Navigation */}
                   <div className="space-y-1">
-                    <Link to="/" onClick={closeMobileMenu} className="block">
-                      <Button 
-                        variant="ghost" 
-                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
-                      >
-                        {t('nav.home')}
-                      </Button>
-                    </Link>
+                    <NavButton to="/" className="w-full">
+                      {t('nav.home')}
+                    </NavButton>
                     
-                    <Link to="/needs" onClick={closeMobileMenu} className="block">
-                      <Button 
-                        variant="ghost" 
-                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
-                      >
-                        {t('nav.needs')}
-                      </Button>
-                    </Link>
+                    <NavButton to="/needs" className="w-full">
+                      {t('nav.needs')}
+                    </NavButton>
                     
-                    <Link to="/schools" onClick={closeMobileMenu} className="block">
-                      <Button 
-                        variant="ghost" 
-                        className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
-                      >
-                        {t('nav.schools')}
-                      </Button>
-                    </Link>
+                    <NavButton to="/schools" className="w-full">
+                      {t('nav.schools')}
+                    </NavButton>
                   </div>
 
                   {/* Authentication Section */}
@@ -226,7 +231,7 @@ const Header = () => {
                         <Link to="/login" onClick={closeMobileMenu} className="block">
                           <Button 
                             variant="ghost" 
-                            className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium ${isRTL ? 'justify-end' : 'justify-start'}`}
+                            className={`w-full text-white hover:bg-white/10 hover:text-gold py-3 px-4 text-base font-medium`}
                           >
                             {t('nav.login')}
                           </Button>

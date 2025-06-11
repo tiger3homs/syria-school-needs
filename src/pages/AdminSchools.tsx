@@ -13,16 +13,22 @@ import EditSchoolModal from "@/components/EditSchoolModal";
 import QuickStatusEditor from "@/components/QuickStatusEditor";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+type GovernorateKey = "damascus" | "rif_damascus" | "aleppo" | "homs" | "latakia" | 
+                      "daraa" | "deir_ez_zor" | "idlib" | "hasakah" | "raqqa" | 
+                      "sweida" | "quneitra" | "tartus" | "hama";
+
+type EducationLevel = "primary" | "middle" | "high_school" | "mixed";
+
 interface School {
   id: string;
   name: string;
   address: string;
-  governorate: string;
-  education_level?: string;
+  governorate: GovernorateKey;
+  education_level?: EducationLevel;
   number_of_students: number;
   contact_phone?: string;
   contact_email?: string;
-  status: string;
+  status: "pending" | "approved" | "rejected";
   created_at: string;
   principal_id?: string;
   description?: string;
@@ -84,7 +90,12 @@ const AdminSchoolsComponent = () => {
       }
       
       console.log('Fetched schools:', data);
-      setSchools(data || []);
+      setSchools(
+        (data || []).map((school: any) => ({
+          ...school,
+          governorate: school.governorate as GovernorateKey,
+        }))
+      );
     } catch (error: any) {
       console.error('Failed to fetch schools:', error);
       toast({

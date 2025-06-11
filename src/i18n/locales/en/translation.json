@@ -11,7 +11,12 @@
     "register": "Register School",
     "dashboard": "Dashboard",
     "admin": "Admin Panel",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "siteNavigation": "Site Navigation",
+    "mainMenu": "Main Menu",
+    "mainMenuDescription": "Access all site pages and features"
   },
   "home": {
     "hero": {
@@ -565,12 +570,16 @@
     "saving": "Saving...",
     "saveChanges": "Save Changes",
     "showMore": "Show More",
-    "showLess": "Show Less"
+    "showLess": "Show Less",
+    "goBack": "Go Back",
+    "lastUpdated": "Last Updated"
   },
   "errors": {
     "pageNotFound": "Page not found",
-    "accessDenied": "Access denied",
-    "sessionExpired": "Session expired",
+    "pageDoesNotExist": "The page you're looking for doesn't exist.",
+    "invalidPageRoute": "This page route is not valid or is reserved for system use.",
+    "errorLoadingPage": "Error loading page",
+    "tryAgainLater": "Please try again later. If the problem persists, contact support.",
     "networkError": "Network error",
     "serverError": "Server error",
     "validationError": "Validation error",
@@ -578,7 +587,10 @@
     "fileTooLarge": "File too large",
     "invalidFileType": "Invalid file type",
     "loginRequired": "Login required",
-    "permissionDenied": "Permission denied"
+    "permissionDenied": "Permission denied",
+    "pageNotFoundTitle": "Page Not Found",
+    "pageNotFoundDescription": "The page you're looking for doesn't exist or has been moved.",
+    "returnHome": "Return to Home"
   },
   "validation": {
     "required": "This field is required",

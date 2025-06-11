@@ -84,7 +84,8 @@ const NeedsPage = () => {
       try {
         let query = supabase
           .from('needs')
-          .select('*, schools(name, governorate, contact_email, contact_phone)');
+          .select('*, schools!inner(name, governorate, contact_email, contact_phone, status)')
+          .eq('schools.status', 'approved');  // Only get needs from approved schools
 
         // Apply status filter
         if (statusFilter !== "all") {

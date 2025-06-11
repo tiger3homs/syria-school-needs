@@ -157,16 +157,33 @@ export const useCustomPage = (slug: string) => {
   return useQuery({
     queryKey: ['customPage', slug],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('custom_pages')
-        .select('*')
-        .eq('slug', slug)
-        .eq('published', true)
-        .single();
+      try {
+        const { data, error } = await supabase
+          .from('custom_pages')
+          .select('*')
+          .eq('slug', slug)
+          .eq('published', true)
+          .single();
 
-      if (error) throw error;
-      return data as CustomPage;
+        if (error) {
+          console.error('Error fetching custom page:', error);
+          throw error;
+        }
+
+        if (!data) {
+          const error = new Error('Page not found');
+          (error as any).code = 'PGRST116';
+          throw error;
+        }
+        
+        return data as CustomPage;
+      } catch (error) {
+        // Log and re-throw the error
+        console.error('Error in useCustomPage:', error);
+        throw error;
+      }
     },
-    enabled: !!slug
+    enabled: !!slug,
+    retry: false // Don't retry if the page doesn't exist
   });
 };

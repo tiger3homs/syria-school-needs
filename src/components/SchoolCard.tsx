@@ -99,12 +99,6 @@ const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
               <MapPin className="h-4 w-4 text-gray-500" />
               <span>{school.address}</span>
             </div>
-            {school.contact_email && (
-              <div className="flex items-center gap-2 text-sm text-gray-700">
-                <Mail className="h-4 w-4 text-gray-500" />
-                <span className="truncate">{school.contact_email}</span>
-              </div>
-            )}
             {school.contact_phone && (
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <Phone className="h-4 w-4 text-gray-500" />

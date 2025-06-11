@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -20,6 +19,7 @@ import CustomPage from "./pages/CustomPage";
 import NotFound from "./pages/NotFound";
 import NeedsPage from "./pages/NeedsPage";
 import SchoolsPage from "./pages/SchoolsPage";
+import SchoolProfile from "./pages/SchoolProfile"; // Import the new SchoolProfile component
 
 // Import i18n configuration
 import './i18n';
@@ -66,6 +66,7 @@ const AppContent = () => {
         } />
         <Route path="/needs" element={<NeedsPage />} />
         <Route path="/schools" element={<SchoolsPage />} />
+        <Route path="/schools/:schoolName" element={<SchoolProfile />} /> {/* New route for school profile page */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={
           <ProtectedRoute requiredRole="admin">
